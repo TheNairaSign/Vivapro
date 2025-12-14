@@ -48,10 +48,10 @@ class _VivaproState extends ConsumerState<Vivapro> {
               colorScheme: lightColorScheme,
               brightness: Brightness.light,
             ),
-            darkTheme: AppTheme.darkTheme.copyWith(
-              colorScheme: darkColorScheme,
-              brightness: Brightness.dark,
-            ),
+            // darkTheme: AppTheme.darkTheme.copyWith(
+            //   colorScheme: darkColorScheme,
+            //   brightness: Brightness.dark,
+            // ),
             home: const AuthChecker(),
           );
         }

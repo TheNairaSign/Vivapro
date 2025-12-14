@@ -5,7 +5,7 @@ import 'package:vivapro/auth/presentation/bloc/google_signin/google_sign_in_even
 import 'package:vivapro/auth/presentation/bloc/google_signin/google_sign_in_state.dart';
 import 'package:vivapro/auth/presentation/pages/sign_up_page.dart';
 import 'package:vivapro/auth/presentation/widgets/auth_button.dart';
-import 'package:vivapro/pages/navigation/recents_page.dart';
+import 'package:vivapro/pages/navigation/navigation_page.dart';
 
 class AuthPage extends StatefulWidget {
   const AuthPage({super.key});
@@ -41,7 +41,7 @@ class _AuthPageState extends State<AuthPage> {
             // Navigate to next page, e.g., InterestSelectionPage or Home
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
-                builder: (context) => RecentsPage(),
+                builder: (context) => const NavigationPage(),
               ),
             );
           } else if (state is GoogleSignInFailure) {

@@ -33,11 +33,13 @@ class CallLogItem extends StatelessWidget {
             CircleAvatar(
               radius: 22,
               backgroundColor: Colors.grey[200],
-              backgroundImage: null, // TODO: Insert contact image if available
+              backgroundImage: null,
               child: ((entry.name == null || entry.name!.isEmpty) && entry.formattedNumber == null)
                   ? const Icon(Icons.person, color: Colors.grey)
                   : Text(
-                      nameOrNumber[0].toUpperCase(),
+                      nameOrNumber.isNotEmpty 
+                          ? nameOrNumber.characters.first.toUpperCase() 
+                          : '?',
                       style: const TextStyle(
                         color: Colors.black87,
                         fontWeight: FontWeight.bold,

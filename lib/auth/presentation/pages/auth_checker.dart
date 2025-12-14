@@ -8,7 +8,7 @@ import 'package:vivapro/auth/presentation/bloc/auth_change/auth_change_event.dar
 import 'package:vivapro/auth/presentation/bloc/auth_change/auth_change_state.dart';
 import 'package:vivapro/auth/presentation/pages/auth_page.dart';
 import 'package:vivapro/core/theme/global_colors.dart';
-import 'package:vivapro/pages/navigation/recents_page.dart';
+import 'package:vivapro/pages/navigation/navigation_page.dart';
 
 class AuthChecker extends StatefulWidget {
   const AuthChecker({super.key});
@@ -30,14 +30,14 @@ class _AuthCheckerState extends State<AuthChecker> {
     return BlocListener<AuthStateChangeBloc, AuthStateChangeState>(
       listener: (context, state) {
         if (state is AuthStateChangeSuccess) {
-          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (builder) => RecentsPage()));
+          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (builder) => const NavigationPage()));
         } else if (state is AuthStateChangeFailure) {
           Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (builder) => AuthPage()));
         }
       },
       child: Scaffold(
         body: Center(
-          child: LoadingAnimationWidget.threeRotatingDots(color: GlobalColors.darkPurple, size: 50),
+          child: LoadingAnimationWidget.threeRotatingDots(color: GlobalColors.darkPurple, size: 20),
         ),
       ),
     );

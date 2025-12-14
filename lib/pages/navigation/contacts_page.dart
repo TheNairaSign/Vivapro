@@ -1,0 +1,158 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_contacts/flutter_contacts.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:vivapro/core/theme/global_colors.dart';
+
+class ContactsPage extends StatefulWidget {
+  const ContactsPage({super.key});
+
+  @override
+  State<ContactsPage> createState() => _ContactsPageState();
+}
+
+class _ContactsPageState extends State<ContactsPage> {
+  List<Contact>? _contacts;
+  bool _permissionDenied = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchContacts();
+  }
+
+  Future<void> _fetchContacts() async {
+    if (!await FlutterContacts.requestPermission(readonly: true)) {
+      if (mounted) setState(() => _permissionDenied = true);
+    } else {
+      final contacts = await FlutterContacts.getContacts(withProperties: true, withPhoto: false);
+      if (mounted) {
+        setState(() {
+          _contacts = contacts;
+          _permissionDenied = false;
+        });
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFF5F7FA),
+      appBar: AppBar(
+        title: const Text('Contacts'),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+      ),
+      body: _body(),
+    );
+  }
+
+  Widget _body() {
+    if (_permissionDenied) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text('Permission denied'),
+            const SizedBox(height: 8),
+            ElevatedButton(
+              onPressed: _fetchContacts,
+              child: const Text('Retry'),
+            ),
+          ],
+        ),
+      );
+    }
+    
+    if (_contacts == null) {
+      return Center(
+        child: LoadingAnimationWidget.threeRotatingDots(
+          color: GlobalColors.darkPurple, 
+          size: 50
+        ),
+      );
+    }
+
+    if (_contacts!.isEmpty) {
+      return const Center(child: Text('No contacts found'));
+    }
+
+    return ListView.separated(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      itemCount: _contacts!.length,
+      separatorBuilder: (context, index) => const SizedBox(height: 10),
+      itemBuilder: (context, i) {
+        final contact = _contacts![i];
+        return Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 10,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: ListTile(
+            leading: CircleAvatar(
+              backgroundColor: Colors.deepPurple.shade50,
+              child: Text(
+                (contact.displayName.isNotEmpty) ? contact.displayName.characters.first.toUpperCase() : '?',
+                style: TextStyle(color: GlobalColors.darkPurple, fontWeight: FontWeight.bold),
+              ),
+            ),
+            title: Text(
+              contact.displayName,
+            ),
+            subtitle: (contact.phones.isNotEmpty) 
+              ? Text(contact.phones.first.number) 
+              : null,
+            onTap: () async {
+              // Fetch full details including high-res photo if needed, though withProperties: true above gets basic props
+              final fullContact = await FlutterContacts.getContact(contact.id);
+              if (mounted && fullContact != null) {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => ContactDetailsPage(fullContact)),
+                );
+              }
+            },
+          ),
+        );
+      },
+    );
+  }
+}
+
+class ContactDetailsPage extends StatelessWidget {
+  final Contact contact;
+  const ContactDetailsPage(this.contact, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(contact.displayName)),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          _buildDetailTile(Icons.person, 'Name', '${contact.name.first} ${contact.name.last}'),
+          if (contact.phones.isNotEmpty)
+            ...contact.phones.map((p) => _buildDetailTile(Icons.phone, 'Phone', p.number)),
+          if (contact.emails.isNotEmpty)
+            ...contact.emails.map((e) => _buildDetailTile(Icons.email, 'Email', e.address)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDetailTile(IconData icon, String label, String value) {
+    return ListTile(
+      leading: Icon(icon, color: GlobalColors.darkPurple),
+      title: Text(value),
+      subtitle: Text(label),
+      contentPadding: EdgeInsets.zero,
+    );
+  }
+}

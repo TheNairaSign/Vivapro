@@ -7,7 +7,7 @@ Future<void> bootstrap() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);  
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);  
 }
 
 void applyModernStatusBarStyle(BuildContext context) {
@@ -17,14 +17,14 @@ void applyModernStatusBarStyle(BuildContext context) {
   SystemChrome.setSystemUIOverlayStyle(
     SystemUiOverlayStyle(
       // Transparent status bar (recommended for modern apps with edge-to-edge)
-      statusBarColor: Colors.transparent,
+      statusBarColor: theme.scaffoldBackgroundColor,
 
       // Icons color based on theme
       statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
       statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
 
       // Optional: Use system accent color on Android 12+ (Material You)
-      // systemStatusBarContrastEnforced: false, // Needed for custom colors
+      systemStatusBarContrastEnforced: false, // Needed for custom colors
     ),
   );
 }

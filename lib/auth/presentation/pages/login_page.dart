@@ -6,7 +6,7 @@ import 'package:vivapro/auth/presentation/bloc/signin/sign_in_state.dart';
 import 'package:vivapro/auth/presentation/pages/forgot_password_page.dart';
 import 'package:vivapro/auth/presentation/pages/sign_up_page.dart';
 import 'package:vivapro/core/theme/global_colors.dart';
-import 'package:vivapro/pages/navigation/recents_page.dart';
+import 'package:vivapro/pages/navigation/navigation_page.dart';
 import 'package:vivapro/widgets/custom_text_field.dart';
 import 'package:vivapro/widgets/next_button.dart';
 
@@ -70,7 +70,7 @@ class _LoginPageState extends State<LoginPage> {
                 });
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
-                    builder: (context) => RecentsPage(),
+                    builder: (context) => const NavigationPage(),
                   ),
                 );
               } else if (state is SignInLoading) {

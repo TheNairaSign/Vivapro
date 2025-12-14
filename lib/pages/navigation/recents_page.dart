@@ -8,7 +8,6 @@ import 'package:vivapro/call_log/presentation/bloc/call_log_state.dart';
 import 'package:vivapro/call_log/presentation/widgets/call_log_item.dart';
 
 import 'package:vivapro/core/theme/global_colors.dart';
-import 'package:call_log/call_log.dart';
 import 'package:intl/intl.dart';
 
 class RecentsPage extends StatefulWidget {
@@ -79,6 +78,7 @@ class _RecentsPageState extends State<RecentsPage> {
               return ListView.builder(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                 itemCount: keys.length,
+                physics: const BouncingScrollPhysics(),
                 itemBuilder: (context, index) {
                   final key = keys[index];
                   final logs = groupedLogs[key]!;
