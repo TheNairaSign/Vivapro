@@ -45,7 +45,7 @@ class AuthButton extends StatelessWidget {
                   width: 16,
                   height: 16,
                   child: CircularProgressIndicator(
-                    color: GlobalColors.darkPurple,
+                    color: Colors.black,
                     strokeWidth: 2,
                   ),
                 ),

@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vivapro/auth/presentation/bloc/auth_change/auth_change_event.dart';
 import 'package:vivapro/auth/presentation/bloc/auth_change/auth_change_state.dart';
-import 'package:vivapro/auth/repositories/auth_repository.dart';
+import 'package:vivapro/auth/repositories/firebase_auth_repository.dart';
 
 class AuthStateChangeBloc extends Bloc<AuthChangeEvent, AuthStateChangeState> {
   final FirebaseAuthRepository _authRepository;

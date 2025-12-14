@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vivapro/auth/presentation/bloc/google_signin/google_sign_in_bloc.dart';
+import 'package:vivapro/auth/presentation/bloc/google_signin/google_sign_in_event.dart';
+import 'package:vivapro/auth/presentation/bloc/google_signin/google_sign_in_state.dart';
 import 'package:vivapro/auth/presentation/pages/sign_up_page.dart';
 import 'package:vivapro/auth/presentation/widgets/auth_button.dart';
-import 'package:vivapro/core/theme/global_colors.dart';
+import 'package:vivapro/pages/navigation/recents_page.dart';
 
 class AuthPage extends StatefulWidget {
   const AuthPage({super.key});
@@ -11,51 +15,87 @@ class AuthPage extends StatefulWidget {
 }
 
 class _AuthPageState extends State<AuthPage> {
-  final isLoading = false;
+  bool isLoading = false;
   
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final height = size.height;
-    final width = size.width;
     return Scaffold(
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 25),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Image.asset('assets/images/business-illustration.png', height: height * .45),
-              // const Spacer(),
-              Text("Welcome to Vivapro", style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),),
-              Text("Got an interview to prepare for?\nBook practice sessions with mentors or your peers", style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey)),
-              const SizedBox(height: 40),
-              AuthButton(
-                label: 'Continue with Email',
-                icon: 'assets/svgs/gmail.svg',
-                onPressed: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const SignUpPage(),
+      body: BlocListener<GoogleSignInBloc, GoogleSignInState>(
+        listener: (context, state) {
+          if (state is GoogleSignInLoading) {
+            setState(() {
+              isLoading = true;
+            });
+          } else if (state is GoogleSignInSuccess) {
+            setState(() {
+              isLoading = false;
+            });
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Welcome ${state.user.displayName}!'),
+                backgroundColor: Colors.green,
+              ),
+            );
+            // Navigate to next page, e.g., InterestSelectionPage or Home
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (context) => RecentsPage(),
+              ),
+            );
+          } else if (state is GoogleSignInFailure) {
+            setState(() {
+              isLoading = false;
+            });
+             ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Sign in failed: ${state.failure.toString()}'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        },
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 25),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Image.asset('assets/images/business-illustration.png', height: height * .45),
+                // const Spacer(),
+                Text("Welcome to Vivapro", style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),),
+                Text("Got an interview to prepare for?\nBook practice sessions with mentors or your peers", style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey)),
+                const SizedBox(height: 40),
+                AuthButton(
+                  label: 'Continue with Email',
+                  icon: 'assets/svgs/gmail.svg',
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const SignUpPage(),
+                    ),
                   ),
+                  // isLoading: isLoading,
                 ),
-                isLoading: isLoading,
-              ),
-              const SizedBox(height: 20),
-              AuthButton(
-                label: 'Continue with Google',
-                icon: 'assets/svgs/google.svg',
-                onPressed: () {},
-                isLoading: isLoading,
-              ),
-              const SizedBox(height: 20),
-              AuthButton(
-                label: 'Continue with Apple',
-                icon: 'assets/svgs/apple.svg',
-                onPressed: () {},
-                isLoading: isLoading,
-              ),
-            ],
+                const SizedBox(height: 20),
+                AuthButton(
+                  label: 'Continue with Google',
+                  icon: 'assets/svgs/google.svg',
+                  onPressed: () {
+                    context.read<GoogleSignInBloc>().add(GoogleSignInRequested());
+                  },
+                  isLoading: isLoading,
+                ),
+                const SizedBox(height: 20),
+                AuthButton(
+                  label: 'Continue with Apple',
+                  icon: 'assets/svgs/apple.svg',
+                  onPressed: () {},
+                  // isLoading: isLoading,
+                ),
+              ],
+            ),
           ),
         ),
       )

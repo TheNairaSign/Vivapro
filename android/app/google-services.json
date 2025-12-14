@@ -12,7 +12,20 @@
           "package_name": "com.example.vivapro"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1048531275134-1tnnfdhd0gklbdsgug1d35u2plfl70mv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.vivapro",
+            "certificate_hash": "3ad1b7ce2f32d6a9db6f36bcbb97600e5c4dc998"
+          }
+        },
+        {
+          "client_id": "1048531275134-538eqb5d15il4jsv8avgfqls1a62qri7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCgCqlP3nVTkYSDKvI-kq20tJfty5r8q00"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1048531275134-538eqb5d15il4jsv8avgfqls1a62qri7.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1048531275134-ftkn3uttnalsfn9obdcal7oc6kc7mk5m.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.vivapro"
+              }
+            }
+          ]
         }
       }
     }

@@ -10,41 +10,40 @@ abstract class AuthFailure {
   factory AuthFailure.weakPassword() = WeakPassword;
   factory AuthFailure.operationNotAllowed() = OperationNotAllowed;
   factory AuthFailure.unknownError(String message) = UnknownError;
-
 }
 
 class ServerError extends AuthFailure {
   @override
   String toString() {
-    return 'AuthFailure.ServerError';
+    return 'ServerError';
   }
 }
 
 class InvalidEmailOrPassword extends AuthFailure {
   @override
   String toString() {
-    return 'AuthFailure.InvalidEmailOrPassword';
+    return 'InvalidEmailOrPassword';
   }
 }
 
 class EmailAlreadyInUse extends AuthFailure {
   @override
   String toString() {
-    return 'AuthFailure.EmailAlreadyInUse';
+    return 'EmailAlreadyInUse';
   }
 }
 
 class UserNotFound extends AuthFailure {
   @override
   String toString() {
-    return 'AuthFailure.UserNotFound';
+    return 'UserNotFound';
   }
 }
 
 class WrongPassword extends AuthFailure {
   @override
   String toString() {
-    return 'AuthFailure.WrongPassword';
+    return 'WrongPassword';
   }
 }
 

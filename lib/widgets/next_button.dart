@@ -23,7 +23,18 @@ class NextButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      child: GestureDetector(
+      child: isLoading ? 
+        Center(
+          child: SizedBox(
+            width: 20,
+            height: 20,
+            child: LoadingAnimationWidget.threeRotatingDots(
+              color: GlobalColors.darkPurple,
+              size: 20,
+            ),
+          ),
+        )
+      : GestureDetector(
         onTap: isLoading ? null : onPressed,
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 15),
@@ -59,17 +70,7 @@ class NextButton extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: GlobalColors.darkPurple, fontWeight: FontWeight.bold),
               ),
-              if (isLoading)  
-                Center(
-                  child: SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: LoadingAnimationWidget.threeRotatingDots(
-                      color: Colors.white,
-                      size: 20,
-                    ),
-                  ),
-                ),
+              
             ],
           ),
         ),

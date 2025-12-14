@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vivapro/auth/presentation/bloc/signup/sign_up_event.dart';
 import 'package:vivapro/auth/presentation/bloc/signup/sign_up_state.dart';
-import 'package:vivapro/auth/repositories/auth_repository.dart';
+import 'package:vivapro/auth/repositories/firebase_auth_repository.dart';
 
 class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
   final FirebaseAuthRepository _authRepository;
