@@ -28,7 +28,7 @@ class _ContactsPageState extends State<ContactsPage> {
       if (mounted) {
         setState(() {
           _contacts = contacts;
-          _permissionDenied = false;
+          _permissionDenied = false;    
         });
       }
     }
