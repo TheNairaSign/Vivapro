@@ -11,8 +11,13 @@ import 'package:vivapro/auth/repositories/firebase_auth_repository.dart';
 import 'package:vivapro/auth/repositories/google_sign_in_repository.dart';
 import 'package:vivapro/call_log/presentation/bloc/call_log_bloc.dart';
 import 'package:vivapro/call_log/repositories/call_log_repository.dart';
+import 'package:vivapro/contacts/repositories/contact_repository.dart';
 import 'package:vivapro/core/bootstrap.dart';
 import 'package:vivapro/core/theme/app_theme.dart';
+import 'package:vivapro/messaging/presentation/bloc/chat/chat_bloc.dart';
+import 'package:vivapro/messaging/presentation/bloc/message_bloc.dart';
+import 'package:vivapro/messaging/repositories/chat_repository.dart';
+import 'package:vivapro/messaging/repositories/message_repository.dart';
 
 class Vivapro extends ConsumerStatefulWidget {
   const Vivapro({super.key});
@@ -38,6 +43,8 @@ class _VivaproState extends ConsumerState<Vivapro> {
         BlocProvider(create: (create) => AuthStateChangeBloc(ref.read(firebaseAuthRepository))),
         BlocProvider(create: (create) => GoogleSignInBloc(ref.read(googleSignInRepositoryProvider))),
         BlocProvider(create: (create) => CallLogBloc(ref.read(callLogRepository))),
+        BlocProvider(create: (create) => ChatBloc(ref.read(chatRepositoryProvider), ref.read(contactsRepository))),
+        BlocProvider(create: (create) => MessageBloc(ref.read(messageRepository))),
       ],
       child: DynamicColorBuilder(
         builder: (lightColorScheme, darkColorScheme) {

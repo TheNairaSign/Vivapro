@@ -32,13 +32,6 @@ class _AuthPageState extends State<AuthPage> {
             setState(() {
               isLoading = false;
             });
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Welcome ${state.user.displayName}!'),
-                backgroundColor: Colors.green,
-              ),
-            );
-            // Navigate to next page, e.g., InterestSelectionPage or Home
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
                 builder: (context) => const NavigationPage(),

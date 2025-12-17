@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:vivapro/core/theme/global_colors.dart';
-import 'package:vivapro/messaging/presentation/pages/messages_list_screen.dart';
+import 'package:vivapro/messaging/presentation/pages/chat_screen.dart';
+import 'package:vivapro/messaging/presentation/pages/messages_screen.dart';
 import 'package:vivapro/pages/navigation/contacts_page.dart';
 import 'package:vivapro/pages/navigation/recents_page.dart';
 import 'package:water_drop_nav_bar/water_drop_nav_bar.dart';
@@ -42,7 +43,7 @@ class _NavigationPageState extends State<NavigationPage> {
           children: <Widget>[
             RecentsPage(),
             ContactsPage(),
-            MessagesListScreen(),
+            ChatScreen(),
           ],
         ),
         bottomNavigationBar: WaterDropNavBar(

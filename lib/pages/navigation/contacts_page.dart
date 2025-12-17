@@ -24,7 +24,7 @@ class _ContactsPageState extends State<ContactsPage> {
     if (!await FlutterContacts.requestPermission(readonly: true)) {
       if (mounted) setState(() => _permissionDenied = true);
     } else {
-      final contacts = await FlutterContacts.getContacts(withProperties: true, withPhoto: false);
+      final contacts = await FlutterContacts.getContacts(withProperties: true, withPhoto: true);
       if (mounted) {
         setState(() {
           _contacts = contacts;

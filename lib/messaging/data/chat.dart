@@ -42,4 +42,10 @@ class Chat {
       updatedAt: DateTime.parse(json['updatedAt'] as String),
     );
   }
+
+  @override
+  String toString() {
+    return 'Chat(id: $id, participants: $participants, lastMessage: $lastMessage, updatedAt: $updatedAt)';
+  }
+
 }
