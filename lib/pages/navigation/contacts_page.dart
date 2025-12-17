@@ -37,10 +37,12 @@ class _ContactsPageState extends State<ContactsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F7FA),
+      // backgroundColor used from Theme
       appBar: AppBar(
-        title: const Text('Contacts'),
-        backgroundColor: Colors.transparent,
+        title: Text('Contacts', style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+        )),
         elevation: 0,
         scrolledUnderElevation: 0,
       ),
@@ -68,7 +70,7 @@ class _ContactsPageState extends State<ContactsPage> {
     if (_contacts == null) {
       return Center(
         child: LoadingAnimationWidget.threeRotatingDots(
-          color: GlobalColors.darkPurple, 
+          color: GlobalColors.freshPink, 
           size: 50
         ),
       );
@@ -79,7 +81,7 @@ class _ContactsPageState extends State<ContactsPage> {
     }
 
     return ListView.separated(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      padding: const EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 120),
       itemCount: _contacts!.length,
       separatorBuilder: (context, index) => const SizedBox(height: 10),
       itemBuilder: (context, i) {
@@ -98,10 +100,10 @@ class _ContactsPageState extends State<ContactsPage> {
           ),
           child: ListTile(
             leading: CircleAvatar(
-              backgroundColor: Colors.deepPurple.shade50,
+              backgroundColor: GlobalColors.freshPink.withOpacity(0.1),
               child: Text(
                 (contact.displayName.isNotEmpty) ? contact.displayName.characters.first.toUpperCase() : '?',
-                style: TextStyle(color: GlobalColors.darkPurple, fontWeight: FontWeight.bold),
+                style: TextStyle(color: GlobalColors.freshPink, fontWeight: FontWeight.bold),
               ),
             ),
             title: Text(
@@ -149,7 +151,7 @@ class ContactDetailsPage extends StatelessWidget {
 
   Widget _buildDetailTile(IconData icon, String label, String value) {
     return ListTile(
-      leading: Icon(icon, color: GlobalColors.darkPurple),
+      leading: Icon(icon, color: GlobalColors.freshPink),
       title: Text(value),
       subtitle: Text(label),
       contentPadding: EdgeInsets.zero,

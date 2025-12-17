@@ -31,83 +31,167 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final borderColor = Colors.white;
     return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        title: Text("Messages", style: Theme.of(context).textTheme.titleLarge),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.search, color: GlobalColors.darkPurple),
-          ),
-          IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.more_vert, color: GlobalColors.darkPurple),
-          ),
-        ],
-      ),
-      body: BlocBuilder<ChatBloc, ChatState>(
-        builder: (context, state) {
-          dev.log("Entering message data: $state", name: "ChatUI");
-          return switch (state) {
-            ChatLoading() => const Center(child: CircularProgressIndicator()),
-            ChatLoaded(chat: final List<Chat> chat) => (chat.isEmpty) ? Center(child: Text("No chats", style: Theme.of(context).textTheme.titleMedium)) : ListView.builder(
-                itemCount: chat.length,
-                itemBuilder: (context, index) {
-                  debugPrint("Chat: ${chat[index].toString()}");
-                  final chatItem = chat[index];
-                  return ChatItem(chat: chatItem);
-                },
-              ),
-            ChatError(message: final message) => Center(child: Text(message)),
-            _ => const Center(child: SizedBox.shrink()),
-          };
-        }
-      ),
-      floatingActionButton: GestureDetector(
-        onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => NewChatScreen())),
-        child: Container(
-          padding: const EdgeInsets.all(15),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
-            color: GlobalColors.yellow,
-            border: BorderDirectional(
-              top: BorderSide(
-                color:borderColor,
-                width: 1,
-              ),
-              bottom: BorderSide(
-                color:borderColor,
-                width: 8,
-              ),
-              start: BorderSide(
-                color:borderColor,
-                width: 2,
-              ),
-              end: BorderSide(
-                color:borderColor,
-                width: 2,
+      backgroundColor: GlobalColors.navBarBlack, // Dark background for the top part
+      body: SafeArea(
+        bottom: false,
+        child: Column(
+          children: [
+            // Custom Header & Stories Area
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Welcome Back", style: TextStyle(color: Colors.grey[400], fontSize: 14)),
+                          const SizedBox(height: 4),
+                          const Text(
+                            "Chatdong", 
+                            style: TextStyle(
+                              color: Colors.white, 
+                              fontSize: 28, 
+                              fontWeight: FontWeight.bold
+                            )
+                          ),
+                        ],
+                      ),
+                      Stack(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                                color: Colors.white.withValues(alpha: 0.1),
+                                shape: BoxShape.circle),
+                            child: const Icon(Icons.notifications_outlined, color: Colors.white),
+                          ),
+                          const Positioned(
+                            top: 10,
+                            right: 12,
+                            child: CircleAvatar(radius: 4, backgroundColor: Colors.red),
+                          )
+                        ],
+                      )
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                ],
               ),
             ),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.add, color: GlobalColors.darkPurple),
-              const SizedBox(width: 10),
-              Text(
-                "New Chat",
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: GlobalColors.darkPurple,
-                  fontWeight: FontWeight.bold,
+            // Recent Chat Section (White Sheet)
+            Expanded(
+              child: Container(
+                width: double.infinity,
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(40),
+                    topRight: Radius.circular(40),
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 24, right: 24, top: 30, bottom: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            "Recent Chat",
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFFFF9C4), // Light yellow
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              children: const [
+                                Icon(Icons.archive_outlined, size: 16, color: Colors.black87),
+                                SizedBox(width: 4),
+                                Text("Archive Chat", style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: BlocBuilder<ChatBloc, ChatState>(
+                        builder: (context, state) {
+                          dev.log("Entering message data: $state", name: "ChatUI");
+                          return switch (state) {
+                            ChatLoading() => const Center(child: CircularProgressIndicator()),
+                            ChatLoaded(chat: final List<Chat> chat) => (chat.isEmpty) 
+                            ? Center(child: Text("No chats", style: Theme.of(context).textTheme.titleMedium)) 
+                            : ListView.separated(
+                                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
+                                itemCount: chat.length,
+                                separatorBuilder: (context, index) => const SizedBox(height: 16),
+                                itemBuilder: (context, index) {
+                                  final chatItem = chat[index];
+                                  return ChatItem(chat: chatItem);
+                                },
+                              ),
+                            ChatError(message: final message) => Center(child: Text(message)),
+                            _ => const Center(child: SizedBox.shrink()),
+                          };
+                        }
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildStoryItem({bool isAdd = false, required String name, Color? color}) {
+    return Container(
+      width: 70,
+      margin: const EdgeInsets.only(right: 16),
+      child: Column(
+        children: [
+          Container(
+            height: 60,
+            width: 60,
+            padding: const EdgeInsets.all(2),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: isAdd 
+                ? Border.all(color: Colors.grey.shade700, style: BorderStyle.solid) 
+                : Border.all(color: color ?? Colors.grey, width: 2),
+            ),
+            child: Container(
+              decoration: BoxDecoration(
+                color: isAdd ? Colors.transparent : Colors.grey.shade200,
+                shape: BoxShape.circle,
+              ),
+              child: isAdd 
+                ? const Icon(Icons.add, color: Colors.white)
+                : Icon(Icons.person, color: color?.withOpacity(0.5) ?? Colors.grey),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            name,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(color: Colors.white, fontSize: 12),
+          ),
+        ],
       ),
     );
   }

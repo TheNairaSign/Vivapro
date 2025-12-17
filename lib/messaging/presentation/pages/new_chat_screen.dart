@@ -111,12 +111,15 @@ class _NewChatScreenState extends ConsumerState<NewChatScreen> {
   Widget build(BuildContext context) {
 
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
-        title: const Text("New Chat"),
+        backgroundColor: Colors.black,
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: Text("New Chat", style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.white)),
         actions: [
           if (_selectedContactIds.isNotEmpty)
             IconButton(
-              icon: const Icon(Icons.check, color: Colors.green),
+              icon: const Icon(Icons.check, color: Colors.greenAccent),
               onPressed: _createChat,
             ),
         ],
@@ -127,14 +130,24 @@ class _NewChatScreenState extends ConsumerState<NewChatScreen> {
             padding: const EdgeInsets.all(16.0),
             child: TextField(
               controller: _searchController,
+              style: const TextStyle(color: Colors.white),
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.search, color: GlobalColors.darkPurple),
                 hintText: "Search contacts",
+                hintStyle: TextStyle(color: Colors.grey.shade600),
                 filled: true,
-                fillColor: Colors.grey.shade100,
+                fillColor: Colors.grey.shade900,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide.none,
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: Colors.grey.shade800),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: GlobalColors.yellow),
                 ),
               ),
             ),
@@ -152,8 +165,15 @@ class _NewChatScreenState extends ConsumerState<NewChatScreen> {
                   // Find contact object for display (inefficient but works for list size)
                   final contact = _contacts!.firstWhere((c) => c.id == id);
                   return Chip(
-                    label: Text(contact.displayName),
+                    backgroundColor: GlobalColors.yellow,
+                    label: Text(
+                      contact.displayName,
+                      style: TextStyle(color: GlobalColors.darkPurple, fontWeight: FontWeight.bold),
+                    ),
+                    deleteIcon: Icon(Icons.close, size: 18, color: GlobalColors.darkPurple),
                     onDeleted: () => _toggleSelection(id),
+                    side: BorderSide.none,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                   );
                 },
               ),
@@ -164,7 +184,11 @@ class _NewChatScreenState extends ConsumerState<NewChatScreen> {
       floatingActionButton: _selectedContactIds.isNotEmpty 
         ? FloatingActionButton.extended(
             onPressed: _createChat,
-            label: Text(_selectedContactIds.length > 1 ? "Create Group" : "Start Chat"),
+            backgroundColor: GlobalColors.yellow,
+            label: Text(
+              _selectedContactIds.length > 1 ? "Create Group" : "Start Chat",
+              style: TextStyle(color: GlobalColors.darkPurple, fontWeight: FontWeight.bold),
+            ),
             icon: Icon(Icons.chat_bubble_outline, color: GlobalColors.darkPurple),
           )
         : null,
@@ -175,18 +199,19 @@ class _NewChatScreenState extends ConsumerState<NewChatScreen> {
     if (_permissionDenied) {
       return Center(
         child: ElevatedButton(
+          style: ElevatedButton.styleFrom(backgroundColor: GlobalColors.yellow),
           onPressed: _fetchContacts,
-          child: const Text('Grant Permission'),
+          child: Text('Grant Permission', style: TextStyle(color: GlobalColors.darkPurple)),
         ),
       );
     }
 
     if (_contacts == null) {
-      return const Center(child: CircularProgressIndicator());
+      return const Center(child: CircularProgressIndicator(color: Colors.white));
     }
 
     if (_filteredContacts.isEmpty) {
-      return const Center(child: Text("No contacts found"));
+      return const Center(child: Text("No contacts found", style: TextStyle(color: Colors.white)));
     }
 
     return ListView.builder(
@@ -194,20 +219,34 @@ class _NewChatScreenState extends ConsumerState<NewChatScreen> {
       itemBuilder: (context, index) {
         final contact = _filteredContacts[index];
         final isSelected = _selectedContactIds.contains(contact.id);
-        return ListTile(
-          leading: CircleAvatar(
-             backgroundColor: isSelected ? GlobalColors.darkPurple : Colors.grey.shade200,
-             child: isSelected 
-               ? const Icon(Icons.check, color: Colors.white, size: 16)
-               : Text(
-                   (contact.displayName.isNotEmpty) ? contact.displayName[0].toUpperCase() : '?',
-                   style: TextStyle(color: GlobalColors.darkPurple, fontWeight: FontWeight.bold),
-                 ),
+        return Theme(
+          data: ThemeData.dark(), // Force dark theme for ListTile ripples etc
+          child: ListTile(
+            leading: CircleAvatar(
+               backgroundColor: isSelected ? GlobalColors.yellow : Colors.grey.shade900,
+               radius: 24,
+               child: isSelected 
+                 ? Icon(Icons.check, color: GlobalColors.darkPurple, size: 20)
+                 : Text(
+                     (contact.displayName.isNotEmpty) ? contact.displayName[0].toUpperCase() : '?',
+                     style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                   ),
+            ),
+            title: Text(
+              contact.displayName,
+              style: TextStyle(
+                color: isSelected ? GlobalColors.yellow : Colors.white,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+              ),
+            ),
+            subtitle: contact.phones.isNotEmpty 
+              ? Text(contact.phones.first.number, style: TextStyle(color: Colors.grey.shade500)) 
+              : null,
+            onTap: () => _toggleSelection(contact.id),
+            trailing: isSelected 
+              ? Icon(Icons.check_circle, color: GlobalColors.yellow) 
+              : null,
           ),
-          title: Text(contact.displayName),
-          subtitle: contact.phones.isNotEmpty ? Text(contact.phones.first.number) : null,
-          onTap: () => _toggleSelection(contact.id),
-          trailing: isSelected ? Icon(Icons.check_circle, color: GlobalColors.darkPurple) : null,
         );
       },
     );

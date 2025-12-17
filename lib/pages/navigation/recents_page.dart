@@ -55,88 +55,89 @@ class _RecentsPageState extends State<RecentsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: const Color(0xFFF5F7FA), // Light grey background
-        appBar: AppBar(
-          title: const Text('Recents'),
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-        ),
-        body: BlocBuilder<CallLogBloc, CallLogState>(
-          builder: (context, state) {
-            if (state is CallLogLoading) {
-              return Center(child: LoadingAnimationWidget.threeRotatingDots(color: GlobalColors.darkPurple, size: 50));
-            } else if (state is CallLogFailure) {
-              return Center(child: Text(state.message));
-            } else if (state is CallLogSuccess) {
-              final groupedLogs = _groupLogsByDate(state.callLogEntries);
-              final keys = groupedLogs.keys.toList();
+      appBar: AppBar(
+        title: Text('Recents', style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+        )),
+        elevation: 0,
+      ),
+      body: BlocBuilder<CallLogBloc, CallLogState>(
+        builder: (context, state) {
+          if (state is CallLogLoading) {
+            return Center(child: LoadingAnimationWidget.threeRotatingDots(color: GlobalColors.freshPink, size: 50));
+          } else if (state is CallLogFailure) {
+            return Center(child: Text(state.message));
+          } else if (state is CallLogSuccess) {
+            final groupedLogs = _groupLogsByDate(state.callLogEntries);
+            final keys = groupedLogs.keys.toList();
 
-              if (groupedLogs.isEmpty) {
-                return const Center(child: Text('No recent calls'));
-              }
+            if (groupedLogs.isEmpty) {
+              return const Center(child: Text('No recent calls'));
+            }
 
-              return ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                itemCount: keys.length,
-                physics: const BouncingScrollPhysics(),
-                itemBuilder: (context, index) {
-                  final key = keys[index];
-                  final logs = groupedLogs[key]!;
+            return ListView.builder(
+              padding: const EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 120),
+              itemCount: keys.length,
+              physics: const BouncingScrollPhysics(),
+              itemBuilder: (context, index) {
+                final key = keys[index];
+                final logs = groupedLogs[key]!;
 
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 4, bottom: 8, top: 16),
-                        child: Text(
-                          key,
-                          style: TextStyle(
-                            color: Colors.blueGrey[700],
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 4, bottom: 8, top: 16),
+                      child: Text(
+                        key,
+                        style: TextStyle(
+                          color: GlobalColors.periwinkle,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.05),
+                            blurRadius: 10,
+                            offset: const Offset(0, 2),
                           ),
-                        ),
+                        ],
                       ),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(16),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.05),
-                              blurRadius: 10,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        clipBehavior: Clip.hardEdge,
-                        child: Column(
-                          children: logs.asMap().entries.map((entry) {
-                            final i = entry.key;
-                            final log = entry.value;
-                            return Column(
-                              children: [
-                                CallLogItem(entry: log),
-                                if (i < logs.length - 1)
-                                  Divider(
-                                    height: 1,
-                                    indent: 70, 
-                                    endIndent: 0, 
-                                    color: Colors.grey[100],
-                                  ),
-                              ],
-                            );
-                          }).toList(),
-                        ),
+                      clipBehavior: Clip.hardEdge,
+                      child: Column(
+                        children: logs.asMap().entries.map((entry) {
+                          final i = entry.key;
+                          final log = entry.value;
+                          return Column(
+                            children: [
+                              CallLogItem(entry: log),
+                              if (i < logs.length - 1)
+                                Divider(
+                                  height: 1,
+                                  indent: 70, 
+                                  endIndent: 0, 
+                                  color: Colors.grey[100],
+                                ),
+                            ],
+                          );
+                        }).toList(),
                       ),
-                    ],
-                  );
-                },
-              );
-            } 
-            return const SizedBox.shrink();
-          },
-        ),
+                    ),
+                  ],
+                );
+              },
+            );
+          } 
+          return const SizedBox.shrink();
+        },
+      ),
     );
   }
 }

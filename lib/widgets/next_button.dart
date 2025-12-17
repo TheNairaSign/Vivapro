@@ -29,7 +29,7 @@ class NextButton extends StatelessWidget {
             width: 20,
             height: 20,
             child: LoadingAnimationWidget.threeRotatingDots(
-              color: GlobalColors.darkPurple,
+              color: GlobalColors.freshPink,
               size: 20,
             ),
           ),
@@ -37,40 +37,34 @@ class NextButton extends StatelessWidget {
       : GestureDetector(
         onTap: isLoading ? null : onPressed,
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 15),
+          padding: const EdgeInsets.symmetric(vertical: 16),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(radius ?? 10),
-            color: color ?? GlobalColors.yellow,
-            border: BorderDirectional(
-              top: BorderSide(
-                color: borderColor ?? GlobalColors.darkPurple,
-                width: 1,
+            borderRadius: BorderRadius.circular(radius ?? 30),
+            color: color ?? GlobalColors.freshPink,
+            boxShadow: [
+              BoxShadow(
+                color: (color ?? GlobalColors.freshPink).withOpacity(0.3),
+                blurRadius: 12,
+                offset: const Offset(0, 6),
               ),
-              bottom: BorderSide(
-                color: borderColor ?? GlobalColors.darkPurple,
-                width: 8,
-              ),
-              start: BorderSide(
-                color: borderColor ?? GlobalColors.darkPurple,
-                width: 2,
-              ),
-              end: BorderSide(
-                color: borderColor ?? GlobalColors.darkPurple,
-                width: 2,
-              ),
-            ),
+            ],
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              icon ?? const SizedBox(),
-              const SizedBox(width: 10),
+              if (icon != null) ...[
+                icon!,
+                const SizedBox(width: 10),
+              ],
               Text(
                 label,
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: GlobalColors.darkPurple, fontWeight: FontWeight.bold),
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
               ),
-              
             ],
           ),
         ),
