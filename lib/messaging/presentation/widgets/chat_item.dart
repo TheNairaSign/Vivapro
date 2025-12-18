@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vivapro/core/extensions/capitalization.dart';
@@ -17,58 +18,72 @@ class ChatItem extends ConsumerWidget {
         ? participants.join(',').characters.first.toUpperCase() 
         : '?';
 
-    return ListTile(
-      // shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-      onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => MessagesScreen(chat: chat))),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      leading:  CircleAvatar(
-        backgroundImage: NetworkImage("https://avatar.iran.liara.run/public/27"),
+    return InkWell(
+      onTap: () => Navigator.of(context).push(
+        MaterialPageRoute(builder: (ctx) => MessagesScreen(chat: chat)),
       ),
-      title: Text(
-        name,
-        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-          color: GlobalColors.darkPurple,
-          fontWeight: FontWeight.bold,
-        ),
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-      ),
-      subtitle: Padding(
-        padding: const EdgeInsets.only(top: 4),
-        child: Text(
-          chat.lastMessage ?? 'Start chatting...',
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey),
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-        ),
-      ),
-      trailing: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Text(
-            _formatTime(chat.updatedAt),
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Colors.grey,
-              fontWeight: FontWeight.w600,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: Row(
+          children: [
+            const CircleAvatar(
+              radius: 22,
+              backgroundImage: CachedNetworkImageProvider("https://avatar.iran.liara.run/public/86"),
             ),
-          ),
-          const SizedBox(height: 4),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              color: GlobalColors.peach,
-              borderRadius: BorderRadius.circular(24),
-            ),
-            child: Text(
-              '9',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    name,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: GlobalColors.darkPurple,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    chat.lastMessage ?? 'Start chatting...',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
               ),
             ),
-          ),
-        ],
+            const SizedBox(width: 8),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  _formatTime(chat.updatedAt),
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Colors.grey,
+                        fontWeight: FontWeight.w600,
+                      ),
+                ),
+                const SizedBox(height: 4),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: GlobalColors.peach,
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: Text(
+                    '9',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

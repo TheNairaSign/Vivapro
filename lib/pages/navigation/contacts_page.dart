@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:vivapro/contacts/presentation/pages/contact_details_page.dart';
 import 'package:vivapro/core/theme/global_colors.dart';
 
 class ContactsPage extends StatefulWidget {
@@ -28,7 +29,7 @@ class _ContactsPageState extends State<ContactsPage> {
       if (mounted) {
         setState(() {
           _contacts = contacts;
-          _permissionDenied = false;    
+          _permissionDenied = false;
         });
       }
     }
@@ -37,7 +38,6 @@ class _ContactsPageState extends State<ContactsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor used from Theme
       appBar: AppBar(
         title: Text('Contacts', style: Theme.of(context).textTheme.headlineSmall?.copyWith(
           color: Colors.white,
@@ -100,7 +100,7 @@ class _ContactsPageState extends State<ContactsPage> {
           ),
           child: ListTile(
             leading: CircleAvatar(
-              backgroundColor: GlobalColors.freshPink.withOpacity(0.1),
+              backgroundColor: GlobalColors.freshPink.withValues(alpha: 0.1),
               child: Text(
                 (contact.displayName.isNotEmpty) ? contact.displayName.characters.first.toUpperCase() : '?',
                 style: TextStyle(color: GlobalColors.freshPink, fontWeight: FontWeight.bold),
@@ -115,7 +115,7 @@ class _ContactsPageState extends State<ContactsPage> {
             onTap: () async {
               // Fetch full details including high-res photo if needed, though withProperties: true above gets basic props
               final fullContact = await FlutterContacts.getContact(contact.id);
-              if (mounted && fullContact != null) {
+              if (context.mounted && fullContact != null) {
                 Navigator.of(context).push(
                   MaterialPageRoute(builder: (_) => ContactDetailsPage(fullContact)),
                 );
@@ -128,33 +128,3 @@ class _ContactsPageState extends State<ContactsPage> {
   }
 }
 
-class ContactDetailsPage extends StatelessWidget {
-  final Contact contact;
-  const ContactDetailsPage(this.contact, {super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(contact.displayName)),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          _buildDetailTile(Icons.person, 'Name', '${contact.name.first} ${contact.name.last}'),
-          if (contact.phones.isNotEmpty)
-            ...contact.phones.map((p) => _buildDetailTile(Icons.phone, 'Phone', p.number)),
-          if (contact.emails.isNotEmpty)
-            ...contact.emails.map((e) => _buildDetailTile(Icons.email, 'Email', e.address)),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDetailTile(IconData icon, String label, String value) {
-    return ListTile(
-      leading: Icon(icon, color: GlobalColors.freshPink),
-      title: Text(value),
-      subtitle: Text(label),
-      contentPadding: EdgeInsets.zero,
-    );
-  }
-}

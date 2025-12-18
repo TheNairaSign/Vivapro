@@ -37,7 +37,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         bottom: false,
         child: Column(
           children: [
-            // Custom Header & Stories Area
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 10),
               child: Column(
@@ -67,7 +66,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                             padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
                                 color: Colors.white.withValues(alpha: 0.1),
-                                shape: BoxShape.circle),
+                                shape: BoxShape.circle
+                              ),
                             child: const Icon(Icons.notifications_outlined, color: Colors.white),
                           ),
                           const Positioned(
@@ -83,7 +83,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 ],
               ),
             ),
-            // Recent Chat Section (White Sheet)
             Expanded(
               child: Container(
                 width: double.infinity,
@@ -135,12 +134,22 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                             ChatLoaded(chat: final List<Chat> chat) => (chat.isEmpty) 
                             ? Center(child: Text("No chats", style: Theme.of(context).textTheme.titleMedium)) 
                             : ListView.separated(
-                                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
+                                // padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
                                 itemCount: chat.length,
                                 separatorBuilder: (context, index) => const SizedBox(height: 16),
                                 itemBuilder: (context, index) {
                                   final chatItem = chat[index];
-                                  return ChatItem(chat: chatItem);
+                                  return Column(
+                                    children: [
+                                      ChatItem(chat: chatItem),
+                                      if (chat.length > 1)
+                                        Divider(
+                                          height: 1,
+                                          endIndent: 0,
+                                          color: Colors.grey[100],
+                                        ),
+                                    ],
+                                  );
                                 },
                               ),
                             ChatError(message: final message) => Center(child: Text(message)),

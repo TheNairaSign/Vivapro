@@ -20,11 +20,12 @@ class AppTheme {
     ),
     appBarTheme: const AppBarTheme(
       backgroundColor: GlobalColors.navBarBlack,
+      foregroundColor: Colors.white,
       elevation: 0,
       scrolledUnderElevation: 0,
-      iconTheme: IconThemeData(color: GlobalColors.charcoal),
+      iconTheme: IconThemeData(color: Colors.white),
       titleTextStyle: TextStyle(
-        color: GlobalColors.charcoal,
+        color: Colors.white,
         fontSize: 20,
         fontWeight: FontWeight.bold,
         fontFamily: 'DMSans',

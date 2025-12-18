@@ -59,7 +59,7 @@ class _AuthPageState extends State<AuthPage> {
                 Image.asset('assets/images/business-illustration.png', height: height * .45),
                 // const Spacer(),
                 Text("Welcome to Vivapro", style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),),
-                Text("Got an interview to prepare for?\nBook practice sessions with mentors or your peers", style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey)),
+                Text("Never lose touch with people who matter.", style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey)),
                 const SizedBox(height: 40),
                 AuthButton(
                   label: 'Continue with Email',
