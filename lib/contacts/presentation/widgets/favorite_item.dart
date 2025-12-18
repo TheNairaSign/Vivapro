@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:vivapro/contacts/data/favorite_contact.dart';
+import 'package:vivapro/contacts/presentation/pages/contact_details_page.dart';
 import 'package:vivapro/core/enums/priority.dart';
 import 'package:vivapro/core/theme/global_colors.dart';
 
 class FavoriteItem extends StatelessWidget {
-  const FavoriteItem({super.key, required this.favoriteContact, this.onTap});
+  const FavoriteItem({super.key, required this.favoriteContact});
   final FavoriteContact favoriteContact;
-  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: onTap,
+      onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => ContactDetailsPage(favoriteContact.contactDetails))),
       borderRadius: BorderRadius.circular(12),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),

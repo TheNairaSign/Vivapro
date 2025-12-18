@@ -69,88 +69,100 @@ class _RecentsPageState extends ConsumerState<RecentsPage> {
         )),
         elevation: 0,
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildFavoritesSection(),
-          Expanded(
-            child: BlocBuilder<CallLogBloc, CallLogState>(
-              builder: (context, state) {
-                if (state is CallLogLoading) {
-                  return Center(child: LoadingAnimationWidget.threeRotatingDots(color: GlobalColors.darkPurple, size: 20));
-                } else if (state is CallLogFailure) {
-                  return Center(child: Text(state.message));
-                } else if (state is CallLogSuccess) {
-                  final groupedLogs = _groupLogsByDate(state.callLogEntries);
-                  final keys = groupedLogs.keys.toList();
-            
-                  if (groupedLogs.isEmpty) {
-                    return const Center(child: Text('No recent calls'));
-                  }
-            
-                  return ListView.builder(
-                    padding: const EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 120),
-                    itemCount: keys.length,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      final key = keys[index];
-                      final logs = groupedLogs[key]!;
-                  
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 4, bottom: 8, top: 16),
-                            child: Text(
-                              key,
-                              style: TextStyle(
-                                color: GlobalColors.periwinkle,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
+      body: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
+        slivers: [
+          SliverToBoxAdapter(child: _buildFavoritesSection()),
+          BlocBuilder<CallLogBloc, CallLogState>(
+            builder: (context, state) {
+              if (state is CallLogLoading) {
+                return SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 80),
+                    child: Center(child: LoadingAnimationWidget.threeRotatingDots(color: GlobalColors.darkPurple, size: 20)),
+                  ),
+                );
+              } else if (state is CallLogFailure) {
+                return SliverToBoxAdapter(child: Center(child: Text(state.message)));
+              } else if (state is CallLogSuccess) {
+                final groupedLogs = _groupLogsByDate(state.callLogEntries);
+                final keys = groupedLogs.keys.toList();
+
+                if (groupedLogs.isEmpty) {
+                  return const SliverToBoxAdapter(
+                    child: Center(
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 80),
+                        child: Text('No recent calls'),
+                      ),
+                    ),
+                  );
+                }
+
+                return SliverPadding(
+                  padding: const EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 120),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        final key = keys[index];
+                        final logs = groupedLogs[key]!;
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 4, bottom: 8, top: 16),
+                              child: Text(
+                                key,
+                                style: TextStyle(
+                                  color: GlobalColors.periwinkle,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ),
-                          ),
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(16),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.05),
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 2),
-                                ),
-                              ],
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(16),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.05),
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              clipBehavior: Clip.hardEdge,
+                              child: Column(
+                                children: logs.asMap().entries.map((entry) {
+                                  final i = entry.key;
+                                  final log = entry.value;
+                                  return Column(
+                                    children: [
+                                      CallLogItem(entry: log),
+                                      if (i < logs.length - 1)
+                                        Divider(
+                                          height: 1,
+                                          indent: 70,
+                                          endIndent: 0,
+                                          color: Colors.grey[100],
+                                        ),
+                                    ],
+                                  );
+                                }).toList(),
+                              ),
                             ),
-                            clipBehavior: Clip.hardEdge,
-                            child: Column(
-                              children: logs.asMap().entries.map((entry) {
-                                final i = entry.key;
-                                final log = entry.value;
-                                return Column(
-                                  children: [
-                                    CallLogItem(entry: log),
-                                    if (i < logs.length - 1)
-                                      Divider(
-                                        height: 1,
-                                        indent: 70, 
-                                        endIndent: 0, 
-                                        color: Colors.grey[100],
-                                      ),
-                                  ],
-                                );
-                              }).toList(),
-                            ),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                } 
-                return const SizedBox.shrink();
-              },
-            ),
+                          ],
+                        );
+                      },
+                      childCount: keys.length,
+                    ),
+                  ),
+                );
+              }
+              return const SliverToBoxAdapter(child: SizedBox.shrink());
+            },
           ),
         ],
       ),
@@ -179,9 +191,9 @@ class _RecentsPageState extends ConsumerState<RecentsPage> {
           child: StreamBuilder<List<FavoriteContact>>(
             stream: _favoritesStream,
             builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting && !snapshot.hasData) {
-                return Center(child: LoadingAnimationWidget.threeRotatingDots(color: GlobalColors.freshPink, size: 30));
-              }
+              // if (snapshot.connectionState == ConnectionState.waiting && !snapshot.hasData) {
+              //   return Center(child: LoadingAnimationWidget.threeRotatingDots(color: GlobalColors.freshPink, size: 30));
+              // }
               
               if (snapshot.hasError) {
                 return Center(child: Text('Error: ${snapshot.error}'));
@@ -199,12 +211,7 @@ class _RecentsPageState extends ConsumerState<RecentsPage> {
                   }
                   
                   final favorite = favorites[index - 1];
-                  return FavoriteItem(
-                    favoriteContact: favorite,
-                    onTap: () {
-                      // Navigate to contact or call
-                    },
-                  );
+                  return FavoriteItem(favoriteContact: favorite);
                 },
               );
             },

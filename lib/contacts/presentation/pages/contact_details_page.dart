@@ -50,7 +50,7 @@ class _ContactDetailsPageState extends ConsumerState<ContactDetailsPage> {
     return FutureBuilder<bool>(
       future: ref.read(favoritesRepository).isFavorite(widget.contact.id),
       builder: (context, snapshot) {
-        final isFavorite = snapshot.data ?? false;
+        final isFavorite = snapshot.data ?? widget.contact.isStarred;
         return IconButton(
           icon: Icon(
             isFavorite ? Icons.star : Icons.star_border,
