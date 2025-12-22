@@ -11,7 +11,6 @@ import 'package:vivapro/contacts/presentation/widgets/favorite_item.dart';
 import 'package:vivapro/contacts/repositories/favorite_repository.dart';
 import 'package:vivapro/contacts/data/favorite_contact.dart';
 
-import 'package:vivapro/core/theme/global_colors.dart';
 import 'package:intl/intl.dart';
 import 'package:vivapro/pages/navigation/contacts_page.dart';
 
@@ -64,7 +63,6 @@ class _RecentsPageState extends ConsumerState<RecentsPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Recents', style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-          color: Colors.white,
           fontWeight: FontWeight.bold,
         )),
         elevation: 0,
@@ -79,7 +77,7 @@ class _RecentsPageState extends ConsumerState<RecentsPage> {
                 return SliverToBoxAdapter(
                   child: Padding(
                     padding: const EdgeInsets.only(top: 80),
-                    child: Center(child: LoadingAnimationWidget.threeRotatingDots(color: GlobalColors.darkPurple, size: 20)),
+                    child: Center(child: LoadingAnimationWidget.threeRotatingDots(color: Colors.lightBlue, size: 20)),
                   ),
                 );
               } else if (state is CallLogFailure) {
@@ -115,7 +113,7 @@ class _RecentsPageState extends ConsumerState<RecentsPage> {
                               child: Text(
                                 key,
                                 style: TextStyle(
-                                  color: GlobalColors.periwinkle,
+                                  color: Colors.lightBlueAccent,
                                   fontSize: 14,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -179,7 +177,7 @@ class _RecentsPageState extends ConsumerState<RecentsPage> {
           child: Text(
             'Favorites',
             style: TextStyle(
-              color: GlobalColors.charcoal.withValues(alpha: 0.6),
+              color: Colors.black.withValues(alpha: 0.6),
               fontSize: 14,
               fontWeight: FontWeight.bold,
               letterSpacing: 0.5,

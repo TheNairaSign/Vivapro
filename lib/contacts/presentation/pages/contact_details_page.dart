@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/contact.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:vivapro/contacts/data/favorite_contact.dart';
 import 'package:vivapro/contacts/repositories/favorite_repository.dart';
-import 'package:vivapro/core/enums/priority.dart';
 import 'package:vivapro/core/theme/global_colors.dart';
 
 class ContactDetailsPage extends ConsumerStatefulWidget {
@@ -47,8 +45,8 @@ class _ContactDetailsPageState extends ConsumerState<ContactDetailsPage> {
   }
 
   Widget _buildFavoriteAction() {
-    return FutureBuilder<bool>(
-      future: ref.read(favoritesRepository).isFavorite(widget.contact.id),
+    return StreamBuilder<bool>(
+      stream: ref.read(favoritesRepository).watchIsFavorite(widget.contact.id),
       builder: (context, snapshot) {
         final isFavorite = snapshot.data ?? widget.contact.isStarred;
         return IconButton(
@@ -64,18 +62,7 @@ class _ContactDetailsPageState extends ConsumerState<ContactDetailsPage> {
 
   Future<void> _toggleFavorite(bool isFavorite) async {
     final repo = ref.read(favoritesRepository);
-    if (isFavorite) {
-      await repo.removeFavorite(widget.contact.id);
-    } else {
-      final favorite = FavoriteContact(
-        id: widget.contact.id,
-        contactDetails: widget.contact,
-        priority: CallPriority.low,
-        callFrequency: 'Daily',
-      );
-      await repo.addFavorite(favorite);
-    }
-    setState(() {}); // Refresh icon
+    await repo.toggleFavorite(isFavorite, widget.contact);
   }
 
   Widget _buildDetailTile(IconData icon, String label, String value) {

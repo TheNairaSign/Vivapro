@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:glassmorphism_ui/glassmorphism_ui.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:vivapro/core/theme/global_colors.dart';
 
@@ -16,25 +17,28 @@ class CustomNavigationBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(left: 24, right: 24, bottom: 32),
-      height: 80, // Explicit height for the stack area
+      height: 80,
       child: Stack(
         clipBehavior: Clip.none,
         alignment: Alignment.bottomCenter,
         children: [
           // The black pill background
-          Container(
+          GlassContainer(
             height: 70,
-            decoration: BoxDecoration(
-              color: GlobalColors.navBarBlack,
-              borderRadius: BorderRadius.circular(40),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.15),
-                  blurRadius: 20,
-                  offset: const Offset(0, 10),
-                ),
-              ],
-            ),
+            border: Border.fromBorderSide(BorderSide.none),
+            color: GlobalColors.containerColor(context),
+            borderRadius: BorderRadius.circular(40),
+            // decoration: BoxDecoration(
+            //   color: GlobalColors.navBarBlack,
+            //   borderRadius: BorderRadius.circular(40),
+            //   boxShadow: [
+            //     BoxShadow(
+            //       color: Colors.black.withValues(alpha: 0.15),
+            //       blurRadius: 20,
+            //       offset: const Offset(0, 10),
+            //     ),
+            //   ],
+            // ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -55,16 +59,16 @@ class CustomNavigationBar extends StatelessWidget {
                 width: 64,
                 height: 64,
                 decoration: BoxDecoration(
-                  color: GlobalColors.freshPink.withValues(alpha: 0.3),
+                  color: Colors.lightBlue.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 padding: const EdgeInsets.all(6),
                 child: Container(
                   decoration: const BoxDecoration(
-                    color: GlobalColors.freshPink,
+                    color: Colors.lightBlue,
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(Icons.add, color: Colors.black, size: 30),
+                  child: const Icon(Icons.add, color: Colors.white, size: 30),
                 ),
               ),
             ),
@@ -83,7 +87,7 @@ class CustomNavigationBar extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: Icon(
           isSelected ? filledIcon : outlineIcon,
-          color: isSelected ? Colors.white : Colors.grey[600],
+          color: isSelected ? Colors.lightBlue : Colors.grey[600],
           size: 24,
         ),
       ),

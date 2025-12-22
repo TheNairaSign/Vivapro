@@ -30,14 +30,14 @@ class _AuthCheckerState extends State<AuthChecker> {
     return BlocListener<AuthStateChangeBloc, AuthStateChangeState>(
       listener: (context, state) {
         if (state is AuthStateChangeSuccess) {
-          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (builder) => const NavigationPage()));
+          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (builder) => NavigationPage(user: state.user)));
         } else if (state is AuthStateChangeFailure) {
           Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (builder) => AuthPage()));
         }
       },
       child: Scaffold(
         body: Center(
-          child: LoadingAnimationWidget.threeRotatingDots(color: GlobalColors.darkPurple, size: 20),
+          child: LoadingAnimationWidget.threeRotatingDots(color: Colors.lightBlue, size: 20),
         ),
       ),
     );

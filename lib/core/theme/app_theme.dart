@@ -6,34 +6,23 @@ class AppTheme {
 
   static final ThemeData lightTheme = ThemeData(
     useMaterial3: true,
-    scaffoldBackgroundColor: GlobalColors.appBackground,
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: GlobalColors.freshPink,
-      surface: GlobalColors.appBackground,
-      primary: GlobalColors.freshPink,
-      secondary: GlobalColors.brightGreen,
-      tertiary: GlobalColors.periwinkle,
-    ),
+    // scaffoldBackgroundColor: const Color(0xffeeeef0),
+    // scaffoldBackgroundColor: const Color(0xffF5F7FA),
+    scaffoldBackgroundColor: Colors.white,
     textTheme: GoogleFonts.dmSansTextTheme().apply(
-      bodyColor: GlobalColors.charcoal,
-      displayColor: GlobalColors.charcoal,
+      bodyColor: Colors.black,
+      displayColor: Colors.black,
     ),
     appBarTheme: const AppBarTheme(
-      backgroundColor: GlobalColors.navBarBlack,
-      foregroundColor: Colors.white,
-      elevation: 0,
+      backgroundColor: Color(0xffF5F7FA),
+      foregroundColor: Colors.black,
+      elevation: 2,
       scrolledUnderElevation: 0,
-      iconTheme: IconThemeData(color: Colors.white),
-      titleTextStyle: TextStyle(
-        color: Colors.white,
-        fontSize: 20,
-        fontWeight: FontWeight.bold,
-        fontFamily: 'DMSans',
-      ),
+      iconTheme: IconThemeData(color: Colors.black),
     ),
     cardTheme: CardThemeData(
       color: Colors.white,
-      elevation: 0,
+      elevation: 1,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
     ),
@@ -44,7 +33,6 @@ class AppTheme {
         elevation: 0,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-        textStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
       ),
     ),
     inputDecorationTheme: InputDecorationTheme(
@@ -66,14 +54,10 @@ class AppTheme {
     ),
   );
 
-  static final ThemeData darkTheme = ThemeData(
-    useMaterial3: true,
-    scaffoldBackgroundColor: GlobalColors.darkPurple,
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: GlobalColors.periwinkle,
-      brightness: Brightness.dark,
-      surface: const Color(0xFF2C2C3E), // Slightly lighter than bg
-    ),
+  static final ThemeData darkTheme = ThemeData.dark().copyWith(
+    brightness: Brightness.dark,
+    // scaffoldBackgroundColor: const Color(0xFF121212),
+    scaffoldBackgroundColor: Color(0xff101a22),
     textTheme: GoogleFonts.dmSansTextTheme().apply(
       bodyColor: Colors.white,
       displayColor: Colors.white,
@@ -85,13 +69,13 @@ class AppTheme {
       iconTheme: IconThemeData(color: Colors.white),
     ),
     cardTheme: CardThemeData(
-      color: const Color(0xFF2C2C3E),
+      color: const Color(0xFF121212),
       elevation: 0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: GlobalColors.periwinkle,
+        backgroundColor: Colors.lightBlue,
         foregroundColor: Colors.white,
         elevation: 0,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),

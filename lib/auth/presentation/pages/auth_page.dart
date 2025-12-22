@@ -34,7 +34,7 @@ class _AuthPageState extends State<AuthPage> {
             });
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
-                builder: (context) => const NavigationPage(),
+                builder: (context) => NavigationPage(user: state.user),
               ),
             );
           } else if (state is GoogleSignInFailure) {

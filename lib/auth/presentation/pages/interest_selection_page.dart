@@ -116,9 +116,9 @@ class _InterestSelectionPageState extends State<InterestSelectionPage> {
                               vertical: 12,
                             ),
                             decoration: BoxDecoration(
-                              color: isSelected ? GlobalColors.yellow : Colors.white,
+                              color: isSelected ? Colors.yellow : Colors.white,
                               border: Border.all(
-                                color: isSelected ? GlobalColors.darkPurple : Colors.grey[300]!,
+                                color: isSelected ? Colors.blue : Colors.grey[300]!,
                                 width: isSelected ? 2 : 1,
                               ),
                               borderRadius: BorderRadius.circular(25),
@@ -132,13 +132,13 @@ class _InterestSelectionPageState extends State<InterestSelectionPage> {
                                     child: Icon(
                                       Icons.check_circle,
                                       size: 18,
-                                      color: GlobalColors.darkPurple,
+                                      color: Colors.blue,
                                     ),
                                   ),
                                 Text(
                                   interest,
                                   style: TextStyle(
-                                    color: isSelected ? GlobalColors.darkPurple : Colors.black,
+                                    color: isSelected ? Colors.blue : Colors.black,
                                     fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                                   ),
                                 ),
@@ -152,8 +152,8 @@ class _InterestSelectionPageState extends State<InterestSelectionPage> {
                     
                     // Continue button
                     NextButton(
-                      color: GlobalColors.darkPurple,
-                      borderColor: GlobalColors.darkPurple,
+                      color: Colors.blue,
+                      borderColor: Colors.blue,
                       onPressed: selectedInterests.isEmpty
                           ? () {
                               ScaffoldMessenger.of(context).showSnackBar(

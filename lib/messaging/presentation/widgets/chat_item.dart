@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vivapro/core/app_constants.dart';
 import 'package:vivapro/core/extensions/capitalization.dart';
 import 'package:vivapro/core/theme/global_colors.dart';
 import 'package:vivapro/messaging/data/chat.dart';
@@ -27,8 +28,8 @@ class ChatItem extends ConsumerWidget {
         child: Row(
           children: [
             const CircleAvatar(
-              radius: 22,
-              backgroundImage: CachedNetworkImageProvider("https://avatar.iran.liara.run/public/86"),
+              radius: 20,
+              backgroundImage: CachedNetworkImageProvider(AppConstants.placeHolderProfileImage),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -37,8 +38,7 @@ class ChatItem extends ConsumerWidget {
                 children: [
                   Text(
                     name,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: GlobalColors.darkPurple,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                     maxLines: 1,
@@ -47,7 +47,7 @@ class ChatItem extends ConsumerWidget {
                   const SizedBox(height: 4),
                   Text(
                     chat.lastMessage ?? 'Start chatting...',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -69,15 +69,16 @@ class ChatItem extends ConsumerWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: GlobalColors.peach,
-                    borderRadius: BorderRadius.circular(24),
+                    color: Colors.lightBlue,
+                    shape: BoxShape.circle
                   ),
                   child: Text(
                     '9',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                        ),
+                      fontSize: 10,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ],

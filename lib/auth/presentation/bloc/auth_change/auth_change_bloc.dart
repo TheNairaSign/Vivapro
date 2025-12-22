@@ -18,7 +18,7 @@ class AuthStateChangeBloc extends Bloc<AuthChangeEvent, AuthStateChangeState> {
     Emitter<AuthStateChangeState> emit,
   ) {
     if (event.user != null) {
-      emit(AuthStateChangeSuccess());
+      emit(AuthStateChangeSuccess(event.user!));
     } else {
       emit(AuthStateChangeFailure('User not found'));
     }

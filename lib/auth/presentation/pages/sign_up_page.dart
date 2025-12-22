@@ -114,7 +114,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             child: Container(
                               padding: EdgeInsets.all(8),
                               decoration: BoxDecoration(
-                                color: GlobalColors.yellow,
+                                color: Colors.yellow,
                                 shape: BoxShape.circle,
                               ),
                               child: Icon(Icons.close, size: 20),
@@ -185,8 +185,8 @@ class _SignUpPageState extends State<SignUpPage> {
                         const SizedBox(height: 24),
                         
                         NextButton(
-                          color: GlobalColors.yellow,
-                          borderColor: GlobalColors.darkPurple,
+                          color: Colors.yellow,
+                          borderColor: Colors.blue,
                           onPressed: signUp,
                           radius: 25,
                           label: 'Create an Account',
@@ -213,7 +213,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               child: Text(
                                 'Log in',
                                 style: TextStyle(
-                                  color: GlobalColors.yellow,
+                                  color: Colors.yellow,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),

@@ -39,10 +39,7 @@ class _ContactsPageState extends State<ContactsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Contacts', style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-        )),
+        title: Text('Contacts', style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
         elevation: 0,
         scrolledUnderElevation: 0,
       ),
@@ -88,7 +85,7 @@ class _ContactsPageState extends State<ContactsPage> {
         final contact = _contacts![i];
         return Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: GlobalColors.containerColor(context),
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(

@@ -69,9 +69,7 @@ class _LoginPageState extends State<LoginPage> {
                   isLoading = false;
                 });
                 Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (context) => const NavigationPage(),
-                  ),
+                  MaterialPageRoute(builder: (context) => NavigationPage(user: state.user)),
                 );
               } else if (state is SignInLoading) {
                 setState(() {
@@ -110,7 +108,7 @@ class _LoginPageState extends State<LoginPage> {
                             child: Container(
                               padding: EdgeInsets.all(8),
                               decoration: BoxDecoration(
-                                color: GlobalColors.yellow,
+                                color: Colors.yellow,
                                 shape: BoxShape.circle,
                               ),
                               child: Icon(Icons.close, size: 20),
@@ -194,8 +192,8 @@ class _LoginPageState extends State<LoginPage> {
 
                         // Log In button
                         NextButton(
-                          color: GlobalColors.yellow,
-                          borderColor: GlobalColors.darkPurple,
+                          color: Colors.yellow,
+                          borderColor: Colors.blue,
                           onPressed: signIn,
                           radius: 25,
                           label: 'Log In',
@@ -221,7 +219,7 @@ class _LoginPageState extends State<LoginPage> {
                               child: Text(
                                 'Sign Up',
                                 style: TextStyle(
-                                  color: GlobalColors.yellow,
+                                  color: Colors.yellow,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),

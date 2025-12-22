@@ -9,7 +9,6 @@ class MessagesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: GlobalColors.navBarBlack,
       body: SafeArea(
         bottom: false,
         child: Column(

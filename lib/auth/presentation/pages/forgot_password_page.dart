@@ -82,7 +82,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                           child: Container(
                             padding: EdgeInsets.all(8),
                             decoration: BoxDecoration(
-                              color: GlobalColors.yellow,
+                              color: Colors.yellow,
                               shape: BoxShape.circle,
                             ),
                             child: Icon(Icons.close, size: 20),
@@ -128,8 +128,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       
                       // Reset Password button
                       NextButton(
-                        color: GlobalColors.yellow,
-                        borderColor: GlobalColors.darkPurple,
+                        color: Colors.yellow,
+                        borderColor: Colors.blue,
                         onPressed: resetPassword,
                         radius: 25,
                         label: 'Send Reset Link',

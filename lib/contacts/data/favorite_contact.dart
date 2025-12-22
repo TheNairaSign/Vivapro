@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
+import 'package:vivapro/core/enums/call_frequency.dart';
 import 'package:vivapro/core/enums/priority.dart';
 
 class FavoriteContact {
@@ -7,7 +8,7 @@ class FavoriteContact {
   final Contact contactDetails;
   final String? inAppUserId;
   final CallPriority priority;
-  final String callFrequency;
+  final CallFrequency callFrequency;
   final DateTime? lastCalledAt;
 
   FavoriteContact({
@@ -24,7 +25,7 @@ class FavoriteContact {
       'contactDetails': contactDetails.toJson(),
       'inAppUserId': inAppUserId,
       'priority': priority.name,
-      'callFrequency': callFrequency,
+      'callFrequency': callFrequency.name,
       'lastCalledAt': lastCalledAt,
       'createdAt': FieldValue.serverTimestamp(),
     };
@@ -39,7 +40,10 @@ class FavoriteContact {
         (e) => e.name == map['priority'],
         orElse: () => CallPriority.low,
       ),
-      callFrequency: map['callFrequency'] ?? 'Daily',
+      callFrequency: CallFrequency.values.firstWhere(
+        (e) => e.name.toLowerCase() == (map['callFrequency'] as String?)?.toLowerCase(),
+        orElse: () => CallFrequency.daily,
+      ),
       lastCalledAt: (map['lastCalledAt'] as Timestamp?)?.toDate(),
     );
   }

@@ -48,7 +48,7 @@ class _ConfirmEmailPageState extends State<ConfirmEmailPage> {
                         child: Container(
                           padding: EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            color: GlobalColors.yellow,
+                            color: Colors.yellow,
                             shape: BoxShape.circle,
                           ),
                           child: Icon(Icons.close, size: 20),
@@ -61,13 +61,13 @@ class _ConfirmEmailPageState extends State<ConfirmEmailPage> {
                     Container(
                       padding: EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color: GlobalColors.yellow.withValues(alpha: 0.1),
+                        color: Colors.yellow.withValues(alpha: 0.1),
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
                         Icons.mark_email_read_outlined,
                         size: 60,
-                        color: GlobalColors.yellow,
+                        color: Colors.yellow,
                       ),
                     ),
                     const SizedBox(height: 30),
@@ -98,8 +98,8 @@ class _ConfirmEmailPageState extends State<ConfirmEmailPage> {
 
                     // Back to Login Button
                     NextButton(
-                      color: GlobalColors.yellow,
-                      borderColor: GlobalColors.darkPurple,
+                      color: Colors.yellow,
+                      borderColor: Colors.blue,
                       onPressed: () {
                          Navigator.pushReplacement(
                           context,
@@ -134,7 +134,7 @@ class _ConfirmEmailPageState extends State<ConfirmEmailPage> {
                           child: Text(
                             'Resend',
                             style: TextStyle(
-                              color: GlobalColors.yellow,
+                              color: Colors.yellow,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
