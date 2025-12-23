@@ -5,7 +5,7 @@ import 'package:vivapro/call_log/data/call_log_model.dart';
 import 'package:vivapro/call_log/presentation/bloc/call_log_bloc.dart';
 import 'package:vivapro/call_log/presentation/bloc/call_log_event.dart';
 import 'package:vivapro/call_log/presentation/bloc/call_log_state.dart';
-import 'package:vivapro/core/theme/global_colors.dart';
+import 'package:vivapro/contacts/presentation/pages/add_favorite_page.dart';
 import 'package:vivapro/pages/navigation/widgets/activity_item.dart';
 import 'package:vivapro/pages/navigation/widgets/filter_pills.dart';
 import 'package:vivapro/pages/navigation/widgets/insight_card.dart';
@@ -68,6 +68,16 @@ class _RecentsPageState extends State<RecentsPage> {
     
     return Scaffold(
       backgroundColor: isDark ? const Color(0xFF101A22) : const Color(0xFFF4F7FA),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AddFavoritePage()),
+          );
+        },
+        backgroundColor: const Color(0xFF2D8CFF),
+        child: const Icon(Icons.add, color: Colors.white),
+      ),
       body: SafeArea(
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),

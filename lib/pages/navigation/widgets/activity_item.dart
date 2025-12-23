@@ -11,6 +11,7 @@ class ActivityItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     final name = (log.name != null && log.name!.isNotEmpty)
         ? log.name!
         : (log.formattedNumber ?? 'Unknown');
@@ -34,11 +35,11 @@ class ActivityItem extends StatelessWidget {
     Color overlayIconColor;
 
     if (isMissed) {
-      statusColor = const Color(0xFFE67E22); // Orange
+      statusColor = isDark ? Colors.red : const Color(0xFFE67E22); // Orange
       statusText = 'Missed call'; // Or "Missed reminder" for similarity
       overlayIcon = Icons.priority_high;
-      overlayBgColor = isDark ? const Color(0xFF422F0E) : const Color(0xFFFFF8E1); // Light yellow
-      overlayIconColor = const Color(0xFFE67E22);
+      overlayBgColor = isDark ? Colors.red.withValues(alpha: 0.2) : const Color(0xFFFFF8E1); // Light yellow
+      overlayIconColor = isDark ? Colors.red : const Color(0xFFE67E22);
     } else if (isIncoming && log.duration! > 0) {
        statusColor = const Color(0xFF2D8CFF); // Blue
        statusText = 'Incoming • ${_formatDuration(log.duration ?? 0)}';
@@ -175,13 +176,13 @@ class ActivityItem extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
-                color: isDark ? const Color(0xFF2C2C29) : const Color(0xFFFFF9E6), // Light yellow bg like Insight
+                color: isDark ? Colors.red.withValues(alpha: 0.2) : const Color(0xFFFFF9E6),
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: const Text(
+              child: Text(
                 'Call',
                 style: TextStyle(
-                  color: Color(0xFFE67E22), // Orange text
+                  color: isDark ? Colors.red : const Color(0xFFE67E22),
                   fontWeight: FontWeight.w600,
                   fontSize: 13,
                 ),
