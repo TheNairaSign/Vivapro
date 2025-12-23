@@ -8,7 +8,7 @@ class AppTheme {
     useMaterial3: true,
     // scaffoldBackgroundColor: const Color(0xffeeeef0),
     // scaffoldBackgroundColor: const Color(0xffF5F7FA),
-    scaffoldBackgroundColor: Colors.white,
+    scaffoldBackgroundColor: Color(0xffF4F7FA),
     textTheme: GoogleFonts.dmSansTextTheme().apply(
       bodyColor: Colors.black,
       displayColor: Colors.black,

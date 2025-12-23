@@ -5,6 +5,7 @@ import 'package:vivapro/core/theme/global_colors.dart';
 import 'package:vivapro/messaging/presentation/pages/chat_screen.dart';
 import 'package:vivapro/pages/Home_page.dart.dart';
 import 'package:vivapro/pages/navigation/contacts_page.dart';
+import 'package:vivapro/pages/navigation/recents_page.dart';
 import 'package:vivapro/pages/navigation/widgets/custom_navigation_bar.dart';
 
 class NavigationPage extends StatefulWidget {
@@ -43,7 +44,7 @@ class _NavigationPageState extends State<NavigationPage> {
                 controller: pageController,
                 children: <Widget>[
                   const HomePage(),
-                  const Center(child: Text("Calendar - Coming Soon")), 
+                  const RecentsPage(), 
                   const Center(child: Text("Quick Actions")), 
                   ChatScreen(user: widget.user), 
                   const ContactsPage(),

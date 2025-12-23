@@ -1,0 +1,80 @@
+import 'package:flutter/material.dart';
+
+class InsightCard extends StatelessWidget {
+  const InsightCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final backgroundColor = isDark ? const Color(0xFF2C2C29) : const Color(0xFFFFF9E6);
+    final borderColor = isDark ? const Color(0xFF3E3E3A) : const Color(0xFFFFF5D6);
+    final titleColor = isDark ? Colors.white : Colors.black87;
+    final bodyColor = isDark ? Colors.grey[400] : Colors.black54;
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 8),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: backgroundColor, 
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: borderColor, width: 1),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.lightbulb, color: Color(0xFFE67E22), size: 18), // Amber/Orange icon
+              const SizedBox(width: 8),
+              Text(
+                'INSIGHT',
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: const Color(0xFFE67E22),
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.0,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(
+            'Reconnect with David',
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: titleColor,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'It’s been 3 months. A quick check-in goes a long way.',
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: bodyColor,
+              height: 1.4,
+            ),
+          ),
+          const SizedBox(height: 20),
+          ElevatedButton.icon(
+            onPressed: () {},
+            icon: const Icon(Icons.call, color: Color(0xFFE67E22), size: 18),
+            label: const Text(
+              'Call David',
+              style: TextStyle(
+                  color: Color(0xFFE67E22),
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14),
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: isDark ? const Color(0xFF1C1C1E) : Colors.white,
+              elevation: 0,
+              shadowColor: Colors.transparent,
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

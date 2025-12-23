@@ -43,7 +43,7 @@ class CustomNavigationBar extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 _buildNavItem(0, Ionicons.heart_outline, Ionicons.heart),
-                _buildNavItem(1, Ionicons.calendar_outline, Ionicons.calendar),
+                _buildNavItem(1, Ionicons.time_outline, Ionicons.time),
                 const SizedBox(width: 60), // Space for the center button
                 _buildNavItem(3, Ionicons.chatbubble_outline, Ionicons.chatbubble),
                 _buildNavItem(4, Ionicons.person_outline, Ionicons.person),

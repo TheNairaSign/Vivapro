@@ -5,9 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:vivapro/call_log/presentation/bloc/call_log_bloc.dart';
 import 'package:vivapro/call_log/presentation/bloc/call_log_event.dart';
 import 'package:vivapro/call_log/presentation/bloc/call_log_state.dart';
-import 'package:vivapro/core/theme/global_colors.dart';
 import 'package:vivapro/pages/home/widgets/favorites_section.dart';
-import 'package:vivapro/pages/home/widgets/home_header.dart';
 import 'package:vivapro/pages/home/widgets/insights_section.dart';
 import 'package:vivapro/pages/home/widgets/recents_item.dart';
 
@@ -49,7 +47,6 @@ class _HomePageState extends ConsumerState<HomePage> {
             const Text(
               'Good evening, Ty',
               style: TextStyle(
-                // color: Colors.black,
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
               ),
@@ -101,35 +98,13 @@ class _HomePageState extends ConsumerState<HomePage> {
   Widget _buildRecentsList() {
     return BlocBuilder<CallLogBloc, CallLogState>(
       builder: (context, state) {
-        final isDark = Theme.of(context).brightness == Brightness.dark;
         if (state is CallLogSuccess) {
           final logs = state.callLogEntries
               .take(3)
-              .toList(); // Show limited recents for UI demo
+              .toList();
 
-          return Container(
-            decoration: BoxDecoration(
-              color: GlobalColors.containerColor(context),
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: GlobalColors.boxShadow(context),
-            ),
-            // padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-            child: Column(
-              children: logs.map((log) {
-                return Column(
-                  children: [
-                    RecentsItem(log: log),
-                    if (logs.indexOf(log) < logs.length - 1)
-                      Divider(
-                        height: 1,
-                        indent: 10,
-                        endIndent: 10,
-                        color: isDark ? Colors.grey[800] : Colors.grey[100],
-                      ),
-                  ],
-                );
-              }).toList(),
-            ),
+          return Column(
+            children: logs.map((log) => RecentsItem(log: log)).toList(),
           );
         } else if (state is CallLogLoading) {
           return const Center(
