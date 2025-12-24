@@ -60,10 +60,6 @@ class _RecentsPageState extends State<RecentsPage> {
 
   @override
   Widget build(BuildContext context) {
-    // Force light background effectively for this page or use Theme scaffold
-    // The design is light. If dark mode, adapt.
-    // The design image is Light Mode.
-    
     final isDark = Theme.of(context).brightness == Brightness.dark;
     
     return Scaffold(

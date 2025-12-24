@@ -4,10 +4,7 @@ import 'package:vivapro/core/theme/global_colors.dart';
 
 class AppTheme {
 
-  static final ThemeData lightTheme = ThemeData(
-    useMaterial3: true,
-    // scaffoldBackgroundColor: const Color(0xffeeeef0),
-    // scaffoldBackgroundColor: const Color(0xffF5F7FA),
+  static final ThemeData lightTheme = ThemeData.light(useMaterial3: true).copyWith(
     scaffoldBackgroundColor: Color(0xffF4F7FA),
     textTheme: GoogleFonts.dmSansTextTheme().apply(
       bodyColor: Colors.black,
@@ -35,26 +32,9 @@ class AppTheme {
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
       ),
     ),
-    inputDecorationTheme: InputDecorationTheme(
-      filled: true,
-      fillColor: Colors.white,
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(20),
-        borderSide: BorderSide.none,
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(20),
-        borderSide: BorderSide.none,
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(20),
-        borderSide: const BorderSide(color: GlobalColors.freshPink, width: 2),
-      ),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-    ),
   );
 
-  static final ThemeData darkTheme = ThemeData.dark().copyWith(
+  static final ThemeData darkTheme = ThemeData.dark(useMaterial3: true).copyWith(
     brightness: Brightness.dark,
     // scaffoldBackgroundColor: const Color(0xFF121212),
     scaffoldBackgroundColor: Color(0xff101a22),
@@ -80,14 +60,6 @@ class AppTheme {
         elevation: 0,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-      ),
-    ),
-    inputDecorationTheme: InputDecorationTheme(
-      filled: true,
-      fillColor: const Color(0xFF2C2C3E),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(20),
-        borderSide: BorderSide.none,
       ),
     ),
   );

@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
 import 'package:vivapro/core/theme/global_colors.dart';
 
@@ -18,16 +20,23 @@ class CustomTextfield extends StatefulWidget {
     this.label,
     this.maxLines = 1,
     this.minLines = 1,
-  });
+    this.keyboardType = TextInputType.text,
+  }) 
+  : assert(maxLines > 0),
+    assert(minLines > 0),
+    assert(maxLines >= minLines),
+    assert(controller != null || initialValue != null);
+
   final TextEditingController? controller;
   final String? hintText, initialValue, label;
   final Widget? prefixIcon, suffixIcon;
   final bool showSuffix;
-  final double? height;
+  final double? height; 
   bool obscure, enabled;
   final int maxLines, minLines;
   final Function(String)? onChanged;
   final String? Function(String?)? validator;
+  final TextInputType? keyboardType;
 
   @override
   State<CustomTextfield> createState() => _CustomTextfieldState();
@@ -39,10 +48,11 @@ class _CustomTextfieldState extends State<CustomTextfield> {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return TextFormField(
       controller: widget.controller,
+      keyboardType: widget.keyboardType,
       maxLines: widget.maxLines,
       minLines: widget.minLines,
       obscureText: widget.obscure,
-      initialValue: widget.controller == null ? widget.initialValue : null,
+      initialValue: widget.initialValue,
       cursorColor: Colors.green,
       onChanged: widget.onChanged,
       validator: widget.validator,
