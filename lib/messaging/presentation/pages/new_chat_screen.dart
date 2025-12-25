@@ -111,11 +111,8 @@ class _NewChatScreenState extends ConsumerState<NewChatScreen> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: Colors.black,
-        iconTheme: const IconThemeData(color: Colors.white),
-        title: Text("New Chat", style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.white)),
+        title: Text("New Chat", style: Theme.of(context).textTheme.titleLarge),
         actions: [
           if (_selectedContactIds.isNotEmpty)
             IconButton(
@@ -124,26 +121,26 @@ class _NewChatScreenState extends ConsumerState<NewChatScreen> {
             ),
         ],
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextField(
+      body: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 15),
+        child: Column(
+          children: [
+            TextField(
               controller: _searchController,
-              style: const TextStyle(color: Colors.white),
+              style: Theme.of(context).textTheme.bodyLarge,
               decoration: InputDecoration(
-                prefixIcon: Icon(Icons.search, color: GlobalColors.darkPurple),
+                prefixIcon: Icon(Icons.search, color: Colors.grey.shade600),
                 hintText: "Search contacts",
-                hintStyle: TextStyle(color: Colors.grey.shade600),
+                hintStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.grey.shade600),
                 filled: true,
-                fillColor: Colors.grey.shade900,
+                fillColor: GlobalColors.containerColor(context),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide.none,
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: Colors.grey.shade800),
+                  borderSide: BorderSide.none,
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -151,45 +148,48 @@ class _NewChatScreenState extends ConsumerState<NewChatScreen> {
                 ),
               ),
             ),
-          ),
-          if (_selectedContactIds.isNotEmpty)
-            SizedBox(
-              height: 60,
-              child: ListView.separated(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                scrollDirection: Axis.horizontal,
-                itemCount: _selectedContactIds.length,
-                separatorBuilder: (ctx, index) => const SizedBox(width: 8),
-                itemBuilder: (ctx, index) {
-                  final id = _selectedContactIds.elementAt(index);
-                  // Find contact object for display (inefficient but works for list size)
-                  final contact = _contacts!.firstWhere((c) => c.id == id);
-                  return Chip(
-                    backgroundColor: GlobalColors.yellow,
-                    label: Text(
-                      contact.displayName,
-                      style: TextStyle(color: GlobalColors.darkPurple, fontWeight: FontWeight.bold),
-                    ),
-                    deleteIcon: Icon(Icons.close, size: 18, color: GlobalColors.darkPurple),
-                    onDeleted: () => _toggleSelection(id),
-                    side: BorderSide.none,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                  );
-                },
+            if (_selectedContactIds.isNotEmpty) ... [
+              const SizedBox(height: 16),
+              SizedBox(
+                height: 60,
+                child: ListView.separated(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  scrollDirection: Axis.horizontal,
+                  itemCount: _selectedContactIds.length,
+                  separatorBuilder: (ctx, index) => const SizedBox(width: 8),
+                  itemBuilder: (ctx, index) {
+                    final id = _selectedContactIds.elementAt(index);
+                    // Find contact object for display (inefficient but works for list size)
+                    final contact = _contacts!.firstWhere((c) => c.id == id);
+                    return Chip(
+                      backgroundColor: Colors.lightBlue.withValues(alpha: 0.2),
+                      label: Text(
+                        contact.displayName,
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      deleteIcon: Icon(Icons.close, size: 18),
+                      onDeleted: () => _toggleSelection(id),
+                      side: BorderSide.none,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    );
+                  },
+                ),
               ),
-            ),
-          Expanded(child: _buildContactList()),
-        ],
+              const SizedBox(height: 16),
+            Expanded(child: _buildContactList()),
+          ],
+          ],
+        ),
       ),
       floatingActionButton: _selectedContactIds.isNotEmpty 
         ? FloatingActionButton.extended(
             onPressed: _createChat,
-            backgroundColor: GlobalColors.yellow,
+            backgroundColor: Colors.lightBlue,
             label: Text(
               _selectedContactIds.length > 1 ? "Create Group" : "Start Chat",
-              style: TextStyle(color: GlobalColors.darkPurple, fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
-            icon: Icon(Icons.chat_bubble_outline, color: GlobalColors.darkPurple),
+            icon: Icon(Icons.chat_bubble_outline),
           )
         : null,
     );
@@ -201,7 +201,7 @@ class _NewChatScreenState extends ConsumerState<NewChatScreen> {
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(backgroundColor: GlobalColors.yellow),
           onPressed: _fetchContacts,
-          child: Text('Grant Permission', style: TextStyle(color: GlobalColors.darkPurple)),
+          child: Text('Grant Permission', style: Theme.of(context).textTheme.bodyLarge),
         ),
       );
     }
@@ -214,28 +214,32 @@ class _NewChatScreenState extends ConsumerState<NewChatScreen> {
       return const Center(child: Text("No contacts found", style: TextStyle(color: Colors.white)));
     }
 
-    return ListView.builder(
+    return ListView.separated(
       itemCount: _filteredContacts.length,
+      separatorBuilder: (context, index) => const SizedBox(height: 12),
       itemBuilder: (context, index) {
         final contact = _filteredContacts[index];
         final isSelected = _selectedContactIds.contains(contact.id);
-        return Theme(
-          data: ThemeData.dark(), // Force dark theme for ListTile ripples etc
+        return Container(
+          decoration: BoxDecoration(
+            color: GlobalColors.containerColor(context),
+            borderRadius: BorderRadius.circular(20),
+          ),
           child: ListTile(
             leading: CircleAvatar(
-               backgroundColor: isSelected ? GlobalColors.yellow : Colors.grey.shade900,
+               backgroundColor: isSelected ? Colors.lightBlue : Colors.lightBlue.withValues(alpha: .1),
                radius: 24,
                child: isSelected 
-                 ? Icon(Icons.check, color: GlobalColors.darkPurple, size: 20)
+                 ? Icon(Icons.check, color:Colors.white, size: 20)
                  : Text(
                      (contact.displayName.isNotEmpty) ? contact.displayName[0].toUpperCase() : '?',
-                     style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.lightBlue, fontWeight: FontWeight.bold),
                    ),
             ),
             title: Text(
               contact.displayName,
-              style: TextStyle(
-                color: isSelected ? GlobalColors.yellow : Colors.white,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                color: isSelected ? Colors.lightBlue: GlobalColors.textThemeColor(context), 
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
               ),
             ),
@@ -244,7 +248,7 @@ class _NewChatScreenState extends ConsumerState<NewChatScreen> {
               : null,
             onTap: () => _toggleSelection(contact.id),
             trailing: isSelected 
-              ? Icon(Icons.check_circle, color: GlobalColors.yellow) 
+              ? Icon(Icons.check_circle, color: Colors.lightBlue) 
               : null,
           ),
         );

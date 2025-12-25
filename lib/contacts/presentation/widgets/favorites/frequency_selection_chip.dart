@@ -30,12 +30,13 @@ class _FrequencySelectionChipState extends State<FrequencySelectionChip> {
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: isSelected ? Colors.lightBlue : Theme.of(context).scaffoldBackgroundColor,
-          borderRadius: BorderRadius.circular(20), // Pill shape
+          borderRadius: BorderRadius.circular(20),
           border: null,
         ),
         child: Text(
           widget.frequency.name.capitalize(),
-          style: TextStyle(
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: isSelected? Colors.white : Color(0xFF98A2B3),
             fontWeight: FontWeight.w600,
             fontSize: 13,
           ),

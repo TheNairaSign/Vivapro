@@ -64,16 +64,16 @@ class _RecentsPageState extends State<RecentsPage> {
     
     return Scaffold(
       backgroundColor: isDark ? const Color(0xFF101A22) : const Color(0xFFF4F7FA),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const AddFavoritePage()),
-          );
-        },
-        backgroundColor: const Color(0xFF2D8CFF),
-        child: const Icon(Icons.add, color: Colors.white),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     Navigator.push(
+      //       context,
+      //       MaterialPageRoute(builder: (context) => const AddFavoritePage()),
+      //     );
+      //   },
+      //   backgroundColor: const Color(0xFF2D8CFF),
+      //   child: const Icon(Icons.add, color: Colors.white),
+      // ),
       body: SafeArea(
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),

@@ -1,9 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ionicons/ionicons.dart';
 import 'package:vivapro/core/app_constants.dart';
 import 'package:vivapro/core/extensions/capitalization.dart';
-import 'package:vivapro/core/theme/global_colors.dart';
 import 'package:vivapro/messaging/data/chat.dart';
 import 'package:vivapro/messaging/presentation/pages/messages_screen.dart';
 
@@ -13,33 +13,72 @@ class ChatItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final participants = chat.participants;
     final name = participants.isNotEmpty ? participants.join(',').capitalize() : 'Unknown';
     final initial = participants.isNotEmpty 
         ? participants.join(',').characters.first.toUpperCase() 
         : '?';
 
+    final textColor = isDark ? Colors.white : const Color(0xFF1A1A1A);
+    final subtextColor = isDark ? Colors.grey[400] : Colors.grey[600];
+    final timeColor = isDark ? Colors.grey[500] : const Color(0xFF4A9EFF);
+
+    // Simulate unread status (you can replace this with actual logic)
+    final hasUnread = chat.lastMessage?.isNotEmpty ?? false;
+    final showCallIcon = name.toLowerCase().contains('mom') || name.toLowerCase().contains('dad');
+
     return InkWell(
       onTap: () => Navigator.of(context).push(
         MaterialPageRoute(builder: (ctx) => MessagesScreen(chat: chat)),
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         child: Row(
           children: [
-            const CircleAvatar(
-              radius: 20,
-              backgroundImage: CachedNetworkImageProvider(AppConstants.placeHolderProfileImage),
+            // Avatar
+            Stack(
+              children: [
+                CircleAvatar(
+                  radius: 28,
+                  backgroundColor: isDark ? Colors.grey[800] : Colors.grey[200],
+                  backgroundImage: const CachedNetworkImageProvider(
+                    AppConstants.placeHolderProfileImage,
+                  ),
+                ),
+                // Online indicator (optional)
+                if (name.toLowerCase().contains('mom'))
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: Container(
+                      width: 16,
+                      height: 16,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF4CAF50),
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+                          width: 2,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 16),
+            
+            // Name and Message
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     name,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: textColor,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -47,40 +86,55 @@ class ChatItem extends ConsumerWidget {
                   const SizedBox(height: 4),
                   Text(
                     chat.lastMessage ?? 'Start chatting...',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey),
-                    maxLines: 2,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: subtextColor,
+                      fontWeight: FontWeight.w400,
+                    ),
+                    maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: 12),
+            
+            // Time and Indicators
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  _formatTime(chat.updatedAt),
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Colors.grey,
-                        fontWeight: FontWeight.w600,
+                Row(
+                  children: [
+                    Text(
+                      _formatTime(chat.updatedAt),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: timeColor,
+                        fontWeight: FontWeight.w500,
                       ),
+                    ),
+                    if (showCallIcon) ...[
+                      const SizedBox(width: 8),
+                      Icon(
+                        Ionicons.call,
+                        size: 16,
+                        color: subtextColor,
+                      ),
+                    ],
+                  ],
                 ),
-                const SizedBox(height: 4),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.lightBlue,
-                    shape: BoxShape.circle
-                  ),
-                  child: Text(
-                    '9',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      fontSize: 10,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
+                const SizedBox(height: 6),
+                // Unread indicator
+                if (hasUnread)
+                  Container(
+                    width: 8,
+                    height: 8,
+                    decoration: const BoxDecoration(
+                      color: Color(0xFF4A9EFF),
+                      shape: BoxShape.circle,
                     ),
                   ),
-                ),
               ],
             ),
           ],
@@ -90,13 +144,15 @@ class ChatItem extends ConsumerWidget {
   }
 
   String _formatTime(DateTime time) {
-    // Simple formatter, can use intl later if complex logic needed
     final now = DateTime.now();
     final diff = now.difference(time);
     
-    if (diff.inDays == 0 && now.day == time.day) {
-      // Show HH:mm
-      return "${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}";
+    if (diff.inMinutes < 60) {
+      return '${diff.inMinutes}m ago';
+    } else if (diff.inHours < 24 && now.day == time.day) {
+      return '${diff.inHours}h ago';
+    } else if (diff.inDays == 1) {
+      return 'Yesterday';
     } else if (diff.inDays < 7) {
       final weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
       return weekdays[time.weekday - 1];
@@ -105,3 +161,4 @@ class ChatItem extends ConsumerWidget {
     }
   }
 }
+

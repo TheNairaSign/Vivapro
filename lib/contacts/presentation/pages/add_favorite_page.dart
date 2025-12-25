@@ -15,6 +15,27 @@ class _AddFavoritePageState extends State<AddFavoritePage> {
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
 
+  bool isLoading = false;
+
+  void submitContact() {
+    if (isLoading) return;
+
+    if (_nameController.text.isEmpty || _phoneController.text.isEmpty) {
+      return;
+    }
+
+
+
+    setState(() {
+      isLoading = true;
+    });
+    
+    
+    setState(() {
+      isLoading = false;
+    });
+  }
+
   @override
   void dispose() {
     _nameController.dispose();
@@ -36,24 +57,20 @@ class _AddFavoritePageState extends State<AddFavoritePage> {
           onPressed: () => Navigator.pop(context),
           child: Text(
             'Cancel',
-            style: TextStyle(
-              color: isDark ? Colors.grey[400] : Colors.grey[600],
-              fontSize: 16,
-            ),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: isDark ? Colors.grey[400] : Colors.grey[600]),
           ),
         ),
         title: Text(
           'Add Favorite',
-          style: TextStyle(
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
             color: isDark ? Colors.white : const Color(0xFF101828),
             fontWeight: FontWeight.bold,
-            fontSize: 18,
           ),
         ),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
         child: Column(
           children: [
             const SizedBox(height: 20),
@@ -108,21 +125,20 @@ class _AddFavoritePageState extends State<AddFavoritePage> {
                   Navigator.pop(context);
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF5A9BD5), // Matching the image blue
+                  backgroundColor: Colors.lightBlue,
                   elevation: 0,
                   shadowColor: Colors.transparent,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
-                    side: const BorderSide(color: Color(0xFF4A8BCA), width: 1), // Slight border for depth
+                    side: const BorderSide(color: Color(0xFF4A8BCA), width: 1),
                   ),
                 ),
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
                       'Save Contact',
-                      style: TextStyle(
-                        fontSize: 18,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.w600,
                         color: Colors.white,
                       ),
@@ -133,7 +149,6 @@ class _AddFavoritePageState extends State<AddFavoritePage> {
                 ),
               ),
             ),
-            const SizedBox(height: 40),
           ],
         ),
       ),
@@ -158,8 +173,8 @@ class _AddFavoritePageState extends State<AddFavoritePage> {
               ),
               child: const CircleAvatar(
                 radius: 45,
-                backgroundColor: Color(0xFFFAB896), // Peach color from image
-                child: Icon(Icons.person, size: 50, color: Color(0xFF101828)), // Silhouette placeholder
+                backgroundColor: Color(0xFFFAB896),
+                child: Icon(Icons.person, size: 50, color: Color(0xFF101828)),
               ),
             ),
             Positioned(
@@ -183,12 +198,24 @@ class _AddFavoritePageState extends State<AddFavoritePage> {
           ],
         ),
         const SizedBox(height: 12),
-        Text(
-          'Upload Photo',
-          style: TextStyle(
-            color: const Color(0xFF5A9BD5),
-            fontWeight: FontWeight.w500,
-            fontSize: 14,
+        TextButton(
+          style: TextButton.styleFrom(
+            backgroundColor: Colors.lightBlue,
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+              side: const BorderSide(color: Colors.lightBlue, width: 1),
+            ),
+          ),
+          onPressed: () {},
+          child: Text(
+            'Upload Photo',
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
+              fontSize: 14,
+            ),
           ),
         ),
       ],

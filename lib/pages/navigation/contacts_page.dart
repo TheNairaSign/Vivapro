@@ -67,8 +67,8 @@ class _ContactsPageState extends State<ContactsPage> {
     if (_contacts == null) {
       return Center(
         child: LoadingAnimationWidget.threeRotatingDots(
-          color: GlobalColors.freshPink, 
-          size: 50
+          color: Colors.lightBlue, 
+          size: 30
         ),
       );
     }
@@ -87,30 +87,23 @@ class _ContactsPageState extends State<ContactsPage> {
           decoration: BoxDecoration(
             color: GlobalColors.containerColor(context),
             borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
-                blurRadius: 10,
-                offset: const Offset(0, 2),
-              ),
-            ],
+            boxShadow: GlobalColors.boxShadow(context),
           ),
           child: ListTile(
             leading: CircleAvatar(
-              backgroundColor: GlobalColors.freshPink.withValues(alpha: 0.1),
+              backgroundColor: Colors.lightBlue.withValues(alpha: 0.1),
               child: Text(
                 (contact.displayName.isNotEmpty) ? contact.displayName.characters.first.toUpperCase() : '?',
-                style: TextStyle(color: GlobalColors.freshPink, fontWeight: FontWeight.bold),
+                style: TextStyle(color: Colors.lightBlue, fontWeight: FontWeight.bold),
               ),
             ),
             title: Text(
               contact.displayName,
             ),
-            subtitle: (contact.phones.isNotEmpty) 
-              ? Text(contact.phones.first.number) 
+            subtitle: (contact.phones.isNotEmpty)
+              ? Text(contact.phones.first.number)
               : null,
             onTap: () async {
-              // Fetch full details including high-res photo if needed, though withProperties: true above gets basic props
               final fullContact = await FlutterContacts.getContact(contact.id);
               if (context.mounted && fullContact != null) {
                 Navigator.of(context).push(

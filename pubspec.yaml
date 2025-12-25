@@ -58,6 +58,7 @@ dependencies:
   hive_ce: ^2.15.1
   cached_network_image: ^3.4.1
   glassmorphism_ui: ^0.3.0
+  image_picker: ^1.2.1
 
 dev_dependencies:
   flutter_test:

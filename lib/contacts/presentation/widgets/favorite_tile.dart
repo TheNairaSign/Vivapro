@@ -3,11 +3,12 @@ import 'package:flutter_contacts/contact.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vivapro/contacts/repositories/favorite_repository.dart';
 import 'package:vivapro/core/enums/call_frequency.dart';
+import 'package:vivapro/core/extensions/capitalization.dart';
 import 'package:vivapro/core/theme/global_colors.dart';
 
 class FavoriteTile extends ConsumerWidget {
   final Contact contact;
-  final String frequency;
+  final CallFrequency frequency;
   final bool isStarred;
 
   const FavoriteTile({
@@ -17,9 +18,20 @@ class FavoriteTile extends ConsumerWidget {
     this.isStarred = false,
   });
 
+  Color? get freqencyColor {
+    return switch (frequency) {
+      CallFrequency.daily => Colors.blue[700],
+      CallFrequency.weekly => Colors.green,
+      CallFrequency.monthly => Colors.purple,
+      CallFrequency.yearly || CallFrequency.custom => Colors.grey,
+    };
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+
+    final isDark = theme.brightness == Brightness.dark;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -31,29 +43,32 @@ class FavoriteTile extends ConsumerWidget {
       child: Row(
         children: [
           CircleAvatar(
-            radius: 22,
-            backgroundColor: Colors.grey[200],
-            child: Text(contact.displayName[0]),
+            radius: 25,
+            backgroundColor: Colors.lightBlue.withValues(alpha: 0.1),
+            child: Text(
+              (contact.displayName.isNotEmpty) ? contact.displayName.characters.first.toUpperCase() : '?',
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.lightBlue, fontWeight: FontWeight.bold),
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(contact.displayName, style: theme.textTheme.titleMedium),
+                Text(contact.displayName, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
                 const SizedBox(height: 4),
                 Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
+                    horizontal: 8,
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: callFrequencyColor(CallFrequency.values.firstWhere((e) => e.name == frequency)),
+                    color: freqencyColor?.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
-                    frequency,
-                    style: TextStyle(fontSize: 12, color: theme.primaryColor),
+                    frequency.name.capitalize(),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 12, color: freqencyColor, fontWeight: FontWeight.bold),
                   ),
                 ),
               ],
@@ -70,7 +85,7 @@ class FavoriteTile extends ConsumerWidget {
           ),
           const SizedBox(width: 8),
           CircleAvatar(
-            backgroundColor: const Color(0xFF4A90E2),
+            backgroundColor: Colors.lightBlue,
             child: const Icon(Icons.call, color: Colors.white),
           ),
         ],

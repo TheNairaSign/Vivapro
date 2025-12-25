@@ -25,10 +25,6 @@ class CallLogItem extends StatelessWidget {
     final timeString = DateFormat('h:mm a').format(DateTime.fromMillisecondsSinceEpoch(entry.timestamp ?? 0));
     final avatarChar = nameOrNumber.isNotEmpty ? nameOrNumber.characters.first.toUpperCase() : '?';
 
-    // Use extension for icon, but we might want to override color for theme
-    // The extension returns a Widget (Icon) with hardcoded colors for some types.
-    // We'll extract the text value.
-
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       decoration: BoxDecoration(
@@ -40,7 +36,6 @@ class CallLogItem extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           onTap: () {
-            // TODO: Implement call details or callback
           },
           borderRadius: BorderRadius.circular(20),
           child: Padding(

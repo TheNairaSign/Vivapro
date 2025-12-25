@@ -53,7 +53,7 @@ class _FavoritesPageState extends ConsumerState<FavoritesPage> {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   children: favorites.map((favorite) => FavoriteTile(
                     contact: favorite.contactDetails,
-                    frequency: favorite.callFrequency.name,
+                    frequency: favorite.callFrequency,
                     isStarred: true,
                   )).toList(),
                 );

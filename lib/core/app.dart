@@ -1,5 +1,6 @@
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vivapro/auth/presentation/bloc/auth_change/auth_change_bloc.dart';
@@ -46,22 +47,28 @@ class _VivaproState extends ConsumerState<Vivapro> {
         BlocProvider(create: (create) => ChatBloc(ref.read(chatRepositoryProvider), ref.read(contactsRepository))),
         BlocProvider(create: (create) => MessageBloc(ref.read(messageRepository))),
       ],
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+        systemNavigationBarColor: Theme.of(context).scaffoldBackgroundColor,
+        systemNavigationBarIconBrightness: Brightness.dark,
+      ),
       child: DynamicColorBuilder(
         builder: (lightColorScheme, darkColorScheme) {
           return MaterialApp(
             title: 'Vivapro',
             debugShowCheckedModeBanner: false,
             theme: AppTheme.lightTheme.copyWith(
-              colorScheme: lightColorScheme,
-              brightness: Brightness.light,
-            ),
-            darkTheme: AppTheme.darkTheme.copyWith(
-              colorScheme: darkColorScheme,
-              brightness: Brightness.dark,
-            ),
-            home: const AuthChecker(),
-          );
-        }
+                colorScheme: lightColorScheme,
+                brightness: Brightness.light,
+              ),
+              darkTheme: AppTheme.darkTheme.copyWith(
+                colorScheme: darkColorScheme,
+                brightness: Brightness.dark,
+              ),
+              home: const AuthChecker(),
+            );
+          }
+        ),
       ),
     );
   }
