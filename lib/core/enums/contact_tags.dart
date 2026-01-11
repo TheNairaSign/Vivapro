@@ -1,6 +1,1 @@
-enum ContactTags {
-  family,
-  friends,
-  work,
-  other,
-}
+enum ContactTags { family, friends, work, other }

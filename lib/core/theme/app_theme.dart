@@ -3,8 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:vivapro/core/theme/global_colors.dart';
 
 class AppTheme {
-
-  static final ThemeData lightTheme = ThemeData.light(useMaterial3: true).copyWith(
+  static final ThemeData
+  lightTheme = ThemeData.light(useMaterial3: true).copyWith(
     scaffoldBackgroundColor: Color(0xffF4F7FA),
     textTheme: GoogleFonts.dmSansTextTheme().apply(
       bodyColor: Colors.black,
@@ -34,7 +34,8 @@ class AppTheme {
     ),
   );
 
-  static final ThemeData darkTheme = ThemeData.dark(useMaterial3: true).copyWith(
+  static final ThemeData
+  darkTheme = ThemeData.dark(useMaterial3: true).copyWith(
     brightness: Brightness.dark,
     // scaffoldBackgroundColor: const Color(0xFF121212),
     scaffoldBackgroundColor: Color(0xff101a22),

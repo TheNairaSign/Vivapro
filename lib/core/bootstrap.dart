@@ -7,7 +7,7 @@ Future<void> bootstrap() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);  
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 }
 
 void applyModernStatusBarStyle(BuildContext context) {

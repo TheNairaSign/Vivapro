@@ -157,7 +157,8 @@ class SignInDemoState extends State<SignInDemo> {
       return;
     }
     final data = json.decode(response.body) as Map<String, dynamic>;
-    final int contactCount = (data['connections'] as List<dynamic>?)?.length ?? 0;
+    final int contactCount =
+        (data['connections'] as List<dynamic>?)?.length ?? 0;
     setState(() {
       _contactText = '$contactCount contacts found';
     });

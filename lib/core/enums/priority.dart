@@ -2,11 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-enum CallPriority {
-  high,
-  medium,
-  low,
-}
+enum CallPriority { high, medium, low }
 
 Color priorityMap(CallPriority priority) {
   return switch (priority) {

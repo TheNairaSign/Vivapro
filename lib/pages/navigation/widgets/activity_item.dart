@@ -1,7 +1,7 @@
 import 'package:call_log/call_log.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:vivapro/call_log/data/call_log_model.dart';
+import 'package:vivapro/features/call_log/data/call_log_model.dart';
 import 'package:vivapro/core/theme/global_colors.dart';
 
 class ActivityItem extends StatelessWidget {
@@ -11,7 +11,6 @@ class ActivityItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final name = (log.name != null && log.name!.isNotEmpty)
         ? log.name!
         : (log.formattedNumber ?? 'Unknown');
@@ -38,19 +37,25 @@ class ActivityItem extends StatelessWidget {
       statusColor = isDark ? Colors.red : const Color(0xFFE67E22); // Orange
       statusText = 'Missed call'; // Or "Missed reminder" for similarity
       overlayIcon = Icons.priority_high;
-      overlayBgColor = isDark ? Colors.red.withValues(alpha: 0.2) : const Color(0xFFFFF8E1); // Light yellow
+      overlayBgColor = isDark
+          ? Colors.red.withValues(alpha: 0.2)
+          : const Color(0xFFFFF8E1); // Light yellow
       overlayIconColor = isDark ? Colors.red : const Color(0xFFE67E22);
     } else if (isIncoming && log.duration! > 0) {
-       statusColor = const Color(0xFF2D8CFF); // Blue
-       statusText = 'Incoming • ${_formatDuration(log.duration ?? 0)}';
-       overlayIcon = Icons.call_received;
-       overlayBgColor = isDark ? const Color(0xFF132F4D) : const Color(0xFFE3F2FD);
-       overlayIconColor = const Color(0xFF2D8CFF);
+      statusColor = const Color(0xFF2D8CFF); // Blue
+      statusText = 'Incoming • ${_formatDuration(log.duration ?? 0)}';
+      overlayIcon = Icons.call_received;
+      overlayBgColor = isDark
+          ? const Color(0xFF132F4D)
+          : const Color(0xFFE3F2FD);
+      overlayIconColor = const Color(0xFF2D8CFF);
     } else if (isOutgoing) {
       statusColor = const Color(0xFF00C853); // Green
       statusText = 'Outgoing • ${_formatDuration(log.duration ?? 0)}';
       overlayIcon = Icons.arrow_outward;
-      overlayBgColor = isDark ? const Color(0xFF10361A) : const Color(0xFFE8F5E9);
+      overlayBgColor = isDark
+          ? const Color(0xFF10361A)
+          : const Color(0xFFE8F5E9);
       overlayIconColor = const Color(0xFF00C853);
     } else {
       // Default
@@ -87,7 +92,9 @@ class ActivityItem extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 26,
-                backgroundColor: isDark ? const Color(0xFF3E3E4A) : const Color(0xFFE0E0E0),
+                backgroundColor: isDark
+                    ? const Color(0xFF3E3E4A)
+                    : const Color(0xFFE0E0E0),
                 backgroundImage: null, // TODO: Load actual image if available
                 child: Text(
                   name.isNotEmpty ? name[0].toUpperCase() : '?',
@@ -110,22 +117,18 @@ class ActivityItem extends StatelessWidget {
                   ),
                   padding: const EdgeInsets.all(2), // White border effect
                   child: Container(
-                     decoration: BoxDecoration(
+                    decoration: BoxDecoration(
                       color: overlayBgColor,
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(
-                      overlayIcon,
-                      size: 12,
-                      color: overlayIconColor,
-                    ),
+                    child: Icon(overlayIcon, size: 12, color: overlayIconColor),
                   ),
                 ),
               ),
             ],
           ),
           const SizedBox(width: 16),
-          
+
           // Info
           Expanded(
             child: Column(
@@ -176,7 +179,9 @@ class ActivityItem extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
-                color: isDark ? Colors.red.withValues(alpha: 0.2) : const Color(0xFFFFF9E6),
+                color: isDark
+                    ? Colors.red.withValues(alpha: 0.2)
+                    : const Color(0xFFFFF9E6),
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Text(
@@ -188,14 +193,19 @@ class ActivityItem extends StatelessWidget {
                 ),
               ),
             )
-          else 
+          else
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
-                    color: isDark ? const Color(0xFF1C1C1E) : const Color(0xFFF2F4F7),
+                    color: isDark
+                        ? const Color(0xFF1C1C1E)
+                        : const Color(0xFFF2F4F7),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
@@ -225,7 +235,9 @@ class ActivityItem extends StatelessWidget {
     final minutes = seconds ~/ 60;
     if (minutes < 60) {
       final remainingSeconds = seconds % 60;
-      return remainingSeconds > 0 ? '${minutes}m ${remainingSeconds}s' : '${minutes}m';
+      return remainingSeconds > 0
+          ? '${minutes}m ${remainingSeconds}s'
+          : '${minutes}m';
     }
     return '${minutes}m';
   }

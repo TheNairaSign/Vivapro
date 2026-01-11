@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:vivapro/contacts/data/favorite_contact.dart';
-import 'package:vivapro/contacts/presentation/pages/favorites_page.dart';
-import 'package:vivapro/contacts/repositories/favorite_repository.dart';
+import 'package:vivapro/features/contacts/data/favorite_contact.dart';
+import 'package:vivapro/features/contacts/presentation/pages/favorites_page.dart';
+import 'package:vivapro/features/contacts/repositories/favorite_repository.dart';
 import 'package:vivapro/pages/home/widgets/favorites_card.dart';
 import 'package:vivapro/pages/navigation/contacts_page.dart';
 
@@ -21,6 +21,7 @@ class _FavoritesSectionState extends ConsumerState<FavoritesSection> {
     super.initState();
     _favoritesStream = ref.read(favoritesRepository).watchFavorites();
   }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -37,9 +38,9 @@ class _FavoritesSectionState extends ConsumerState<FavoritesSection> {
               ),
             ),
             GestureDetector(
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const FavoritesPage()),
-              ),
+              onTap: () => Navigator.of(
+                context,
+              ).push(MaterialPageRoute(builder: (_) => const FavoritesPage())),
               child: Text(
                 'View all',
                 style: TextStyle(
@@ -82,14 +83,21 @@ class _FavoritesSectionState extends ConsumerState<FavoritesSection> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.add_circle_outline, color: Colors.grey[600], size: 40),
-                          SizedBox(height: 10,),
-                          Text("Add Favorites", style: TextStyle(color: Colors.grey[400]),)
+                          Icon(
+                            Icons.add_circle_outline,
+                            color: Colors.grey[600],
+                            size: 40,
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            "Add Favorites",
+                            style: TextStyle(color: Colors.grey[400]),
+                          ),
                         ],
                       ),
                     ),
                   ),
-              );
+                );
               }
 
               return ListView.separated(

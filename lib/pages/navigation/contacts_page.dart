@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:vivapro/contacts/presentation/pages/contact_details_page.dart';
+import 'package:vivapro/features/contacts/presentation/pages/contact_details_page.dart';
 import 'package:vivapro/core/theme/global_colors.dart';
 
 class ContactsPage extends StatefulWidget {
@@ -25,7 +25,10 @@ class _ContactsPageState extends State<ContactsPage> {
     if (!await FlutterContacts.requestPermission(readonly: true)) {
       if (mounted) setState(() => _permissionDenied = true);
     } else {
-      final contacts = await FlutterContacts.getContacts(withProperties: true, withPhoto: true);
+      final contacts = await FlutterContacts.getContacts(
+        withProperties: true,
+        withPhoto: true,
+      );
       if (mounted) {
         setState(() {
           _contacts = contacts;
@@ -39,7 +42,12 @@ class _ContactsPageState extends State<ContactsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Contacts', style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
+        title: Text(
+          'Contacts',
+          style: Theme.of(
+            context,
+          ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+        ),
         elevation: 0,
         scrolledUnderElevation: 0,
       ),
@@ -63,12 +71,12 @@ class _ContactsPageState extends State<ContactsPage> {
         ),
       );
     }
-    
+
     if (_contacts == null) {
       return Center(
         child: LoadingAnimationWidget.threeRotatingDots(
-          color: Colors.lightBlue, 
-          size: 30
+          color: Colors.lightBlue,
+          size: 30,
         ),
       );
     }
@@ -93,21 +101,26 @@ class _ContactsPageState extends State<ContactsPage> {
             leading: CircleAvatar(
               backgroundColor: Colors.lightBlue.withValues(alpha: 0.1),
               child: Text(
-                (contact.displayName.isNotEmpty) ? contact.displayName.characters.first.toUpperCase() : '?',
-                style: TextStyle(color: Colors.lightBlue, fontWeight: FontWeight.bold),
+                (contact.displayName.isNotEmpty)
+                    ? contact.displayName.characters.first.toUpperCase()
+                    : '?',
+                style: TextStyle(
+                  color: Colors.lightBlue,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
-            title: Text(
-              contact.displayName,
-            ),
+            title: Text(contact.displayName),
             subtitle: (contact.phones.isNotEmpty)
-              ? Text(contact.phones.first.number)
-              : null,
+                ? Text(contact.phones.first.number)
+                : null,
             onTap: () async {
               final fullContact = await FlutterContacts.getContact(contact.id);
               if (context.mounted && fullContact != null) {
                 Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => ContactDetailsPage(fullContact)),
+                  MaterialPageRoute(
+                    builder: (_) => ContactDetailsPage(fullContact),
+                  ),
                 );
               }
             },
@@ -117,4 +130,3 @@ class _ContactsPageState extends State<ContactsPage> {
     );
   }
 }
-

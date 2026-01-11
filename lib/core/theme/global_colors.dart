@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 class GlobalColors {
   // Modern/Fresh Palette
   static const freshPink = Color(0xFFFF6B8B);
-  static const onLightSurface = Color(0xffeeeef0);  
-  
+  static const onLightSurface = Color(0xffeeeef0);
+
   // Added for NewChatScreen compatibility
   static const yellow = Color(0xFFFFD700);
   static const darkPurple = Color(0xFF2A005E);

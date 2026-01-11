@@ -2,7 +2,6 @@ import 'package:call_log/call_log.dart';
 import 'package:flutter/material.dart';
 
 extension CallTypeIcon on CallType {
-
   Widget get callIcon {
     IconData icon;
     Color color = Colors.grey;
@@ -35,7 +34,7 @@ extension CallTypeIcon on CallType {
     return Icon(icon, size: 14, color: color);
   }
 
-  String get value  {
+  String get value {
     switch (this) {
       case CallType.incoming:
         return 'Incoming';

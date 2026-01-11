@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:vivapro/call_log/data/call_log_model.dart';
-import 'package:vivapro/call_log/presentation/bloc/call_log_bloc.dart';
-import 'package:vivapro/call_log/presentation/bloc/call_log_event.dart';
-import 'package:vivapro/call_log/presentation/bloc/call_log_state.dart';
-import 'package:vivapro/contacts/presentation/pages/add_favorite_page.dart';
+import 'package:vivapro/features/call_log/data/call_log_model.dart';
+import 'package:vivapro/features/call_log/presentation/bloc/call_log_bloc.dart';
+import 'package:vivapro/features/call_log/presentation/bloc/call_log_state.dart';
+import 'package:vivapro/features/call_log/presentation/bloc/call_log_event.dart';
 import 'package:vivapro/pages/navigation/widgets/activity_item.dart';
 import 'package:vivapro/pages/navigation/widgets/filter_pills.dart';
 import 'package:vivapro/pages/navigation/widgets/insight_card.dart';
@@ -20,7 +19,6 @@ class RecentsPage extends StatefulWidget {
 }
 
 class _RecentsPageState extends State<RecentsPage> {
-
   @override
   void initState() {
     super.initState();
@@ -49,7 +47,7 @@ class _RecentsPageState extends State<RecentsPage> {
       } else {
         key = DateFormat('MMMM d').format(date).toUpperCase();
       }
-      
+
       if (!groups.containsKey(key)) {
         groups[key] = [];
       }
@@ -61,9 +59,11 @@ class _RecentsPageState extends State<RecentsPage> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Scaffold(
-      backgroundColor: isDark ? const Color(0xFF101A22) : const Color(0xFFF4F7FA),
+      backgroundColor: isDark
+          ? const Color(0xFF101A22)
+          : const Color(0xFFF4F7FA),
       // floatingActionButton: FloatingActionButton(
       //   onPressed: () {
       //     Navigator.push(
@@ -81,7 +81,12 @@ class _RecentsPageState extends State<RecentsPage> {
             // Header
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
+                padding: const EdgeInsets.only(
+                  left: 20,
+                  right: 20,
+                  top: 20,
+                  bottom: 20,
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -94,7 +99,9 @@ class _RecentsPageState extends State<RecentsPage> {
                           style: TextStyle(
                             fontSize: 32,
                             fontWeight: FontWeight.bold,
-                            color: isDark ? Colors.white : const Color(0xFF1A1D1E),
+                            color: isDark
+                                ? Colors.white
+                                : const Color(0xFF1A1D1E),
                             letterSpacing: -0.5,
                           ),
                         ),
@@ -114,13 +121,17 @@ class _RecentsPageState extends State<RecentsPage> {
                         color: isDark ? const Color(0xFF2C2C3E) : Colors.white,
                         shape: BoxShape.circle,
                       ),
-                      child: Icon(Icons.tune, color: isDark ? Colors.white : Colors.black87, size: 20),
+                      child: Icon(
+                        Icons.tune,
+                        color: isDark ? Colors.white : Colors.black87,
+                        size: 20,
+                      ),
                     ),
                   ],
                 ),
               ),
             ),
-            
+
             // Filter Pills
             const SliverToBoxAdapter(
               child: Padding(
@@ -132,11 +143,10 @@ class _RecentsPageState extends State<RecentsPage> {
             // Insight Card (Only visible if Today has items or just hardcoded for demo)
             // In the design, it's under "TODAY" section or just at the top?
             // "TODAY" header is above the insight card in the image.
-            
+
             // We'll put Insight Card inside the list or just as a static item at the top of Today for now.
             // Let's verify the image structure:
             // "TODAY" -> Insight Card -> Sarah Item -> Dad Item.
-            
             BlocBuilder<CallLogBloc, CallLogState>(
               builder: (context, state) {
                 if (state is CallLogLoading) {
@@ -145,49 +155,50 @@ class _RecentsPageState extends State<RecentsPage> {
                       padding: const EdgeInsets.only(top: 100),
                       child: Center(
                         child: LoadingAnimationWidget.threeRotatingDots(
-                          color: const Color(0xFF2D8CFF), 
-                          size: 30
-                        )
+                          color: const Color(0xFF2D8CFF),
+                          size: 30,
+                        ),
                       ),
                     ),
                   );
                 } else if (state is CallLogFailure) {
-                  return SliverToBoxAdapter(child: Center(child: Text(state.message)));
+                  return SliverToBoxAdapter(
+                    child: Center(child: Text(state.message)),
+                  );
                 } else if (state is CallLogSuccess) {
                   final groupedLogs = _groupLogsByDate(state.callLogEntries);
                   final keys = groupedLogs.keys.toList();
+                  final insights = state.insights;
 
-                  // Ensure TODAY is first even if empty if we want to show Insight
-                  if (!keys.contains('TODAY')) {
-                    // Logic to just show basic "Active" state
-                    // We can artificially insert Insight if list is empty?
-                  }
-
-                  if (groupedLogs.isEmpty) {
-                     return const SliverToBoxAdapter(
+                  if (groupedLogs.isEmpty && insights.isEmpty) {
+                    return const SliverToBoxAdapter(
                       child: Padding(
                         padding: EdgeInsets.all(20),
-                        child:  InsightCard(),
+                        child: Center(child: Text("No recent activity.")),
                       ),
                     );
                   }
 
                   return SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        final key = keys[index];
-                        final logs = groupedLogs[key]!;
-                        final isToday = key == 'TODAY';
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      // This is a bit of a hack to combine two lists (insights and logs)
+                      // A better approach would be a single list of a sealed type.
+                      // For now, we render insights first, then the log groups.
 
+                      if (index == 0 && insights.isNotEmpty) {
+                        // Render Insights Section
                         return Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Padding(
-                                padding: const EdgeInsets.only(top: 24, bottom: 12),
+                                padding: const EdgeInsets.only(
+                                  top: 24,
+                                  bottom: 12,
+                                ),
                                 child: Text(
-                                  key,
+                                  '✨ SMART INSIGHTS',
                                   style: TextStyle(
                                     fontSize: 13,
                                     fontWeight: FontWeight.bold,
@@ -196,23 +207,54 @@ class _RecentsPageState extends State<RecentsPage> {
                                   ),
                                 ),
                               ),
-                              if (isToday) ...[
-                                const InsightCard(),
-                                const SizedBox(height: 12),
-                              ],
-                              ...logs.map((log) => ActivityItem(log: log)),
+                              ...insights.map(
+                                (insight) => InsightCard(insight: insight),
+                              ),
                             ],
                           ),
                         );
-                      },
-                      childCount: keys.length,
-                    ),
+                      }
+
+                      // Adjust index for logs
+                      final logIndex = insights.isNotEmpty ? index - 1 : index;
+                      if (logIndex < 0 || logIndex >= keys.length) {
+                        return const SizedBox.shrink();
+                      }
+
+                      final key = keys[logIndex];
+                      final logs = groupedLogs[key]!;
+
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                top: 24,
+                                bottom: 12,
+                              ),
+                              child: Text(
+                                key,
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.grey[500],
+                                  letterSpacing: 1.2,
+                                ),
+                              ),
+                            ),
+                            ...logs.map((log) => ActivityItem(log: log)),
+                          ],
+                        ),
+                      );
+                    }, childCount: keys.length + (insights.isNotEmpty ? 1 : 0)),
                   );
                 }
                 return const SliverToBoxAdapter(child: SizedBox.shrink());
               },
             ),
-             const SliverPadding(padding: EdgeInsets.only(bottom: 100)),
+            const SliverPadding(padding: EdgeInsets.only(bottom: 100)),
           ],
         ),
       ),

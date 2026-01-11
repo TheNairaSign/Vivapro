@@ -12,10 +12,7 @@ class InsightsSection extends StatelessWidget {
       children: [
         const Text(
           'Insights',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-          ),
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: 16),
         Container(
@@ -70,14 +67,27 @@ class InsightsSection extends StatelessWidget {
                         child: ElevatedButton(
                           onPressed: () {},
                           style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
-                            backgroundColor: Colors.lightBlue.withValues(alpha: .25),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 6,
+                            ),
+                            backgroundColor: Colors.lightBlue.withValues(
+                              alpha: .25,
+                            ),
                             elevation: 0,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(18),
                             ),
                           ),
-                          child: Text('Schedule Call', style:  Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 14)),
+                          child: Text(
+                            'Schedule Call',
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(
+                                  color: Colors.blue,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                ),
+                          ),
                         ),
                       ),
                     ],
@@ -114,7 +124,9 @@ class InsightsSection extends StatelessWidget {
                 height: 140,
                 padding: const EdgeInsets.all(15),
                 decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF131D2A) : Colors.greenAccent.withValues(alpha: .25),
+                  color: isDark
+                      ? const Color(0xFF131D2A)
+                      : Colors.greenAccent.withValues(alpha: .25),
                   borderRadius: BorderRadius.circular(24),
                   boxShadow: GlobalColors.boxShadow(context),
                 ),
@@ -145,7 +157,10 @@ class InsightsSection extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text(
                       'Relationship Health',
-                      style: TextStyle(color: isDark ? Colors.white70 : Colors.grey[700], fontSize: 12),
+                      style: TextStyle(
+                        color: isDark ? Colors.white70 : Colors.grey[700],
+                        fontSize: 12,
+                      ),
                     ),
                   ],
                 ),
@@ -178,10 +193,7 @@ class InsightsSection extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 4),
-                    const Text(
-                      'Calls planned',
-                      style: TextStyle(fontSize: 12),
-                    ),
+                    const Text('Calls planned', style: TextStyle(fontSize: 12)),
                   ],
                 ),
               ),

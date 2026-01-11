@@ -1,14 +1,8 @@
 import 'package:flutter/material.dart';
 
-enum CallFrequency {
-  daily,
-  weekly,
-  monthly,
-  yearly,
-  custom,
-}
+enum CallFrequency { daily, weekly, monthly, yearly, custom }
 
-Color  callFrequencyColor(CallFrequency frequency) {
+Color callFrequencyColor(CallFrequency frequency) {
   switch (frequency) {
     case CallFrequency.daily:
       return Colors.blue;

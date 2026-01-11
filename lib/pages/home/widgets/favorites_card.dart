@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:vivapro/contacts/data/favorite_contact.dart';
-import 'package:vivapro/contacts/presentation/pages/contact_details_page.dart';
+import 'package:vivapro/features/contacts/data/favorite_contact.dart';
+import 'package:vivapro/features/contacts/presentation/pages/contact_details_page.dart';
 import 'package:vivapro/core/app_constants.dart';
 import 'package:vivapro/core/extensions/first_name_extension.dart';
 import 'package:vivapro/core/theme/global_colors.dart';
@@ -13,7 +13,11 @@ class FavoritesCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => ContactDetailsPage(contact.contactDetails))),
+      onTap: () => Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => ContactDetailsPage(contact.contactDetails),
+        ),
+      ),
       child: SizedBox(
         width: 170,
         child: Container(
@@ -42,7 +46,9 @@ class FavoritesCard extends StatelessWidget {
                       radius: 33,
                       backgroundImage: contact.contactDetails.photo != null
                           ? MemoryImage(contact.contactDetails.photo!)
-                          : CachedNetworkImageProvider(AppConstants.placeHolderProfileImage),
+                          : CachedNetworkImageProvider(
+                              AppConstants.placeHolderProfileImage,
+                            ),
                     ),
                   ),
                   // Positioned(
@@ -92,7 +98,9 @@ class FavoritesCard extends StatelessWidget {
                     backgroundColor: Colors.lightBlue,
                     foregroundColor: Colors.white,
                     elevation: 0,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18),),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18),
+                    ),
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   ),
                   child: Text(
@@ -103,7 +111,6 @@ class FavoritesCard extends StatelessWidget {
                     ),
                   ),
                 ),
-      
               ),
             ],
           ),

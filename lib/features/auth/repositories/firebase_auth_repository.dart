@@ -1,0 +1,125 @@
+import 'package:dartz/dartz.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vivapro/features/auth/data/auth_user.dart';
+import 'package:vivapro/features/auth/repositories/auth_repository.dart';
+import 'package:vivapro/core/failures/auth_failure.dart';
+
+class FirebaseAuthRepository implements AuthRepository {
+  final FirebaseAuth _firebaseAuth;
+
+  FirebaseAuthRepository(this._firebaseAuth);
+
+  @override
+  Stream<AuthUser?> get authStateChanges {
+    return _firebaseAuth.authStateChanges().map((user) {
+      if (user == null) {
+        return null;
+      } else {
+        return AuthUser.fromFirebaseUser(user);
+      }
+    });
+  }
+
+  @override
+  Future<Either<AuthFailure, AuthUser>> signInWithEmailAndPassword({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      final userCredential = await _firebaseAuth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      if (userCredential.user != null) {
+        return right(AuthUser.fromFirebaseUser(userCredential.user!));
+      } else {
+        return left(AuthFailure.userNotFound());
+      }
+    } on FirebaseAuthException catch (e) {
+      return left(_handleFirebaseAuthException(e));
+    } catch (e) {
+      return left(AuthFailure.unknownError(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<AuthFailure, AuthUser>> signUpWithEmailAndPassword({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      final userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      if (userCredential.user != null) {
+        await userCredential.user!.sendEmailVerification();
+        return right(AuthUser.fromFirebaseUser(userCredential.user!));
+      } else {
+        return left(AuthFailure.userNotFound());
+      }
+    } on FirebaseAuthException catch (e) {
+      return left(_handleFirebaseAuthException(e));
+    } catch (e) {
+      return left(AuthFailure.unknownError(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<AuthFailure, Unit>> signOut() async {
+    try {
+      await _firebaseAuth.signOut();
+      return right(unit);
+    } on FirebaseAuthException catch (e) {
+      return left(_handleFirebaseAuthException(e));
+    } catch (e) {
+      return left(AuthFailure.unknownError(e.toString()));
+    }
+  }
+
+  Future<bool> isEmailVerified() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user == null) return false;
+
+    await user.reload();
+    user = FirebaseAuth.instance.currentUser;
+
+    return user?.emailVerified ?? false;
+  }
+
+  @override
+  AuthUser? getCurrentUser() {
+    final user = _firebaseAuth.currentUser;
+    return user != null ? AuthUser.fromFirebaseUser(user) : null;
+  }
+
+  AuthFailure _handleFirebaseAuthException(FirebaseAuthException e) {
+    switch (e.code) {
+      case 'invalid-email':
+      case 'user-disabled':
+      case 'user-not-found':
+        return AuthFailure.userNotFound();
+      case 'wrong-password':
+        return AuthFailure.wrongPassword();
+      case 'email-already-in-use':
+        return AuthFailure.emailAlreadyInUse();
+      case 'operation-not-allowed':
+        return AuthFailure.operationNotAllowed();
+      case 'weak-password':
+        return AuthFailure.weakPassword();
+      case 'too-many-requests':
+        return AuthFailure.tooManyRequests();
+      case 'network-request-failed':
+        return AuthFailure.serverError(); // Or a specific network failure
+      default:
+        return AuthFailure.unknownError(
+          e.message ?? 'An unknown error occurred.',
+        );
+    }
+  }
+}
+
+final firebaseAuthRepository = Provider<FirebaseAuthRepository>(
+  (ref) => FirebaseAuthRepository(FirebaseAuth.instance),
+);

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:vivapro/call_log/presentation/bloc/call_log_bloc.dart';
-import 'package:vivapro/call_log/presentation/bloc/call_log_event.dart';
-import 'package:vivapro/call_log/presentation/bloc/call_log_state.dart';
+import 'package:vivapro/features/call_log/presentation/bloc/call_log_bloc.dart';
+import 'package:vivapro/features/call_log/presentation/bloc/call_log_state.dart';
+import 'package:vivapro/features/call_log/presentation/bloc/call_log_event.dart';
 import 'package:vivapro/pages/home/widgets/favorites_section.dart';
 import 'package:vivapro/pages/home/widgets/insights_section.dart';
 import 'package:vivapro/pages/home/widgets/recents_item.dart';
@@ -46,10 +46,7 @@ class _HomePageState extends ConsumerState<HomePage> {
             const SizedBox(height: 4),
             const Text(
               'Good evening, Ty',
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -57,7 +54,7 @@ class _HomePageState extends ConsumerState<HomePage> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: isDark? const Color(0xFF1C2029): Colors.white,
+              color: isDark ? const Color(0xFF1C2029) : Colors.white,
               borderRadius: BorderRadius.circular(20),
             ),
             child: Row(
@@ -99,9 +96,7 @@ class _HomePageState extends ConsumerState<HomePage> {
     return BlocBuilder<CallLogBloc, CallLogState>(
       builder: (context, state) {
         if (state is CallLogSuccess) {
-          final logs = state.callLogEntries
-              .take(3)
-              .toList();
+          final logs = state.callLogEntries.take(3).toList();
 
           return Column(
             children: logs.map((log) => RecentsItem(log: log)).toList(),

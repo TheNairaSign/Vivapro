@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:vivapro/auth/data/auth_user.dart';
-import 'package:vivapro/messaging/presentation/pages/chat_screen.dart';
+import 'package:vivapro/features/auth/data/auth_user.dart';
+import 'package:vivapro/features/messaging/presentation/pages/chat_screen.dart';
 import 'package:vivapro/pages/Home_page.dart.dart';
 import 'package:vivapro/pages/navigation/contacts_page.dart';
 import 'package:vivapro/pages/navigation/recents_page.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
-import 'package:vivapro/contacts/presentation/pages/add_favorite_page.dart';
-import 'package:vivapro/messaging/presentation/pages/new_chat_screen.dart';
+import 'package:vivapro/features/contacts/presentation/pages/add_favorite_page.dart';
+import 'package:vivapro/features/messaging/presentation/pages/new_chat_screen.dart';
+import 'package:vivapro/pages/contact_picker_page.dart';
 import 'package:vivapro/pages/navigation/widgets/custom_navigation_bar.dart';
+import 'package:vivapro/pages/navigation/schedule_call_page.dart';
 
 class NavigationPage extends StatefulWidget {
   const NavigationPage({super.key, required this.user});
@@ -40,9 +42,9 @@ class _NavigationPageState extends State<NavigationPage> {
               controller: pageController,
               children: <Widget>[
                 const HomePage(),
-                const RecentsPage(), 
-                const Center(child: Text("Quick Actions")), 
-                ChatScreen(user: widget.user), 
+                const RecentsPage(),
+                const Center(child: Text("Quick Actions")),
+                ChatScreen(user: widget.user),
                 const ContactsPage(),
               ],
             ),
@@ -51,9 +53,22 @@ class _NavigationPageState extends State<NavigationPage> {
             alignment: Alignment.bottomCenter,
             child: CustomNavigationBar(
               selectedIndex: selectedIndex,
-              onItemSelected: (int index) {
+              onItemSelected: (int index) async {
                 if (index == 2) {
-                  _handlePlusButtonAction();
+                  final contact = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ContactPickerPage(),
+                    ),
+                  );
+                  if (contact != null && context.mounted) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ScheduleCallPage(contact: contact),
+                      ),
+                    );
+                  }
                 } else {
                   setState(() {
                     selectedIndex = index;
@@ -71,9 +86,9 @@ class _NavigationPageState extends State<NavigationPage> {
   void _handlePlusButtonAction() async {
     switch (selectedIndex) {
       case 0:
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Home Action")),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text("Home Action")));
         break;
       case 1:
         Navigator.push(
@@ -93,7 +108,7 @@ class _NavigationPageState extends State<NavigationPage> {
         } catch (e) {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-               SnackBar(content: Text("Failed to open contacts: $e")),
+              SnackBar(content: Text("Failed to open contacts: $e")),
             );
           }
         }

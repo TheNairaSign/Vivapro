@@ -21,17 +21,16 @@ class CustomTextfield extends StatefulWidget {
     this.maxLines = 1,
     this.minLines = 1,
     this.keyboardType = TextInputType.text,
-  }) 
-  : assert(maxLines > 0),
-    assert(minLines > 0),
-    assert(maxLines >= minLines),
-    assert(controller != null || initialValue != null);
+  }) : assert(maxLines > 0),
+       assert(minLines > 0),
+       assert(maxLines >= minLines),
+       assert(controller != null || initialValue != null);
 
   final TextEditingController? controller;
   final String? hintText, initialValue, label;
   final Widget? prefixIcon, suffixIcon;
   final bool showSuffix;
-  final double? height; 
+  final double? height;
   bool obscure, enabled;
   final int maxLines, minLines;
   final Function(String)? onChanged;
@@ -56,32 +55,34 @@ class _CustomTextfieldState extends State<CustomTextfield> {
       cursorColor: Colors.green,
       onChanged: widget.onChanged,
       validator: widget.validator,
-      style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: GlobalColors.textThemeColor(context)),
+      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+        color: GlobalColors.textThemeColor(context),
+      ),
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.all(10),
         hintText: widget.hintText,
-        hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey),
+        hintStyle: Theme.of(
+          context,
+        ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
         prefixIcon: widget.prefixIcon,
         labelText: widget.label,
         labelStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(),
-        suffixIcon: widget.suffixIcon ??
-          (widget.showSuffix
-              ? GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      widget.obscure = !widget.obscure;
-                    });
-                  },
-                  child: Icon(
-                      widget.obscure
-                          ? Icons.visibility_off
-                          : Icons.visibility,
+        suffixIcon:
+            widget.suffixIcon ??
+            (widget.showSuffix
+                ? GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        widget.obscure = !widget.obscure;
+                      });
+                    },
+                    child: Icon(
+                      widget.obscure ? Icons.visibility_off : Icons.visibility,
                       color: GlobalColors.textThemeColor(context),
                       size: 20,
-                    )
+                    ),
                   )
-              : null
-            ),
+                : null),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: Colors.grey, width: .3),
