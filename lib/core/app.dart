@@ -19,6 +19,8 @@ import 'package:vivapro/features/messaging/presentation/bloc/chat/chat_bloc.dart
 import 'package:vivapro/features/messaging/presentation/bloc/message_bloc.dart';
 import 'package:vivapro/features/messaging/repositories/chat_repository.dart';
 import 'package:vivapro/features/messaging/repositories/message_repository.dart';
+import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_bloc.dart';
+import 'package:vivapro/features/schedule_call/repositories/schedule_call_repository.dart';
 
 class Vivapro extends ConsumerStatefulWidget {
   const Vivapro({super.key});
@@ -38,22 +40,11 @@ class _VivaproState extends ConsumerState<Vivapro> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (create) => SignUpBloc(ref.read(firebaseAuthRepository)),
-        ),
-        BlocProvider(
-          create: (create) => SignInBloc(ref.read(firebaseAuthRepository)),
-        ),
-        BlocProvider(
-          create: (create) =>
-              AuthStateChangeBloc(ref.read(firebaseAuthRepository)),
-        ),
-        BlocProvider(
-          create: (create) =>
-              GoogleSignInBloc(ref.read(googleSignInRepositoryProvider)),
-        ),
-        BlocProvider(
-          create: (create) => CallLogBloc(
+        BlocProvider(create: (create) => SignUpBloc(ref.read(firebaseAuthRepository))),
+        BlocProvider(create: (create) => SignInBloc(ref.read(firebaseAuthRepository))),
+        BlocProvider(create: (create) => AuthStateChangeBloc(ref.read(firebaseAuthRepository))),
+        BlocProvider(create: (create) => GoogleSignInBloc(ref.read(googleSignInRepositoryProvider))),
+        BlocProvider(create: (create) => CallLogBloc(
             ref.read(callLogRepository),
             ref.read(contactsRepository),
           ),
@@ -64,9 +55,8 @@ class _VivaproState extends ConsumerState<Vivapro> {
             ref.read(contactsRepository),
           ),
         ),
-        BlocProvider(
-          create: (create) => MessageBloc(ref.read(messageRepository)),
-        ),
+        BlocProvider(create: (create) => MessageBloc(ref.read(messageRepository))),
+        BlocProvider(create: (create) => ScheduleCallBloc(repository: ref.read(scheduleCallRepositoryProvider))),
       ],
       child: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle(

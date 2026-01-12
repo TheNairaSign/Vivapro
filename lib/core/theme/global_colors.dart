@@ -4,6 +4,8 @@ class GlobalColors {
   // Modern/Fresh Palette
   static const freshPink = Color(0xFFFF6B8B);
   static const onLightSurface = Color(0xffeeeef0);
+  static const goldBackground = Color(0xFFFFF9E6);
+  static const goldBorder = Color(0xFFFFF5D6);
 
   // Added for NewChatScreen compatibility
   static const yellow = Color(0xFFFFD700);

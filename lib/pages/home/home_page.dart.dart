@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:vivapro/core/extensions/first_name_extension.dart';
+import 'package:vivapro/features/auth/data/auth_user.dart';
 import 'package:vivapro/features/call_log/presentation/bloc/call_log_bloc.dart';
 import 'package:vivapro/features/call_log/presentation/bloc/call_log_state.dart';
 import 'package:vivapro/features/call_log/presentation/bloc/call_log_event.dart';
@@ -10,7 +12,8 @@ import 'package:vivapro/pages/home/widgets/insights_section.dart';
 import 'package:vivapro/pages/home/widgets/recents_item.dart';
 
 class HomePage extends ConsumerStatefulWidget {
-  const HomePage({super.key});
+  const HomePage(this.user, {super.key});
+  final AuthUser user;
 
   @override
   ConsumerState<HomePage> createState() => _HomePageState();
@@ -37,16 +40,15 @@ class _HomePageState extends ConsumerState<HomePage> {
           children: [
             Text(
               dateString,
-              style: TextStyle(
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: Colors.grey[500],
-                fontSize: 14,
                 fontWeight: FontWeight.w500,
               ),
             ),
             const SizedBox(height: 4),
-            const Text(
-              'Good evening, Ty',
-              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+            Text(
+              'Good evening, ${widget.user.displayName?.firstName}',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -61,9 +63,8 @@ class _HomePageState extends ConsumerState<HomePage> {
               children: [
                 Text(
                   'SOS',
-                  style: TextStyle(
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: Colors.red,
-                    fontSize: 12,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

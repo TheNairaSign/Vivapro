@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:vivapro/core/theme/global_colors.dart';
 import 'package:vivapro/features/call_log/data/models/insight_model.dart';
 
 class InsightCard extends StatelessWidget {
@@ -25,10 +26,10 @@ class InsightCard extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final backgroundColor = isDark
         ? const Color(0xFF2C2C29)
-        : const Color(0xFFFFF9E6);
+        : GlobalColors.goldBackground;
     final borderColor = isDark
         ? const Color(0xFF3E3E3A)
-        : const Color(0xFFFFF5D6);
+        : GlobalColors.goldBorder;
     final titleColor = isDark ? Colors.white : Colors.black87;
     final bodyColor = isDark ? Colors.grey[400] : Colors.black54;
 

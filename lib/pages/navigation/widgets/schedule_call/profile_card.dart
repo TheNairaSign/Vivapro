@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_contacts/contact.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:vivapro/core/theme/global_colors.dart';
-import 'package:vivapro/pages/navigation/schedule_call_page.dart';
+import 'package:vivapro/features/schedule_call/presentation/pages/schedule_call_page.dart';
 
 class ProfileCard extends StatelessWidget {
   const ProfileCard({super.key, required this.contact});
