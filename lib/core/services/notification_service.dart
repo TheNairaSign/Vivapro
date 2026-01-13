@@ -38,11 +38,14 @@ class NotificationService {
     try {
       final timeZoneResult = await FlutterTimezone.getLocalTimezone();
       final String timeZoneName = timeZoneResult.identifier;
+      debugPrint('Detected timezone: $timeZoneName');
       tz.setLocalLocation(tz.getLocation(timeZoneName));
+      debugPrint('Timezone set successfully to: ${tz.local.name}');
     } catch (e) {
       debugPrint('Could not set local timezone: $e');
       // Fallback to UTC or a default if necessary, though getting local usually works
       tz.setLocalLocation(tz.local); 
+      debugPrint('Fallback timezone: ${tz.local.name}');
     }
 
     const AndroidInitializationSettings initializationSettingsAndroid =
@@ -74,7 +77,7 @@ class NotificationService {
       macOS: initializationSettingsDarwin,
     );
 
-    await flutterLocalNotificationsPlugin.initialize(
+    final bool? initialized = await flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
       onDidReceiveNotificationResponse:
           (NotificationResponse notificationResponse) {
@@ -82,6 +85,28 @@ class NotificationService {
       },
       onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
     );
+    debugPrint('Notification Plugin Initialized: $initialized');
+
+    if (Platform.isAndroid) {
+      await _createNotificationChannel();
+    }
+  }
+
+  Future<void> _createNotificationChannel() async {
+    const AndroidNotificationChannel channel = AndroidNotificationChannel(
+      'scheduled_calls_channel',
+      'Scheduled Calls',
+      description: 'Notifications for scheduled calls',
+      importance: Importance.max,
+      playSound: true,
+      enableVibration: true,
+    );
+
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(channel);
+    debugPrint('Android Notification Channel Created');
   }
 
   Future<void> requestPermissions() async {
@@ -101,35 +126,49 @@ class NotificationService {
             sound: true,
           );
     } else if (Platform.isAndroid) {
-      final AndroidFlutterLocalNotificationsPlugin? androidImplementation = flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+      final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
+          flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin>();
 
-      await androidImplementation?.requestNotificationsPermission();
-      await androidImplementation?.requestExactAlarmsPermission();
+      final bool? postNotificationsGranted =
+          await androidImplementation?.requestNotificationsPermission();
+      debugPrint('POST_NOTIFICATIONS granted: $postNotificationsGranted');
+
+      final bool? exactAlarmGranted =
+          await androidImplementation?.requestExactAlarmsPermission();
+      debugPrint('EXACT_ALARM permission granted: $exactAlarmGranted');
     }
   }
 
   Future<void> scheduleCallNotification(ScheduleCall call) async {
-    final scheduledDate = tz.TZDateTime.from(
-      DateTime(
-        call.date.year,
-        call.date.month,
-        call.date.day,
-        call.time.hour,
-        call.time.minute,
-      ),
+    final now = tz.TZDateTime.now(tz.local);
+    final scheduledDate = tz.TZDateTime(
       tz.local,
+      call.date.year,
+      call.date.month,
+      call.date.day,
+      call.time.hour,
+      call.time.minute,
     );
 
-    if (scheduledDate.isBefore(tz.TZDateTime.now(tz.local))) {
-      // Don't schedule in the past
+    debugPrint('Scheduling notification:');
+    debugPrint('Current time (local): $now');
+    debugPrint('Scheduled time (local): $scheduledDate');
+
+    if (scheduledDate.isBefore(now)) {
+      debugPrint('Skipping notification: Scheduled time is in the past.');
       return;
     }
+
+    // Use a stable ID for the notification based on the call ID.
+    // Ensure it's a positive integer, as some platforms might have issues with negative IDs.
+    final notificationId = call.id.isEmpty ? call.hashCode : call.id.hashCode;
 
     // Verify types exist
     const androidAllowWhileIdle = AndroidScheduleMode.exactAllowWhileIdle;
 
     await flutterLocalNotificationsPlugin.zonedSchedule(
-      call.hashCode, // Use hashcode as ID (or convert string ID to int)
+      notificationId.abs(), 
       'Scheduled Call with ${call.contact.displayName}',
       call.note.isNotEmpty ? call.note : 'It\'s time for your call!',
       scheduledDate,
@@ -159,10 +198,36 @@ class NotificationService {
       ),
       androidScheduleMode: androidAllowWhileIdle,
       payload: jsonEncode(call.toJson()), // Use jsonEncode for valid JSON
-    );
+    ).then((_) {
+      debugPrint('Notification scheduled successfully with ID: ${notificationId.abs()}');
+    }).catchError((e) {
+      debugPrint('Error scheduling notification: $e');
+    });
   }
 
   Future<void> cancelNotification(int id) async {
     await flutterLocalNotificationsPlugin.cancel(id);
+  }
+
+  Future<void> showTestNotification() async {
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+        AndroidNotificationDetails(
+      'scheduled_calls_channel',
+      'Scheduled Calls',
+      channelDescription: 'Notifications for scheduled calls',
+      importance: Importance.max,
+      priority: Priority.high,
+      ticker: 'ticker',
+    );
+    const NotificationDetails platformChannelSpecifics =
+        NotificationDetails(android: androidPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.show(
+      0,
+      'Test Notification',
+      'If you see this, notifications are working!',
+      platformChannelSpecifics,
+      payload: 'test',
+    );
+    debugPrint('Immediate test notification triggered');
   }
 }

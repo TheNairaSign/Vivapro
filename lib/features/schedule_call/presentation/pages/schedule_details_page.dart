@@ -71,9 +71,7 @@ class ScheduleDetailsPage extends StatelessWidget {
             // Contact Name
             Text(
               scheduleCall.contact.displayName,
-              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
             

@@ -112,7 +112,9 @@ class _ScheduleCallPageState extends ConsumerState<ScheduleCallPage> {
                           final navigator = Navigator.of(context);
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: const Text("Call Scheduled"), 
+                              content: const Text("Call Scheduled"),
+                              duration: Duration(seconds: 3),
+                              persist: false,
                               action: SnackBarAction(
                                 label: 'View', 
                                 onPressed: () => navigator.push(MaterialPageRoute(builder: (ctx) => ScheduleDetailsPage(scheduleCall: scheduleCall))),

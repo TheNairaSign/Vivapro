@@ -8,6 +8,7 @@ import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_e
 import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_state.dart';
 import 'package:vivapro/features/schedule_call/presentation/pages/schedule_call_page.dart';
 import 'package:vivapro/features/schedule_call/presentation/pages/schedule_details_page.dart';
+import 'package:vivapro/core/services/notification_service.dart';
 import 'package:vivapro/pages/contact_picker_page.dart';
 
 class ScheduledCallsPage extends StatefulWidget {
@@ -47,6 +48,10 @@ class _ScheduledCallsPageState extends State<ScheduledCallsPage> {
         elevation: 2,
         actionsPadding: EdgeInsets.only(right: 15),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.bug_report, color: Colors.orange),
+            onPressed: () => NotificationService().showTestNotification(),
+          ),
           GestureDetector(
             onTap: () async {
               final contact = await Navigator.push(
