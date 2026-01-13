@@ -3,9 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:vivapro/firebase_options.dart';
 
+import 'package:vivapro/core/services/background_task_manager.dart';
+import 'package:vivapro/core/services/notification_service.dart';
+
 Future<void> bootstrap() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  final notificationService = NotificationService();
+  await notificationService.initialize();
+  await notificationService.requestPermissions();
+
+  final backgroundTaskManager = BackgroundTaskManager();
+  backgroundTaskManager.initialize();
 
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 }

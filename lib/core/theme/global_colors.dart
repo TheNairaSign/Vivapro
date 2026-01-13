@@ -6,6 +6,7 @@ class GlobalColors {
   static const onLightSurface = Color(0xffeeeef0);
   static const goldBackground = Color(0xFFFFF9E6);
   static const goldBorder = Color(0xFFFFF5D6);
+  static const primaryColor = Colors.lightBlue;
 
   // Added for NewChatScreen compatibility
   static const yellow = Color(0xFFFFD700);

@@ -3,6 +3,7 @@ import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vivapro/core/failures/failure.dart';
+import 'package:vivapro/core/services/notification_service.dart';
 import 'package:vivapro/features/schedule_call/data/schedule_call.dart';
 
 class ScheduleCallRepository {
@@ -35,13 +36,19 @@ class ScheduleCallRepository {
     });
   }
 
+  // Create instance
+  final _notificationService = NotificationService();
+
   /// Schedule a call (Create)
   Future<Either<Failure, Unit>> scheduleCall(ScheduleCall scheduleCall) async {
     try {
       final ref = _userSchedulesRef;
       if (ref == null) return left(Failure('User not authenticated'));
 
-      await ref.add(scheduleCall.toJson());
+      final docRef = await ref.add(scheduleCall.toJson());
+      final callWithId = scheduleCall.copyWith(id: docRef.id);
+      await _notificationService.scheduleCallNotification(callWithId);
+      
       return right(unit);
     } catch (e) {
       return left(Failure(e.toString()));
@@ -56,6 +63,8 @@ class ScheduleCallRepository {
       if (scheduleCall.id.isEmpty) return left(Failure('Invalid schedule ID'));
 
       await ref.doc(scheduleCall.id).update(scheduleCall.toJson());
+      await _notificationService.scheduleCallNotification(scheduleCall);
+
       return right(unit);
     } catch (e) {
       return left(Failure(e.toString()));
@@ -69,6 +78,8 @@ class ScheduleCallRepository {
       if (ref == null) return left(Failure('User not authenticated'));
 
       await ref.doc(scheduleId).delete();
+      await _notificationService.cancelNotification(scheduleId.hashCode);
+
       return right(unit);
     } catch (e) {
       return left(Failure(e.toString()));

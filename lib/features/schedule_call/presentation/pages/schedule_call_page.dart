@@ -6,6 +6,8 @@ import 'package:vivapro/features/schedule_call/data/schedule_call.dart';
 import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_bloc.dart';
 import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_event.dart';
 import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_state.dart';
+import 'package:vivapro/features/schedule_call/presentation/pages/schedule_details_page.dart';
+import 'package:vivapro/features/schedule_call/presentation/pages/scheduled_calls_page.dart';
 import 'package:vivapro/features/schedule_call/repositories/schedule_call_repository.dart';
 import 'package:vivapro/pages/navigation/widgets/schedule_call/call_note_card.dart';
 import 'package:vivapro/pages/navigation/widgets/schedule_call/date_selection_card.dart';
@@ -107,10 +109,18 @@ class _ScheduleCallPageState extends ConsumerState<ScheduleCallPage> {
                           );
                           context.read<ScheduleCallBloc>().add(ScheduleCallAdd(scheduleCall: scheduleCall));
                           
+                          final navigator = Navigator.of(context);
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text("Call Scheduled")),
+                            SnackBar(
+                              content: const Text("Call Scheduled"), 
+                              action: SnackBarAction(
+                                label: 'View', 
+                                onPressed: () => navigator.push(MaterialPageRoute(builder: (ctx) => ScheduleDetailsPage(scheduleCall: scheduleCall))),
+                                textColor: Colors.lightBlue,
+                              )
+                            ),
                           );
-                          Navigator.pop(context);
+                          navigator.pop();
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.blue,

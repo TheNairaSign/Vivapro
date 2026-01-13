@@ -7,6 +7,7 @@ import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_b
 import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_event.dart';
 import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_state.dart';
 import 'package:vivapro/features/schedule_call/presentation/pages/schedule_call_page.dart';
+import 'package:vivapro/features/schedule_call/presentation/pages/schedule_details_page.dart';
 import 'package:vivapro/pages/contact_picker_page.dart';
 
 class ScheduledCallsPage extends StatefulWidget {
@@ -94,9 +95,9 @@ class _ScheduledCallsPageState extends State<ScheduledCallsPage> {
                     Text(
                       "No scheduled calls",
                       style: Theme.of(context)
-                          .textTheme
-                          .titleMedium
-                          ?.copyWith(color: Colors.grey),
+                        .textTheme
+                        .titleMedium
+                        ?.copyWith(color: Colors.grey),
                     ),
                   ],
                 ),
@@ -146,6 +147,14 @@ class _ScheduledCallsPageState extends State<ScheduledCallsPage> {
                     context.read<ScheduleCallBloc>().add(ScheduleCallDelete(scheduleId: schedule.id));
                   },
                   child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ScheduleDetailsPage(scheduleCall: schedule),
+                        ),
+                      );
+                    },
                     child: Container(
                       decoration: BoxDecoration(
                         color: GlobalColors.containerColor(context),
