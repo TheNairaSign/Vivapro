@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:vivapro/features/contacts/presentation/widgets/favorites/frequency_selection_chip.dart';
 import 'package:vivapro/features/contacts/presentation/widgets/favorites/priority_section_container.dart';
 import 'package:vivapro/core/enums/call_frequency.dart';
@@ -13,17 +14,17 @@ class FrequencyContainer extends StatefulWidget {
 }
 
 class _FrequencyContainerState extends State<FrequencyContainer> {
-  CallFrequency _selectedFrequency = CallFrequency.daily;
-  CallPriority _selectedPriority = CallPriority.high;
 
   @override
   Widget build(BuildContext context) {
+    final favoritesProvider = Provider.of<AddFavoritesProvider>(context);
+
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: GlobalColors.containerColor(context),
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
         boxShadow: GlobalColors.boxShadow(context),
       ),
@@ -60,9 +61,9 @@ class _FrequencyContainerState extends State<FrequencyContainer> {
                 (index) => FrequencySelectionChip(
                   frequency: CallFrequency.values[index],
                   onTap: () => setState(
-                    () => _selectedFrequency = CallFrequency.values[index],
+                    () => favoritesProvider.updateCallFrequency(CallFrequency.values[index]),
                   ),
-                  isSelected: _selectedFrequency == CallFrequency.values[index],
+                  isSelected: favoritesProvider.callFrequency == CallFrequency.values[index],
                 ),
               ),
             ),
@@ -101,8 +102,8 @@ class _FrequencyContainerState extends State<FrequencyContainer> {
                 .map(
                   (priority) => PrioritySectionContainer(
                     priority: priority,
-                    isSelected: _selectedPriority == priority,
-                    onTap: () => setState(() => _selectedPriority = priority),
+                    isSelected: favoritesProvider.callPriority == priority,
+                    onTap: () => setState(() => favoritesProvider.updateCallPriority(priority)),
                   ),
                 )
                 .toList(),
@@ -110,5 +111,25 @@ class _FrequencyContainerState extends State<FrequencyContainer> {
         ],
       ),
     );
+  }
+}
+
+
+class AddFavoritesProvider extends ChangeNotifier {
+
+  CallFrequency _callFrequency = CallFrequency.daily;
+  CallFrequency get callFrequency => _callFrequency;
+
+  CallPriority _callPriority = CallPriority.medium;
+  CallPriority get callPriority => _callPriority;
+
+  void updateCallPriority(CallPriority priority) {
+    _callPriority = priority;
+    notifyListeners();
+  }
+
+  void updateCallFrequency(CallFrequency frequency) {
+    _callFrequency = frequency;
+    notifyListeners();
   }
 }

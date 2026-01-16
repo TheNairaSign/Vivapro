@@ -100,14 +100,14 @@ class _ContactPickerPageState extends State<ContactPickerPage> {
           ),
           child: ListTile(
             leading: CircleAvatar(
-              backgroundColor: Colors.lightBlue.withOpacity(0.1),
+              backgroundColor: Colors.lightBlue.withValues(alpha: 0.1),
               backgroundImage: hasPhoto ? MemoryImage(contact.photo!) : null,
               child: !hasPhoto
                   ? Text(
                       (contact.displayName.isNotEmpty)
                           ? contact.displayName.characters.first.toUpperCase()
                           : '?',
-                      style: const TextStyle(
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Colors.lightBlue,
                         fontWeight: FontWeight.bold,
                       ),

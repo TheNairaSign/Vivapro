@@ -22,7 +22,7 @@ class FavoritesCard extends StatelessWidget {
         width: 170,
         child: Container(
           decoration: BoxDecoration(
-            color: GlobalColors.containerColor(context),
+            color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(20),
             boxShadow: GlobalColors.boxShadow(context),
           ),
@@ -72,7 +72,7 @@ class FavoritesCard extends StatelessWidget {
               const SizedBox(height: 12),
               Text(
                 contact.contactDetails.displayName.firstName,
-                style: const TextStyle(
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   // color: Colors.white,
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
@@ -83,7 +83,10 @@ class FavoritesCard extends StatelessWidget {
               const SizedBox(height: 4),
               Text(
                 'Last called: ${contact.lastCalledAt}',
-                style: TextStyle(color: Colors.grey[500], fontSize: 12),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Colors.grey[500],
+                  fontSize: 12,
+                ),
               ),
               const SizedBox(height: 8),
               SizedBox(

@@ -83,6 +83,7 @@ class _NavigationPageState extends State<NavigationPage> {
     );
   }
 
+/*
   void _handlePlusButtonAction() async {
     switch (selectedIndex) {
       case 0:
@@ -115,4 +116,5 @@ class _NavigationPageState extends State<NavigationPage> {
         break;
     }
   }
+  */
 }

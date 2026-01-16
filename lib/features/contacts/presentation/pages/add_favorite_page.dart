@@ -1,35 +1,76 @@
 import 'package:flutter/material.dart';
-import 'package:vivapro/core/theme/global_colors.dart';
+import 'package:flutter_contacts/flutter_contacts.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' hide Provider;
+import 'package:provider/provider.dart';
+import 'package:vivapro/features/contacts/data/favorite_contact.dart';
 import 'package:vivapro/features/contacts/presentation/widgets/favorites/frequency_container.dart';
+import 'package:vivapro/features/contacts/repositories/favorite_repository.dart';
 import 'package:vivapro/widgets/custom_text_field.dart';
 
-class AddFavoritePage extends StatefulWidget {
-  const AddFavoritePage({super.key});
+class AddFavoritePage extends ConsumerStatefulWidget {
+  const AddFavoritePage({super.key, required this.contact});
+  final Contact contact;
 
   @override
-  State<AddFavoritePage> createState() => _AddFavoritePageState();
+  ConsumerState<AddFavoritePage> createState() => _AddFavoritePageState();
 }
 
-class _AddFavoritePageState extends State<AddFavoritePage> {
+class _AddFavoritePageState extends ConsumerState<AddFavoritePage> {
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
 
   bool isLoading = false;
 
-  void submitContact() {
+  @override
+  void initState() {
+    super.initState();
+    _nameController.text = widget.contact.displayName;
+    if (widget.contact.phones.isNotEmpty) {
+      _phoneController.text = widget.contact.phones.first.number;
+    }
+  }
+
+  Future<void> submitContact() async {
     if (isLoading) return;
 
     if (_nameController.text.isEmpty || _phoneController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill in all fields')),
+      );
       return;
     }
 
-    setState(() {
-      isLoading = true;
-    });
+    setState(() => isLoading = true);
 
-    setState(() {
-      isLoading = false;
-    });
+    final favoritesProvider = context.read<AddFavoritesProvider>();
+
+    try {
+      await ref.read(favoritesRepository).addFavorite(
+        FavoriteContact(
+          id: widget.contact.id,
+          callFrequency: favoritesProvider.callFrequency,
+          contactDetails: widget.contact,
+          priority: favoritesProvider.callPriority,
+        ),
+      );
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Contact saved successfully')),
+        );
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to save contact: $e')),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => isLoading = false);
+      }
+    }
   }
 
   @override
@@ -44,7 +85,7 @@ class _AddFavoritePageState extends State<AddFavoritePage> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      // backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -77,7 +118,7 @@ class _AddFavoritePageState extends State<AddFavoritePage> {
             Container(
               padding: const EdgeInsets.all(20), // Card padding
               decoration: BoxDecoration(
-                color: GlobalColors.containerColor(context),
+                color: Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.circular(24),
                 boxShadow: isDark
                     ? null
@@ -120,10 +161,7 @@ class _AddFavoritePageState extends State<AddFavoritePage> {
               width: double.infinity,
               height: 56,
               child: ElevatedButton(
-                onPressed: () {
-                  // Save logic would go here
-                  Navigator.pop(context);
-                },
+                onPressed: isLoading ? null : submitContact,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.lightBlue,
                   elevation: 0,
@@ -133,7 +171,11 @@ class _AddFavoritePageState extends State<AddFavoritePage> {
                     side: const BorderSide(color: Color(0xFF4A8BCA), width: 1),
                   ),
                 ),
-                child: Row(
+                child: isLoading
+                    ? const CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      )
+                    : Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(

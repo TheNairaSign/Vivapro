@@ -33,6 +33,7 @@ class _HomePageState extends ConsumerState<HomePage> {
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
+      extendBody: true,
       appBar: AppBar(
         actionsPadding: EdgeInsets.only(right: 15),
         title: Column(

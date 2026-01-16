@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vivapro/core/theme/global_colors.dart';
 import 'package:vivapro/features/contacts/data/favorite_contact.dart';
+import 'package:vivapro/features/contacts/presentation/pages/add_favorite_page.dart';
 import 'package:vivapro/features/contacts/presentation/pages/favorites_page.dart';
 import 'package:vivapro/features/contacts/repositories/favorite_repository.dart';
+import 'package:vivapro/pages/contact_picker_page.dart';
 import 'package:vivapro/pages/home/widgets/favorites_card.dart';
-import 'package:vivapro/pages/navigation/contacts_page.dart';
 
 class FavoritesSection extends ConsumerStatefulWidget {
   const FavoritesSection({super.key});
@@ -43,9 +46,8 @@ class _FavoritesSectionState extends ConsumerState<FavoritesSection> {
               ).push(MaterialPageRoute(builder: (_) => const FavoritesPage())),
               child: Text(
                 'View all',
-                style: TextStyle(
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: const Color(0xFF2D8CFF),
-                  fontSize: 14,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -60,7 +62,7 @@ class _FavoritesSectionState extends ConsumerState<FavoritesSection> {
             builder: (context, snapshot) {
               if (snapshot.hasError) {
                 return Center(
-                  child: Text('Error', style: TextStyle(color: Colors.white)),
+                  child: Text('Error', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white)),
                 );
               }
 
@@ -69,29 +71,39 @@ class _FavoritesSectionState extends ConsumerState<FavoritesSection> {
               if (favorites.isEmpty) {
                 return Center(
                   child: InkWell(
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: (_) => const ContactsPage()),
-                      );
+                    onTap: () async {
+                      // Request contact permission
+                      if (await FlutterContacts.requestPermission() && context.mounted) {
+                        final contact = await Navigator.of(context).push<Contact?>(
+                          MaterialPageRoute(builder: (_) => const ContactPickerPage()),
+                        );
+                        if (contact != null && context.mounted) {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(builder: (_) => AddFavoritePage(contact: contact)),
+                          );
+                        }
+                      }
                     },
                     child: Container(
+                      padding: const EdgeInsets.all(20),
                       width: 160,
                       decoration: BoxDecoration(
-                        color: const Color(0xFF1C2029),
+                        color: Theme.of(context).colorScheme.surface,
                         borderRadius: BorderRadius.circular(24),
+                        boxShadow: GlobalColors.boxShadow(context),
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(
                             Icons.add_circle_outline,
-                            color: Colors.grey[600],
+                            color: Theme.of(context).colorScheme.onSurface,
                             size: 40,
                           ),
                           SizedBox(height: 10),
                           Text(
                             "Add Favorites",
-                            style: TextStyle(color: Colors.grey[400]),
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface),
                           ),
                         ],
                       ),

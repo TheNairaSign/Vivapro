@@ -7,7 +7,6 @@ import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_b
 import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_event.dart';
 import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_state.dart';
 import 'package:vivapro/features/schedule_call/presentation/pages/schedule_details_page.dart';
-import 'package:vivapro/features/schedule_call/presentation/pages/scheduled_calls_page.dart';
 import 'package:vivapro/features/schedule_call/repositories/schedule_call_repository.dart';
 import 'package:vivapro/pages/navigation/widgets/schedule_call/call_note_card.dart';
 import 'package:vivapro/pages/navigation/widgets/schedule_call/date_selection_card.dart';

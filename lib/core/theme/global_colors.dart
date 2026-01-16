@@ -19,7 +19,8 @@ class GlobalColors {
 
   static Color? containerColor(BuildContext context) {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
-    return isDark ? const Color(0xFF1C2029) : Colors.white;
+    // return isDark ? const Color(0xFF1C2029) : Colors.white;
+    return Theme.of(context).colorScheme.surface;
   }
 
   static Color? textThemeColor(BuildContext context) {

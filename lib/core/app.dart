@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:provider/provider.dart';
 import 'package:vivapro/core/bootstrap.dart';
 import 'package:vivapro/core/theme/app_theme.dart';
 import 'package:vivapro/features/auth/presentation/bloc/auth_change/auth_change_bloc.dart';
@@ -14,6 +15,7 @@ import 'package:vivapro/features/auth/repositories/firebase_auth_repository.dart
 import 'package:vivapro/features/auth/repositories/google_sign_in_repository.dart';
 import 'package:vivapro/features/call_log/presentation/bloc/call_log_bloc.dart';
 import 'package:vivapro/features/call_log/repositories/call_log_repository.dart';
+import 'package:vivapro/features/contacts/presentation/widgets/favorites/frequency_container.dart';
 import 'package:vivapro/features/contacts/repositories/contact_repository.dart';
 import 'package:vivapro/features/messaging/presentation/bloc/chat/chat_bloc.dart';
 import 'package:vivapro/features/messaging/presentation/bloc/message_bloc.dart';
@@ -38,7 +40,9 @@ class _VivaproState extends ConsumerState<Vivapro> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
+    return ChangeNotifierProvider(
+      create: (context) => AddFavoritesProvider(),
+      child: MultiBlocProvider(
       providers: [
         BlocProvider(create: (create) => SignUpBloc(ref.read(firebaseAuthRepository))),
         BlocProvider(create: (create) => SignInBloc(ref.read(firebaseAuthRepository))),
@@ -80,6 +84,7 @@ class _VivaproState extends ConsumerState<Vivapro> {
             );
           },
         ),
+      ),
       ),
     );
   }

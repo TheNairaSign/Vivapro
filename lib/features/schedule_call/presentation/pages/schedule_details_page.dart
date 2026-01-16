@@ -1,7 +1,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:vivapro/core/theme/global_colors.dart';
 import 'package:vivapro/features/schedule_call/data/schedule_call.dart';
 

@@ -4,7 +4,7 @@ import 'package:vivapro/core/enums/call_frequency.dart';
 import 'package:vivapro/core/enums/priority.dart';
 
 class FavoriteContact {
-  final String id;
+  final String? id;
   final Contact contactDetails;
   final String? inAppUserId;
   final CallPriority priority;
@@ -12,7 +12,7 @@ class FavoriteContact {
   final DateTime? lastCalledAt;
 
   FavoriteContact({
-    required this.id,
+    this.id,
     required this.contactDetails,
     this.inAppUserId,
     required this.priority,
@@ -49,4 +49,5 @@ class FavoriteContact {
       lastCalledAt: (map['lastCalledAt'] as Timestamp?)?.toDate(),
     );
   }
+
 }

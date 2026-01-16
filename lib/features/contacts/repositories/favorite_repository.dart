@@ -8,13 +8,14 @@ import 'package:vivapro/features/contacts/data/favorite_contact.dart';
 import 'package:vivapro/core/enums/call_frequency.dart';
 import 'package:vivapro/core/enums/priority.dart';
 
+import 'dart:developer' as developer;
+
 class FavoritesRepository {
   final FirebaseFirestore _firestore;
   final FirebaseAuth _auth;
 
   FavoritesRepository(this._firestore, this._auth);
 
-  /// Add favorite contact
   Future<void> addFavorite(FavoriteContact contact) async {
     final uid = _auth.currentUser?.uid;
     if (uid == null) return;
@@ -74,19 +75,20 @@ class FavoritesRepository {
         controller.add([]);
       } else {
         final favoritesRef = _firestore
-            .collection('users')
-            .doc(user.uid)
-            .collection('favorites');
+          .collection('users')
+          .doc(user.uid)
+          .collection('favorites');
         favoritesSubscription = favoritesRef
-            .orderBy('createdAt', descending: true)
-            .snapshots()
-            .map(
-              (snapshot) => snapshot.docs
-                  .map((doc) => FavoriteContact.fromMap(doc.id, doc.data()))
-                  .toList(),
-            )
-            .listen(controller.add, onError: controller.addError);
+          .orderBy('createdAt', descending: true)
+          .snapshots()
+          .map(
+            (snapshot) => snapshot.docs
+            .map((doc) => FavoriteContact.fromMap(doc.id, doc.data()))
+            .toList(),
+          )
+          .listen(controller.add, onError: controller.addError);
       }
+      favoritesSubscription?.onError((error) => developer.log('Error listening to favorites: $error'));
     });
 
     controller.onCancel = () {
@@ -97,7 +99,6 @@ class FavoritesRepository {
     return controller.stream;
   }
 
-  /// Watch if contact is favorite
   Stream<bool> watchIsFavorite(String contactId) {
     final uid = _auth.currentUser?.uid;
     if (uid == null) return Stream.value(false);

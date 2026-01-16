@@ -24,7 +24,6 @@ class ScheduleCallRepository {
     return _firestore.collection('users').doc(uid).collection('schedule_calls');
   }
 
-  /// Get list of all scheduled calls
   Stream<List<ScheduleCall>> watchScheduledCalls() {
     final ref = _userSchedulesRef;
     if (ref == null) return Stream.value([]);
@@ -36,10 +35,8 @@ class ScheduleCallRepository {
     });
   }
 
-  // Create instance
   final _notificationService = NotificationService();
 
-  /// Schedule a call (Create)
   Future<Either<Failure, Unit>> scheduleCall(ScheduleCall scheduleCall) async {
     try {
       final ref = _userSchedulesRef;
@@ -71,7 +68,6 @@ class ScheduleCallRepository {
     }
   }
 
-  /// Delete a schedule
   Future<Either<Failure, Unit>> deleteSchedule(String scheduleId) async {
     try {
       final ref = _userSchedulesRef;

@@ -22,6 +22,7 @@ class _AuthPageState extends State<AuthPage> {
     final size = MediaQuery.of(context).size;
     final height = size.height;
     return Scaffold(
+      backgroundColor: Colors.white,
       body: BlocListener<GoogleSignInBloc, GoogleSignInState>(
         listener: (context, state) {
           if (state is GoogleSignInLoading) {
