@@ -5,7 +5,6 @@ import 'package:flutter_contacts/contact.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:vivapro/features/call_log/presentation/bloc/call_log_bloc.dart';
 import 'package:vivapro/features/call_log/presentation/bloc/call_log_state.dart';
-import 'package:vivapro/core/theme/global_colors.dart';
 import 'package:vivapro/core/utils/get_time_ago.dart';
 
 class ContactHistorySection extends StatelessWidget {
@@ -29,10 +28,10 @@ class ContactHistorySection extends StatelessWidget {
             ),
             TextButton(
               onPressed: () {},
-              child: const Text(
+              child: Text(
                 'View All',
-                style: TextStyle(
-                  color: Colors.lightBlue,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.primary,
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
                 ),
@@ -67,9 +66,8 @@ class ContactHistorySection extends StatelessWidget {
 
               return Container(
                 decoration: BoxDecoration(
-                  color: GlobalColors.containerColor(context),
+                  color: Theme.of(context).colorScheme.surface,
                   borderRadius: BorderRadius.circular(20),
-                  boxShadow: GlobalColors.boxShadow(context),
                 ),
                 child: Column(
                   children: contactLogs.asMap().entries.map((entry) {
@@ -100,9 +98,8 @@ class ContactHistorySection extends StatelessWidget {
   Widget _buildEmptyHistory(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: GlobalColors.containerColor(context),
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: GlobalColors.boxShadow(context),
       ),
       padding: const EdgeInsets.all(40),
       child: Center(

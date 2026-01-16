@@ -4,7 +4,6 @@ import 'package:vivapro/features/contacts/data/favorite_contact.dart';
 import 'package:vivapro/features/contacts/presentation/pages/contact_details_page.dart';
 import 'package:vivapro/core/app_constants.dart';
 import 'package:vivapro/core/extensions/first_name_extension.dart';
-import 'package:vivapro/core/theme/global_colors.dart';
 
 class FavoritesCard extends StatelessWidget {
   const FavoritesCard({super.key, required this.contact});
@@ -24,7 +23,6 @@ class FavoritesCard extends StatelessWidget {
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(20),
-            boxShadow: GlobalColors.boxShadow(context),
           ),
           padding: const EdgeInsets.all(10.0),
           child: Column(
@@ -38,7 +36,7 @@ class FavoritesCard extends StatelessWidget {
                       shape: BoxShape.circle,
                       border: Border.all(
                         // color: priorityMap(contact.priority),
-                        color: Colors.lightBlue,
+                        color: Theme.of(context).colorScheme.primary,
                         width: 2,
                       ),
                     ),
@@ -98,7 +96,7 @@ class FavoritesCard extends StatelessWidget {
                   },
                   style: ElevatedButton.styleFrom(
                     // backgroundColor: const Color(0xFF2D8CFF),
-                    backgroundColor: Colors.lightBlue,
+                    backgroundColor: Theme.of(context).colorScheme.primary,
                     foregroundColor: Colors.white,
                     elevation: 0,
                     shape: RoundedRectangleBorder(

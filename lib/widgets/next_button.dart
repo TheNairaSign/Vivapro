@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:vivapro/core/theme/global_colors.dart';
 
 class NextButton extends StatelessWidget {
   const NextButton({
@@ -29,7 +28,7 @@ class NextButton extends StatelessWidget {
                 width: 20,
                 height: 20,
                 child: LoadingAnimationWidget.threeRotatingDots(
-                  color: GlobalColors.freshPink,
+                  color: Theme.of(context).colorScheme.primary,
                   size: 20,
                 ),
               ),
@@ -40,10 +39,10 @@ class NextButton extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(radius ?? 30),
-                  color: color ?? GlobalColors.freshPink,
+                  color: color ?? Theme.of(context).colorScheme.primary,
                   boxShadow: [
                     BoxShadow(
-                      color: (color ?? GlobalColors.freshPink).withOpacity(0.3),
+                      color: (color ?? Theme.of(context).colorScheme.primary).withOpacity(0.3),
                       blurRadius: 12,
                       offset: const Offset(0, 6),
                     ),

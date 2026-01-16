@@ -1,5 +1,5 @@
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:vivapro/core/theme/global_colors.dart';
 import 'package:vivapro/features/messaging/data/chat.dart';
 
 class MessagesScreen extends StatelessWidget {
@@ -8,7 +8,9 @@ class MessagesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         bottom: false,
         child: Column(
@@ -23,12 +25,12 @@ class MessagesScreen extends StatelessWidget {
                     child: Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.1),
+                        color: theme.colorScheme.surface.withOpacity(0.1),
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(
-                        Icons.arrow_back,
-                        color: Colors.white,
+                      child: Icon(
+                        EvaIcons.arrowBack,
+                        color: theme.colorScheme.onBackground,
                         size: 20,
                       ),
                     ),
@@ -47,16 +49,15 @@ class MessagesScreen extends StatelessWidget {
                       Text(
                         // chat.participants.join(", "),
                         "Rehan Wangsaff", // Mocking name to match image
-                        style: const TextStyle(
-                          color: Colors.white,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: theme.colorScheme.onBackground,
                           fontWeight: FontWeight.bold,
-                          fontSize: 16,
                         ),
                       ),
                       const SizedBox(height: 2),
-                      const Text(
+                      Text(
                         "Online",
-                        style: TextStyle(color: Colors.grey, fontSize: 12),
+                        style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey),
                       ),
                     ],
                   ),
@@ -64,12 +65,10 @@ class MessagesScreen extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(
-                        alpha: 0.0,
-                      ), // Transparent?
+                      color: Colors.transparent,
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(Icons.more_vert, color: Colors.white),
+                    child: Icon(EvaIcons.moreVertical, color: theme.colorScheme.onBackground),
                   ),
                 ],
               ),
@@ -79,9 +78,9 @@ class MessagesScreen extends StatelessWidget {
             Expanded(
               child: Container(
                 width: double.infinity,
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.surface,
+                  borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(40),
                     topRight: Radius.circular(40),
                   ),
@@ -96,13 +95,13 @@ class MessagesScreen extends StatelessWidget {
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: GlobalColors.freshPink.withValues(alpha: 0.1),
+                        color: theme.colorScheme.primary.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
                         "Today",
                         style: TextStyle(
-                          color: GlobalColors.freshPink,
+                          color: theme.colorScheme.primary,
                           fontWeight: FontWeight.bold,
                           fontSize: 12,
                         ),
@@ -116,21 +115,24 @@ class MessagesScreen extends StatelessWidget {
                         ),
                         children: [
                           _buildReceivedMessage(
+                            context,
                             "HI, I'm heading to the mall this afternoon",
                             "01.12",
                           ),
                           _buildReceivedMessage(
+                            context,
                             "Do you wanna join with me?",
                             "01.12",
                           ),
-                          _buildSentMessage("its look awesome!", "01.23"),
+                          _buildSentMessage(context, "its look awesome!", "01.23"),
                           _buildSentMessage(
+                            context,
                             "But can I bring my girlfriend? They want to go to the mall",
                             "01.23",
                           ),
-                          _buildReceivedMessage("of course just him", "01.34"),
-                          _buildSentMessage("Thanks Rehan", "01.35"),
-                          _buildReceivedMessage("Ur Welcome!", "01.38"),
+                          _buildReceivedMessage(context, "of course just him", "01.34"),
+                          _buildSentMessage(context, "Thanks Rehan", "01.35"),
+                          _buildReceivedMessage(context, "Ur Welcome!", "01.38"),
                         ],
                       ),
                     ),
@@ -148,20 +150,20 @@ class MessagesScreen extends StatelessWidget {
                           vertical: 8,
                         ),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFF5F6FA), // Light grey input bg
+                          color: theme.colorScheme.surfaceVariant,
                           borderRadius: BorderRadius.circular(30),
                         ),
                         child: Row(
                           children: [
                             Container(
                               padding: const EdgeInsets.all(8),
-                              decoration: const BoxDecoration(
-                                color: Color(0xFFE1BEE7), // Light purple mic bg
+                              decoration: BoxDecoration(
+                                color: theme.colorScheme.secondary.withOpacity(0.2),
                                 shape: BoxShape.circle,
                               ),
-                              child: const Icon(
-                                Icons.mic,
-                                color: Colors.purple,
+                              child: Icon(
+                                EvaIcons.mic,
+                                color: theme.colorScheme.secondary,
                                 size: 20,
                               ),
                             ),
@@ -174,13 +176,13 @@ class MessagesScreen extends StatelessWidget {
                             ),
                             Container(
                               padding: const EdgeInsets.all(8),
-                              decoration: const BoxDecoration(
-                                color: Color(0xFFE3F2FD), // Light blue send bg
+                              decoration: BoxDecoration(
+                                color: theme.colorScheme.primary.withOpacity(0.2),
                                 shape: BoxShape.circle,
                               ),
-                              child: const Icon(
-                                Icons.send,
-                                color: Colors.blue,
+                              child: Icon(
+                                EvaIcons.paperPlane,
+                                color: theme.colorScheme.primary,
                                 size: 20,
                               ),
                             ),
@@ -198,7 +200,8 @@ class MessagesScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildReceivedMessage(String text, String time) {
+  Widget _buildReceivedMessage(BuildContext context, String text, String time) {
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: Column(
@@ -206,9 +209,9 @@ class MessagesScreen extends StatelessWidget {
         children: [
           Container(
             padding: const EdgeInsets.all(16),
-            decoration: const BoxDecoration(
-              color: Color(0xFFFFF9C4), // Yellowish bubble
-              borderRadius: BorderRadius.only(
+            decoration: BoxDecoration(
+              color: theme.colorScheme.secondary.withOpacity(0.1),
+              borderRadius: const BorderRadius.only(
                 topRight: Radius.circular(20),
                 bottomLeft: Radius.circular(20),
                 bottomRight: Radius.circular(20),
@@ -216,17 +219,18 @@ class MessagesScreen extends StatelessWidget {
             ),
             child: Text(
               text,
-              style: const TextStyle(color: Colors.black87, fontSize: 14),
+              style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurface),
             ),
           ),
           const SizedBox(height: 4),
-          Text(time, style: const TextStyle(color: Colors.grey, fontSize: 10)),
+          Text(time, style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey)),
         ],
       ),
     );
   }
 
-  Widget _buildSentMessage(String text, String time) {
+  Widget _buildSentMessage(BuildContext context, String text, String time) {
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: Column(
@@ -234,9 +238,9 @@ class MessagesScreen extends StatelessWidget {
         children: [
           Container(
             padding: const EdgeInsets.all(16),
-            decoration: const BoxDecoration(
-              color: Color(0xFFF5F6FA), // Grey/White bubble
-              borderRadius: BorderRadius.only(
+            decoration: BoxDecoration(
+              color: theme.colorScheme.primary.withOpacity(0.1),
+              borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(20),
                 bottomLeft: Radius.circular(20),
                 bottomRight: Radius.circular(20),
@@ -244,11 +248,11 @@ class MessagesScreen extends StatelessWidget {
             ),
             child: Text(
               text,
-              style: const TextStyle(color: Colors.black87, fontSize: 14),
+              style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurface),
             ),
           ),
           const SizedBox(height: 4),
-          Text(time, style: const TextStyle(color: Colors.grey, fontSize: 10)),
+          Text(time, style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey)),
         ],
       ),
     );

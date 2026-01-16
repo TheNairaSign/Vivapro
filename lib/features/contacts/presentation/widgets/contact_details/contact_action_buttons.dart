@@ -1,7 +1,6 @@
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/contact.dart';
-import 'package:ionicons/ionicons.dart';
-import 'package:vivapro/core/theme/global_colors.dart';
 
 class ContactActionButtons extends StatelessWidget {
   final Contact contact;
@@ -20,7 +19,7 @@ class ContactActionButtons extends StatelessWidget {
               // Call action
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.lightBlue,
+              backgroundColor: Theme.of(context).colorScheme.primary,
               foregroundColor: Colors.white,
               elevation: 0,
               shape: RoundedRectangleBorder(
@@ -30,7 +29,7 @@ class ContactActionButtons extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.phone, size: 20),
+                const Icon(EvaIcons.phone, size: 20),
                 const SizedBox(width: 8),
                 Text(
                   'Call ${contact.displayName.split(' ').first}',
@@ -49,7 +48,7 @@ class ContactActionButtons extends StatelessWidget {
             Expanded(
               child: _buildSecondaryButton(
                 context,
-                icon: Ionicons.chatbubble_outline,
+                icon: EvaIcons.messageSquareOutline,
                 label: 'Message',
                 onTap: () {},
               ),
@@ -58,7 +57,7 @@ class ContactActionButtons extends StatelessWidget {
             Expanded(
               child: _buildSecondaryButton(
                 context,
-                icon: Ionicons.videocam_outline,
+                icon: EvaIcons.videoOutline,
                 label: 'Video',
                 onTap: () {},
               ),
@@ -81,14 +80,13 @@ class ContactActionButtons extends StatelessWidget {
       child: Container(
         height: 50,
         decoration: BoxDecoration(
-          color: GlobalColors.containerColor(context),
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(20),
-          boxShadow: GlobalColors.boxShadow(context),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 20, color: Colors.lightBlue),
+            Icon(icon, size: 20, color: Theme.of(context).colorScheme.primary),
             const SizedBox(width: 8),
             Text(
               label,

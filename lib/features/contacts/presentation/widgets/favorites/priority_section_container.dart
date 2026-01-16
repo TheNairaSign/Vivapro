@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vivapro/core/enums/priority.dart';
 import 'package:vivapro/core/extensions/capitalization.dart';
-import 'package:vivapro/core/theme/global_colors.dart';
 
 class PrioritySectionContainer extends StatelessWidget {
   const PrioritySectionContainer({
@@ -53,7 +52,7 @@ class PrioritySectionContainer extends StatelessWidget {
               decoration: BoxDecoration(
                 color: isSelected
                     ? _iconColor.withValues(alpha: 0.1)
-                    : GlobalColors.containerColor(context),
+                    : Theme.of(context).colorScheme.surface,
                 shape: BoxShape.circle,
               ),
               child: Icon(

@@ -1,7 +1,7 @@
 // ignore_for_file: must_be_immutable
 
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:vivapro/core/theme/global_colors.dart';
 
 class CustomTextfield extends StatefulWidget {
   CustomTextfield({
@@ -56,7 +56,7 @@ class _CustomTextfieldState extends State<CustomTextfield> {
       onChanged: widget.onChanged,
       validator: widget.validator,
       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-        color: GlobalColors.textThemeColor(context),
+        color: Theme.of(context).colorScheme.onSurface,
       ),
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.all(10),
@@ -77,8 +77,8 @@ class _CustomTextfieldState extends State<CustomTextfield> {
                       });
                     },
                     child: Icon(
-                      widget.obscure ? Icons.visibility_off : Icons.visibility,
-                      color: GlobalColors.textThemeColor(context),
+                      widget.obscure ? EvaIcons.eyeOff : EvaIcons.eye,
+                      color: Theme.of(context).colorScheme.onSurface,
                       size: 20,
                     ),
                   )
@@ -89,7 +89,7 @@ class _CustomTextfieldState extends State<CustomTextfield> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.lightBlue, width: 1),
+          borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -100,7 +100,7 @@ class _CustomTextfieldState extends State<CustomTextfield> {
           borderSide: const BorderSide(color: Colors.black, width: .5),
         ),
         enabled: widget.enabled,
-        fillColor: GlobalColors.containerColor(context),
+        fillColor: Theme.of(context).colorScheme.surface,
         filled: true,
       ),
     );

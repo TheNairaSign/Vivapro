@@ -1,6 +1,6 @@
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:vivapro/core/theme/global_colors.dart';
 import 'package:vivapro/features/call_log/data/models/insight_model.dart';
 
 class InsightCard extends StatelessWidget {
@@ -23,15 +23,9 @@ class InsightCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final backgroundColor = isDark
-        ? const Color(0xFF2C2C29)
-        : GlobalColors.goldBackground;
-    final borderColor = isDark
-        ? const Color(0xFF3E3E3A)
-        : GlobalColors.goldBorder;
-    final titleColor = isDark ? Colors.white : Colors.black87;
-    final bodyColor = isDark ? Colors.grey[400] : Colors.black54;
+
+    final backgroundColor =  Theme.of(context).colorScheme.surface;
+    final borderColor = Colors.transparent;
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 8),
@@ -46,16 +40,16 @@ class InsightCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(
-                Icons.lightbulb,
-                color: Color(0xFFE67E22),
+              Icon(
+                EvaIcons.bulb,
+                color: Theme.of(context).colorScheme.primary,
                 size: 18,
               ), // Amber/Orange icon
               const SizedBox(width: 8),
               Text(
                 'INSIGHT',
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: const Color(0xFFE67E22),
+                  color: Theme.of(context).colorScheme.primary,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 1.0,
                 ),
@@ -67,7 +61,6 @@ class InsightCard extends StatelessWidget {
             'Reconnect with ${insight.contactName}',
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.bold,
-              color: titleColor,
             ),
           ),
           const SizedBox(height: 8),
@@ -75,7 +68,7 @@ class InsightCard extends StatelessWidget {
             _getFriendlyMessage(insight.daysSinceLastCall),
             style: Theme.of(
               context,
-            ).textTheme.bodyMedium?.copyWith(color: bodyColor, height: 1.4),
+            ).textTheme.bodyMedium?.copyWith(color: Colors.grey, height: 1.4),
           ),
           const SizedBox(height: 20),
           ElevatedButton.icon(
@@ -85,17 +78,17 @@ class InsightCard extends StatelessWidget {
                 await launchUrl(url);
               }
             },
-            icon: const Icon(Icons.call, color: Color(0xFFE67E22), size: 18),
+            icon: Icon(EvaIcons.phoneOutline, color: Theme.of(context).colorScheme.primary, size: 18),
             label: Text(
               'Call ${insight.contactName}',
-              style: const TextStyle(
-                color: Color(0xFFE67E22),
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.primary,
                 fontWeight: FontWeight.w600,
                 fontSize: 14,
               ),
             ),
             style: ElevatedButton.styleFrom(
-              backgroundColor: isDark ? const Color(0xFF1C1C1E) : Colors.white,
+              backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: .1),
               elevation: 0,
               shadowColor: Colors.transparent,
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),

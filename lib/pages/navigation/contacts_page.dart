@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:vivapro/features/contacts/presentation/pages/contact_details_page.dart';
-import 'package:vivapro/core/theme/global_colors.dart';
 
 class ContactsPage extends StatefulWidget {
   const ContactsPage({super.key});
@@ -75,7 +74,7 @@ class _ContactsPageState extends State<ContactsPage> {
     if (_contacts == null) {
       return Center(
         child: LoadingAnimationWidget.threeRotatingDots(
-          color: Colors.lightBlue,
+          color: Theme.of(context).colorScheme.primary,
           size: 30,
         ),
       );
@@ -93,19 +92,18 @@ class _ContactsPageState extends State<ContactsPage> {
         final contact = _contacts![i];
         return Container(
           decoration: BoxDecoration(
-            color: GlobalColors.containerColor(context),
+            color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(12),
-            boxShadow: GlobalColors.boxShadow(context),
           ),
           child: ListTile(
             leading: CircleAvatar(
-              backgroundColor: Colors.lightBlue.withValues(alpha: 0.1),
+              backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
               child: Text(
                 (contact.displayName.isNotEmpty)
                     ? contact.displayName.characters.first.toUpperCase()
                     : '?',
                 style: TextStyle(
-                  color: Colors.lightBlue,
+                  color: Theme.of(context).colorScheme.primary,
                   fontWeight: FontWeight.bold,
                 ),
               ),

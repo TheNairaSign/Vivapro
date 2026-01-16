@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:vivapro/core/theme/global_colors.dart';
 
 class AuthButton extends StatelessWidget {
   const AuthButton({
@@ -23,7 +22,7 @@ class AuthButton extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
         decoration: BoxDecoration(
-          color: GlobalColors.containerColor(context),
+          color: Theme.of(context).colorScheme.surface,
           // border: Border.all(color: Colors.grey[300]!, width: 1.5),
           borderRadius: BorderRadius.circular(25),
         ),

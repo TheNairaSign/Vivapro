@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:vivapro/features/contacts/data/favorite_contact.dart';
 import 'package:vivapro/features/contacts/presentation/pages/contact_details_page.dart';
 import 'package:vivapro/core/enums/priority.dart';
-import 'package:vivapro/core/theme/global_colors.dart';
 
 class FavoriteItem extends StatelessWidget {
   const FavoriteItem({super.key, required this.favoriteContact});
@@ -38,16 +37,13 @@ class FavoriteItem extends StatelessWidget {
                   ),
                   child: CircleAvatar(
                     radius: 28,
-                    backgroundColor: GlobalColors.freshPink.withValues(
-                      alpha: 0.1,
-                    ),
+                    backgroundColor: Theme.of(context).colorScheme.surface,
                     child: Text(
                       favoriteContact.contactDetails.displayName.isNotEmpty
                           ? favoriteContact.contactDetails.displayName[0]
                                 .toUpperCase()
                           : '?',
-                      style: TextStyle(
-                        color: GlobalColors.freshPink,
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                         fontSize: 20,
                       ),

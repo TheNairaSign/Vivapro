@@ -1,7 +1,7 @@
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:vivapro/core/theme/global_colors.dart';
 import 'package:vivapro/features/contacts/data/favorite_contact.dart';
 import 'package:vivapro/features/contacts/presentation/pages/add_favorite_page.dart';
 import 'package:vivapro/features/contacts/presentation/pages/favorites_page.dart';
@@ -32,11 +32,9 @@ class _FavoritesSectionState extends ConsumerState<FavoritesSection> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
+            Text(
               'Favorites',
-              style: TextStyle(
-                // color: Colors.white,
-                fontSize: 18,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -47,8 +45,10 @@ class _FavoritesSectionState extends ConsumerState<FavoritesSection> {
               child: Text(
                 'View all',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: const Color(0xFF2D8CFF),
+                  color: Theme.of(context).colorScheme.primary,
                   fontWeight: FontWeight.w500,
+                  decoration: TextDecoration.underline,
+                  decorationColor: Theme.of(context).colorScheme.primary,
                 ),
               ),
             ),
@@ -90,20 +90,19 @@ class _FavoritesSectionState extends ConsumerState<FavoritesSection> {
                       decoration: BoxDecoration(
                         color: Theme.of(context).colorScheme.surface,
                         borderRadius: BorderRadius.circular(24),
-                        boxShadow: GlobalColors.boxShadow(context),
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(
-                            Icons.add_circle_outline,
-                            color: Theme.of(context).colorScheme.onSurface,
-                            size: 40,
+                            EvaIcons.plusCircleOutline,
+                            color: Colors.grey,
+                            size: 30,
                           ),
                           SizedBox(height: 10),
                           Text(
                             "Add Favorites",
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface),
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey),
                           ),
                         ],
                       ),

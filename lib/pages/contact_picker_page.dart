@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:vivapro/core/theme/global_colors.dart';
 
 class ContactPickerPage extends StatefulWidget {
   const ContactPickerPage({super.key});
@@ -41,6 +40,10 @@ class _ContactPickerPageState extends State<ContactPickerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+         leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new, size: 20),
+          onPressed: () => Navigator.pop(context),
+        ),
         title: Text(
           'Select a Contact',
           style: Theme.of(
@@ -74,7 +77,7 @@ class _ContactPickerPageState extends State<ContactPickerPage> {
     if (_contacts == null) {
       return Center(
         child: LoadingAnimationWidget.threeRotatingDots(
-          color: Colors.lightBlue,
+          color: Theme.of(context).colorScheme.primary,
           size: 30,
         ),
       );
@@ -94,13 +97,12 @@ class _ContactPickerPageState extends State<ContactPickerPage> {
         
         return Container(
           decoration: BoxDecoration(
-            color: GlobalColors.containerColor(context),
+            color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(12),
-            boxShadow: GlobalColors.boxShadow(context),
           ),
           child: ListTile(
             leading: CircleAvatar(
-              backgroundColor: Colors.lightBlue.withValues(alpha: 0.1),
+              backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
               backgroundImage: hasPhoto ? MemoryImage(contact.photo!) : null,
               child: !hasPhoto
                   ? Text(
@@ -108,7 +110,7 @@ class _ContactPickerPageState extends State<ContactPickerPage> {
                           ? contact.displayName.characters.first.toUpperCase()
                           : '?',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.lightBlue,
+                        color: Theme.of(context).colorScheme.primary,
                         fontWeight: FontWeight.bold,
                       ),
                     )

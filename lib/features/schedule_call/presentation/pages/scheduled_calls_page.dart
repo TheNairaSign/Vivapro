@@ -1,8 +1,8 @@
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
-import 'package:vivapro/core/theme/global_colors.dart';
 import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_bloc.dart';
 import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_event.dart';
 import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_state.dart';
@@ -49,7 +49,7 @@ class _ScheduledCallsPageState extends State<ScheduledCallsPage> {
         actionsPadding: EdgeInsets.only(right: 15),
         actions: [
           IconButton(
-            icon: const Icon(Icons.bug_report, color: Colors.orange),
+            icon: const Icon(EvaIcons.shoppingBagOutline, color: Colors.orange),
             onPressed: () => NotificationService().showTestNotification(),
           ),
           GestureDetector(
@@ -95,7 +95,7 @@ class _ScheduledCallsPageState extends State<ScheduledCallsPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.event_busy, size: 64, color: Colors.grey[400]),
+                    Icon(EvaIcons.calendarOutline, size: 64, color: Colors.grey[400]),
                     const SizedBox(height: 16),
                     Text(
                       "No scheduled calls",
@@ -125,7 +125,7 @@ class _ScheduledCallsPageState extends State<ScheduledCallsPage> {
                       color: Colors.red.shade400,
                       borderRadius: BorderRadius.circular(16),
                     ),
-                    child: const Icon(Icons.delete, color: Colors.white),
+                    child: const Icon(EvaIcons.trash2Outline, color: Colors.white),
                   ),
                   confirmDismiss: (direction) async {
                      return await showDialog(
@@ -162,15 +162,8 @@ class _ScheduledCallsPageState extends State<ScheduledCallsPage> {
                     },
                     child: Container(
                       decoration: BoxDecoration(
-                        color: GlobalColors.containerColor(context),
+                        color: Theme.of(context).colorScheme.surface,
                         borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.05),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
                       ),
                       child: ListTile(
                         contentPadding: const EdgeInsets.symmetric(
@@ -201,7 +194,7 @@ class _ScheduledCallsPageState extends State<ScheduledCallsPage> {
                             const SizedBox(height: 4),
                             Row(
                               children: [
-                                Icon(Icons.calendar_today,
+                                Icon(EvaIcons.calendarOutline,
                                     size: 14, color: Colors.grey[600]),
                                 const SizedBox(width: 4),
                                 Text(
@@ -209,7 +202,7 @@ class _ScheduledCallsPageState extends State<ScheduledCallsPage> {
                                   style: TextStyle(color: Colors.grey[600]),
                                 ),
                                 const SizedBox(width: 12),
-                                Icon(Icons.access_time,
+                                Icon(EvaIcons.clockOutline,
                                     size: 14, color: Colors.grey[600]),
                                 const SizedBox(width: 4),
                                 Text(
@@ -233,7 +226,7 @@ class _ScheduledCallsPageState extends State<ScheduledCallsPage> {
                           ],
                         ),
                         trailing: IconButton(
-                          icon: const Icon(Icons.call, color: Colors.green),
+                          icon: const Icon(EvaIcons.phoneCallOutline, color: Colors.green),
                           onPressed: () {
                             // TODO: Initiate call logic
                           },

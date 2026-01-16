@@ -3,11 +3,13 @@ import 'package:vivapro/features/auth/data/auth_user.dart';
 import 'package:vivapro/features/messaging/presentation/pages/chat_screen.dart';
 import 'package:vivapro/pages/home/home_page.dart.dart';
 import 'package:vivapro/pages/navigation/contacts_page.dart';
+import 'package:vivapro/pages/navigation/profile_page.dart';
 import 'package:vivapro/pages/navigation/recents_page.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:vivapro/features/contacts/presentation/pages/add_favorite_page.dart';
 import 'package:vivapro/features/messaging/presentation/pages/new_chat_screen.dart';
 import 'package:vivapro/pages/contact_picker_page.dart';
+import 'package:vivapro/pages/navigation/widgets/bottom_nav_bar.dart';
 import 'package:vivapro/pages/navigation/widgets/custom_navigation_bar.dart';
 import 'package:vivapro/features/schedule_call/presentation/pages/schedule_call_page.dart';
 
@@ -29,56 +31,51 @@ class _NavigationPageState extends State<NavigationPage> {
     pageController = PageController(initialPage: selectedIndex);
   }
 
+  
+
   @override
   Widget build(BuildContext context) {
+
+    List<Widget> pages = [
+      HomePage(widget.user),
+      const RecentsPage(),
+      ChatScreen(user: widget.user),
+      ProfilePage(widget.user),
+    ];
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       extendBody: true,
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: PageView(
-              physics: const NeverScrollableScrollPhysics(),
-              controller: pageController,
-              children: <Widget>[
-                HomePage(widget.user),
-                const RecentsPage(),
-                const Center(child: Text("Quick Actions")),
-                ChatScreen(user: widget.user),
-                const ContactsPage(),
-              ],
+      body: pages.elementAt(selectedIndex),
+      bottomNavigationBar:  BottomNavBar(
+        selectedIndex: selectedIndex,
+        onItemTapped: (int index) async {
+          setState(() {
+            selectedIndex = index;
+          });
+        },
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          final contact = await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const ContactPickerPage(),
             ),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: CustomNavigationBar(
-              selectedIndex: selectedIndex,
-              onItemSelected: (int index) async {
-                if (index == 2) {
-                  final contact = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const ContactPickerPage(),
-                    ),
-                  );
-                  if (contact != null && context.mounted) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ScheduleCallPage(contact: contact),
-                      ),
-                    );
-                  }
-                } else {
-                  setState(() {
-                    selectedIndex = index;
-                  });
-                  pageController.jumpToPage(index);
-                }
-              },
-            ),
-          ),
-        ],
+          );
+          if (contact != null && context.mounted) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ScheduleCallPage(contact: contact),
+              ),
+            );
+          }
+        },
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        // shape: const CircleBorder(),
+        child: const Icon(Icons.add, color: Colors.white, size: 30),
       ),
     );
   }

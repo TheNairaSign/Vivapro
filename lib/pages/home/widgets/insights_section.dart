@@ -1,6 +1,6 @@
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:vivapro/core/theme/global_colors.dart';
 import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_bloc.dart';
 import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_state.dart';
 import 'package:vivapro/features/schedule_call/presentation/pages/scheduled_calls_page.dart';
@@ -14,18 +14,17 @@ class InsightsSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Insights',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+          style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: 16),
         Container(
           width: double.infinity,
           height: 180,
           decoration: BoxDecoration(
-            color: isDark ? const Color(0xFF1C2029) : Colors.white,
+            color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(24),
-            boxShadow: GlobalColors.boxShadow(context),
           ),
           child: Row(
             children: [
@@ -41,11 +40,10 @@ class InsightsSection extends StatelessWidget {
                         children: [
                           Icon(Icons.bolt, color: Colors.amber[600], size: 16),
                           const SizedBox(width: 6),
-                          const Text(
+                          Text(
                             'RECONNECT',
-                            style: TextStyle(
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
                               color: Colors.grey,
-                              fontSize: 11,
                               fontWeight: FontWeight.bold,
                               letterSpacing: 1,
                             ),
@@ -53,17 +51,14 @@ class InsightsSection extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(height: 12),
-                      const Text(
+                      Text(
                         'Reconnect with John',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 6),
                       Text(
                         "It's been 12 days since you last spoke.",
-                        style: TextStyle(color: Colors.grey[500], fontSize: 13),
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey[500]),
                       ),
                       const Spacer(),
                       SizedBox(
@@ -75,22 +70,17 @@ class InsightsSection extends StatelessWidget {
                               horizontal: 20,
                               vertical: 6,
                             ),
-                            backgroundColor: Colors.lightBlue.withValues(
-                              alpha: .25,
-                            ),
+                            backgroundColor: Theme.of(context,).colorScheme.primary.withValues(alpha: .15),
                             elevation: 0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18),
-                            ),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
                           ),
                           child: Text(
                             'Schedule Call',
                             style: Theme.of(context).textTheme.bodyMedium
-                                ?.copyWith(
-                                  color: Colors.blue,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14,
-                                ),
+                              ?.copyWith(
+                                color: Theme.of(context).colorScheme.primary,
+                                fontWeight: FontWeight.bold,
+                              ),
                           ),
                         ),
                       ),
@@ -128,11 +118,8 @@ class InsightsSection extends StatelessWidget {
                 height: 140,
                 padding: const EdgeInsets.all(15),
                 decoration: BoxDecoration(
-                  color: isDark
-                      ? const Color(0xFF131D2A)
-                      : Colors.greenAccent.withValues(alpha: .25),
+                  color: Theme.of(context).colorScheme.primary.withValues(alpha: .25),
                   borderRadius: BorderRadius.circular(24),
-                  boxShadow: GlobalColors.boxShadow(context),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -140,30 +127,28 @@ class InsightsSection extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: GlobalColors.containerColor(context),
                         shape: BoxShape.circle,
+                        color: Theme.of(context).colorScheme.surface,
                       ),
-                      child: const Icon(
-                        Icons.people_outline,
-                        color: Color(0xFF2D8CFF),
+                      child: Icon(
+                        EvaIcons.peopleOutline,
+                        color: Theme.of(context).colorScheme.primary,
                         size: 20,
                       ),
                     ),
                     const SizedBox(height: 10),
                     Text(
                       '85%',
-                      style: TextStyle(
-                        color: isDark ? Color(0xFF2D8CFF) : Colors.black,
-                        fontSize: 24,
+                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                        color: Theme.of(context).colorScheme.primary,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       'Relationship Health',
-                      style: TextStyle(
-                        color: isDark ? Colors.white70 : Colors.grey[700],
-                        fontSize: 12,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                     ),
                   ],
@@ -215,9 +200,8 @@ class _CallsPlannedContainerState extends State<CallsPlannedContainer> {
           height: 140,
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: GlobalColors.containerColor(context),
+            color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(24),
-            boxShadow: GlobalColors.boxShadow(context),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

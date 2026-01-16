@@ -163,12 +163,15 @@ class _AddFavoritePageState extends ConsumerState<AddFavoritePage> {
               child: ElevatedButton(
                 onPressed: isLoading ? null : submitContact,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.lightBlue,
+                  backgroundColor: Theme.of(context).colorScheme.primary,
                   elevation: 0,
                   shadowColor: Colors.transparent,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
-                    side: const BorderSide(color: Color(0xFF4A8BCA), width: 1),
+                    side: BorderSide(
+                      color: Theme.of(context).colorScheme.primary,
+                      width: 1,
+                    ),
                   ),
                 ),
                 child: isLoading
@@ -246,12 +249,15 @@ class _AddFavoritePageState extends ConsumerState<AddFavoritePage> {
         const SizedBox(height: 12),
         TextButton(
           style: TextButton.styleFrom(
-            backgroundColor: Colors.lightBlue,
+            backgroundColor: Theme.of(context).colorScheme.primary,
             foregroundColor: Colors.white,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
-              side: const BorderSide(color: Colors.lightBlue, width: 1),
+              side: BorderSide(
+                color: Theme.of(context).colorScheme.primary,
+                width: 1,
+              ),
             ),
           ),
           onPressed: () {},

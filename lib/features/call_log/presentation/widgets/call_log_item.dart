@@ -1,9 +1,9 @@
 import 'package:call_log/call_log.dart';
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:vivapro/features/call_log/data/call_log_model.dart';
 import 'package:vivapro/core/extensions/call_type_extention.dart';
-import 'package:vivapro/core/theme/global_colors.dart';
 
 class CallLogItem extends StatelessWidget {
   const CallLogItem({super.key, required this.entry});
@@ -29,9 +29,8 @@ class CallLogItem extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       decoration: BoxDecoration(
-        color: GlobalColors.containerColor(context),
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: GlobalColors.boxShadow(context),
       ),
       child: Material(
         color: Colors.transparent,
@@ -56,7 +55,7 @@ class CallLogItem extends StatelessWidget {
                   child: Text(
                     avatarChar,
                     style: TextStyle(
-                      color: isDark ? Colors.white : GlobalColors.freshPink,
+                      color: isDark ? theme.colorScheme.onSurface : theme.colorScheme.primary,
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
@@ -112,8 +111,8 @@ class CallLogItem extends StatelessWidget {
                     onPressed: () {
                       // TODO: Implement call
                     },
-                    icon: const Icon(Icons.call_outlined),
-                    color: GlobalColors.freshPink,
+                    icon: const Icon(EvaIcons.phoneCallOutline),
+                    color: theme.colorScheme.primary,
                     iconSize: 20,
                   ),
                 ),
@@ -131,23 +130,23 @@ class CallLogItem extends StatelessWidget {
 
     switch (type) {
       case CallType.incoming:
-        icon = Icons.south_west;
+        icon = EvaIcons.arrowDownwardOutline;
         color = Colors.blue;
         break;
       case CallType.outgoing:
-        icon = Icons.north_east;
+        icon = EvaIcons.arrowUpwardOutline;
         color = Colors.green;
         break;
       case CallType.missed:
-        icon = Icons.call_missed;
+        icon = EvaIcons.phoneMissedOutline;
         color = Colors.redAccent;
         break;
       case CallType.rejected:
-        icon = Icons.close;
+        icon = EvaIcons.closeCircleOutline;
         color = Colors.red;
         break;
       default:
-        icon = Icons.call;
+        icon = EvaIcons.phoneOutline;
     }
     return Icon(icon, size: 14, color: color);
   }

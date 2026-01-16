@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:vivapro/core/theme/global_colors.dart';
 
 class DateSelectionCard extends StatelessWidget {
   final DateTime selectedDate;
@@ -12,65 +10,62 @@ class DateSelectionCard extends StatelessWidget {
     required this.onDateSelected,
   });
 
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: selectedDate,
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2101),
-    );
-    if (picked != null && picked != selectedDate) {
-      onDateSelected(picked);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => _selectDate(context),
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: GlobalColors.containerColor(context),
-          borderRadius: BorderRadius.circular(24),
-          boxShadow: GlobalColors.boxShadow(context),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Select a Date",
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-            ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Row(
               children: [
-                const Icon(Icons.calendar_today, color: Colors.grey),
-                Text(
-                  DateFormat('MMMM yyyy').format(selectedDate),
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                      ),
+                Icon(
+                  Icons.calendar_month_outlined,
+                  color: Theme.of(context).colorScheme.primary,
+                  size: 20,
                 ),
-                const Icon(Icons.chevron_right, color: Colors.grey),
+                const SizedBox(width: 8),
+                Text(
+                  "Choose Date",
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 0.5,
+                  ),
+                ),
               ],
             ),
-            const SizedBox(height: 20),
-            Center(
-              child: Text(
-                DateFormat('EEEE, d').format(selectedDate),
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+          ),
+          Theme(
+            data: Theme.of(context).copyWith(
+              colorScheme: Theme.of(context).colorScheme.copyWith(
+                    primary: Theme.of(context).colorScheme.primary,
+                  ),
+              dividerColor: Colors.transparent,
+            ),
+            child: SizedBox(
+              height: 350,
+              child: CalendarDatePicker(
+                initialDate: selectedDate,
+                firstDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
+                lastDate: DateTime.now().add(const Duration(days: 365)),
+                onDateChanged: onDateSelected,
               ),
             ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 10),
+        ],
       ),
     );
   }

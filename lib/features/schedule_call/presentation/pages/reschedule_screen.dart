@@ -1,6 +1,5 @@
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:ionicons/ionicons.dart';
-import 'package:vivapro/core/theme/global_colors.dart';
 
 class RescheduleScreen extends StatelessWidget {
   const RescheduleScreen({super.key});
@@ -8,8 +7,8 @@ class RescheduleScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final backgroundColor = GlobalColors.containerColor(context) ?? Colors.white;
-    final cardColor = GlobalColors.containerThemeColor(context) ?? Colors.white;
+    final backgroundColor = Theme.of(context).colorScheme.surface;
+    final cardColor = Theme.of(context).colorScheme.background;
     final textColor = isDark ? Colors.white : const Color(0xFF1F2937);
     final subTextColor = isDark ? Colors.grey[400] : Colors.grey[600];
 
@@ -104,7 +103,7 @@ class RescheduleScreen extends StatelessWidget {
                   children: [
                     Expanded(
                       child: _RescheduleOptionCard(
-                        icon: Ionicons.time,
+                        icon: EvaIcons.clockOutline,
                         iconColor: const Color(0xFFEAB308), // Yellow
                         title: 'Later',
                         subtitle: '30 minutes',
@@ -115,7 +114,7 @@ class RescheduleScreen extends StatelessWidget {
                     const SizedBox(width: 16),
                     Expanded(
                       child: _RescheduleOptionCard(
-                        icon: Ionicons.hourglass_outline,
+                        icon: EvaIcons.clockOutline,
                         iconColor: const Color(0xFF3B82F6), // Blue
                         title: 'In an hour',
                         subtitle: 'Focus time',
@@ -133,7 +132,7 @@ class RescheduleScreen extends StatelessWidget {
                   children: [
                     Expanded(
                       child: _RescheduleOptionCard(
-                        icon: Ionicons.sunny,
+                        icon: EvaIcons.sunOutline,
                         iconColor: const Color(0xFFF59E0B), // Ambver
                         title: 'Tomorrow',
                         subtitle: '9:00 AM',
@@ -144,7 +143,7 @@ class RescheduleScreen extends StatelessWidget {
                     const SizedBox(width: 16),
                     Expanded(
                       child: _RescheduleOptionCard(
-                        icon: Ionicons.calendar,
+                        icon: EvaIcons.calendarOutline,
                         iconColor: const Color(0xFF10B981), // Green
                         title: 'Custom...',
                         subtitle: 'Pick date & time',
@@ -179,7 +178,7 @@ class RescheduleScreen extends StatelessWidget {
                     child: const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Ionicons.checkmark_circle, size: 20),
+                        Icon(EvaIcons.checkmarkCircle2Outline, size: 20),
                         SizedBox(width: 8),
                         Text(
                           'Mark as Done',
@@ -242,15 +241,6 @@ class _RescheduleOptionCard extends StatelessWidget {
         color: isDark ? cardColor : Colors.white,
         borderRadius: BorderRadius.circular(24),
         border: isDark ? null : Border.all(color: Colors.grey[100]!),
-        boxShadow: isDark
-            ? []
-            : [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.03),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
-                ),
-              ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

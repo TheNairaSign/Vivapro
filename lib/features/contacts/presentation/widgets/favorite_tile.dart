@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vivapro/features/contacts/repositories/favorite_repository.dart';
 import 'package:vivapro/core/enums/call_frequency.dart';
 import 'package:vivapro/core/extensions/capitalization.dart';
-import 'package:vivapro/core/theme/global_colors.dart';
 
 class FavoriteTile extends ConsumerWidget {
   final Contact contact;
@@ -37,20 +36,20 @@ class FavoriteTile extends ConsumerWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: GlobalColors.containerColor(context),
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
         children: [
           CircleAvatar(
             radius: 25,
-            backgroundColor: Colors.lightBlue.withValues(alpha: 0.1),
+            backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
             child: Text(
               (contact.displayName.isNotEmpty)
                   ? contact.displayName.characters.first.toUpperCase()
                   : '?',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: Colors.lightBlue,
+                color: Theme.of(context).colorScheme.primary,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -99,7 +98,7 @@ class FavoriteTile extends ConsumerWidget {
           ),
           const SizedBox(width: 8),
           CircleAvatar(
-            backgroundColor: Colors.lightBlue,
+            backgroundColor: Theme.of(context).colorScheme.primary,
             child: const Icon(Icons.call, color: Colors.white),
           ),
         ],

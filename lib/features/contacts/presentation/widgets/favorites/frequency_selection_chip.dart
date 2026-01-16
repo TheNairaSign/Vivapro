@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vivapro/core/enums/call_frequency.dart';
 import 'package:vivapro/core/extensions/capitalization.dart';
-import 'package:vivapro/core/theme/global_colors.dart';
 
 class FrequencySelectionChip extends StatefulWidget {
   const FrequencySelectionChip({
@@ -30,7 +29,7 @@ class _FrequencySelectionChipState extends State<FrequencySelectionChip> {
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: isSelected
-              ? Colors.lightBlue
+              ? Theme.of(context).colorScheme.primary
               : Theme.of(context).scaffoldBackgroundColor,
           borderRadius: BorderRadius.circular(20),
           border: null,

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:vivapro/core/theme/global_colors.dart';
 import 'package:vivapro/widgets/next_button.dart';
 
 class InterestSelectionPage extends StatefulWidget {

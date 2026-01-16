@@ -31,7 +31,6 @@ class _HomePageState extends ConsumerState<HomePage> {
     final now = DateTime.now();
     final dateString = DateFormat('EEEE, MMM d').format(now);
 
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       extendBody: true,
       appBar: AppBar(
@@ -57,7 +56,7 @@ class _HomePageState extends ConsumerState<HomePage> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: isDark ? const Color(0xFF1C2029) : Colors.white,
+              color: Theme.of(context).scaffoldBackgroundColor,
               borderRadius: BorderRadius.circular(20),
             ),
             child: Row(
@@ -85,8 +84,8 @@ class _HomePageState extends ConsumerState<HomePage> {
               const SizedBox(height: 32),
               InsightsSection(),
               const SizedBox(height: 32),
-              _buildRecentsList(),
-              const SizedBox(height: 80), // Bottom padding for nav bar
+              // _buildRecentsList(),
+              // const SizedBox(height: 80), // Bottom padding for nav bar
             ],
           ),
         ),

@@ -1,6 +1,5 @@
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:ionicons/ionicons.dart';
-import 'package:vivapro/core/theme/global_colors.dart';
 
 class ContactRelationshipHealth extends StatelessWidget {
   const ContactRelationshipHealth({super.key});
@@ -18,16 +17,15 @@ class ContactRelationshipHealth extends StatelessWidget {
         const SizedBox(height: 16),
         Container(
           decoration: BoxDecoration(
-            color: GlobalColors.containerColor(context),
+            color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(20),
-            boxShadow: GlobalColors.boxShadow(context),
           ),
           padding: const EdgeInsets.all(20),
           child: Row(
             children: [
               Expanded(
                 child: _buildHealthCard(
-                  icon: Ionicons.call_outline,
+                  icon: EvaIcons.phoneOutline,
                   label: 'LAST CALL',
                   value: '2 days ago',
                   subtitle: 'Sunday, 4:20 PM',
@@ -42,7 +40,7 @@ class ContactRelationshipHealth extends StatelessWidget {
               ),
               Expanded(
                 child: _buildHealthCard(
-                  icon: Ionicons.calendar_outline,
+                  icon: EvaIcons.calendarOutline,
                   label: 'AVG FREQ',
                   value: 'Weekly',
                   subtitle: 'Usually weekends',

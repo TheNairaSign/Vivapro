@@ -1,7 +1,7 @@
 
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:vivapro/core/theme/global_colors.dart';
 import 'package:vivapro/features/schedule_call/data/schedule_call.dart';
 
 class ScheduleDetailsPage extends StatelessWidget {
@@ -22,7 +22,7 @@ class ScheduleDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final cardColor = isDarkMode ? const Color(0xFF1E1E1E) : Colors.white;
+    final cardColor = Theme.of(context).colorScheme.surface;
 
     return Scaffold(
       appBar: AppBar(
@@ -31,7 +31,7 @@ class ScheduleDetailsPage extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new),
+          icon: Icon(EvaIcons.arrowIosBackOutline),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -94,13 +94,6 @@ class ScheduleDetailsPage extends StatelessWidget {
               decoration: BoxDecoration(
                 color: cardColor,
                 borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.05),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
               ),
               child: Row(
                 children: [
@@ -170,20 +163,13 @@ class ScheduleDetailsPage extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: cardColor,
                   borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.05),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                      Row(
                       children: [
-                        Icon(Icons.sticky_note_2_outlined, color: GlobalColors.primaryColor, size: 20),
+                        Icon(EvaIcons.fileTextOutline, color: Theme.of(context).colorScheme.primary, size: 20),
                         const SizedBox(width: 8),
                         Text(
                           "Note",
@@ -218,14 +204,14 @@ class ScheduleDetailsPage extends StatelessWidget {
                   // TODO: Functionality to update call
                 },
                  style: ElevatedButton.styleFrom(
-                  backgroundColor: GlobalColors.primaryColor,
+                  backgroundColor: Theme.of(context).colorScheme.primary,
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
                   elevation: 2,
                 ),
-                icon: const Icon(Icons.edit_calendar),
+                icon: const Icon(EvaIcons.edit2Outline),
                 label: const Text(
                   "Update Call",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -247,7 +233,7 @@ class ScheduleDetailsPage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(16),
                   ),
                 ),
-                icon: const Icon(Icons.call),
+                icon: const Icon(EvaIcons.phoneCallOutline),
                 label: const Text(
                   "Call Now",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),

@@ -1,6 +1,5 @@
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:ionicons/ionicons.dart';
-import 'package:vivapro/core/theme/global_colors.dart';
 
 class ContactSettingsList extends StatelessWidget {
   const ContactSettingsList({super.key});
@@ -20,14 +19,14 @@ class ContactSettingsList extends StatelessWidget {
         const SizedBox(height: 16),
         Container(
           decoration: BoxDecoration(
-            color: GlobalColors.containerColor(context),
+            color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(20),
-            boxShadow: GlobalColors.boxShadow(context),
           ),
           child: Column(
             children: [
               _buildSettingTile(
-                icon: Ionicons.notifications,
+                context: context,
+                icon: EvaIcons.bellOutline,
                 iconColor: Colors.orange,
                 title: 'Remind me to call',
                 subtitle: 'Next: Sun 2:00 PM',
@@ -40,7 +39,8 @@ class ContactSettingsList extends StatelessWidget {
                 color: isDark ? Colors.grey[800] : Colors.grey[200],
               ),
               _buildSettingTile(
-                icon: Ionicons.location,
+                context: context,
+                icon: EvaIcons.pinOutline,
                 iconColor: Colors.blue,
                 title: 'Live Location',
                 subtitle: 'Off',
@@ -53,7 +53,8 @@ class ContactSettingsList extends StatelessWidget {
                 color: isDark ? Colors.grey[800] : Colors.grey[200],
               ),
               _buildSettingTile(
-                icon: Ionicons.medical,
+                context: context,
+                icon: EvaIcons.heartOutline,
                 iconColor: Colors.red,
                 title: 'Emergency Bypass',
                 subtitle: null,
@@ -67,6 +68,7 @@ class ContactSettingsList extends StatelessWidget {
   }
 
   Widget _buildSettingTile({
+    required BuildContext context,
     required IconData icon,
     required Color iconColor,
     required String title,
@@ -83,7 +85,7 @@ class ContactSettingsList extends StatelessWidget {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: iconColor.withValues(alpha: 0.15),
+              color: iconColor.withOpacity(0.15),
               shape: BoxShape.circle,
             ),
             child: Icon(icon, color: iconColor, size: 20),
@@ -111,9 +113,9 @@ class ContactSettingsList extends StatelessWidget {
             Switch(
               value: switchValue,
               onChanged: (value) {},
-              activeColor: Colors.lightBlue,
+              activeColor: Theme.of(context).colorScheme.primary,
             ),
-          if (hasArrow) Icon(Icons.chevron_right, color: Colors.grey[400]),
+          if (hasArrow) Icon(EvaIcons.arrowIosForwardOutline, color: Colors.grey[400]),
         ],
       ),
     );

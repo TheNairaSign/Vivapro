@@ -4,7 +4,6 @@ import 'package:vivapro/features/contacts/presentation/widgets/favorites/frequen
 import 'package:vivapro/features/contacts/presentation/widgets/favorites/priority_section_container.dart';
 import 'package:vivapro/core/enums/call_frequency.dart';
 import 'package:vivapro/core/enums/priority.dart';
-import 'package:vivapro/core/theme/global_colors.dart';
 
 class FrequencyContainer extends StatefulWidget {
   const FrequencyContainer({super.key});
@@ -26,7 +25,6 @@ class _FrequencyContainerState extends State<FrequencyContainer> {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
-        boxShadow: GlobalColors.boxShadow(context),
       ),
       child: Column(
         children: [

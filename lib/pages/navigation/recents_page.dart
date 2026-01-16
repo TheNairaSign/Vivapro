@@ -5,6 +5,8 @@ import 'package:vivapro/features/call_log/data/call_log_model.dart';
 import 'package:vivapro/features/call_log/presentation/bloc/call_log_bloc.dart';
 import 'package:vivapro/features/call_log/presentation/bloc/call_log_state.dart';
 import 'package:vivapro/features/call_log/presentation/bloc/call_log_event.dart';
+import 'package:vivapro/features/contacts/presentation/pages/add_favorite_page.dart';
+import 'package:vivapro/pages/contact_picker_page.dart';
 import 'package:vivapro/pages/navigation/widgets/activity_item.dart';
 import 'package:vivapro/pages/navigation/widgets/filter_pills.dart';
 import 'package:vivapro/pages/navigation/widgets/insight_card.dart';
@@ -60,170 +62,136 @@ class _RecentsPageState extends State<RecentsPage> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
+
     return Scaffold(
-      backgroundColor: isDark
-          ? const Color(0xFF101A22)
-          : const Color(0xFFF4F7FA),
       // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     Navigator.push(
+      //   onPressed: () async {
+      //     final contact = await Navigator.push(
       //       context,
-      //       MaterialPageRoute(builder: (context) => const AddFavoritePage()),
+      //       MaterialPageRoute(builder: (context) => const ContactPickerPage()),
       //     );
+      //     if (contact != null && context.mounted) {
+      //       Navigator.push(
+      //         context,
+      //         MaterialPageRoute(
+      //           builder: (context) => AddFavoritePage(contact: contact),
+      //         ),
+      //       );
+      //     }
       //   },
-      //   backgroundColor: const Color(0xFF2D8CFF),
+      //   backgroundColor: Theme.of(context).colorScheme.primary,
       //   child: const Icon(Icons.add, color: Colors.white),
       // ),
-      body: SafeArea(
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            // Header
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.only(
-                  left: 20,
-                  right: 20,
-                  top: 20,
-                  bottom: 20,
+      body: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
+        slivers: [
+          SliverAppBar(
+            title:  Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Activity',
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: isDark
+                        ? Colors.white
+                        : const Color(0xFF1A1D1E),
+                    letterSpacing: -0.5,
+                  ),
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Activity',
-                          style: TextStyle(
-                            fontSize: 32,
-                            fontWeight: FontWeight.bold,
-                            color: isDark
-                                ? Colors.white
-                                : const Color(0xFF1A1D1E),
-                            letterSpacing: -0.5,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          'Your relationship log',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: isDark ? Colors.grey[400] : Colors.grey[600],
-                          ),
-                        ),
-                      ],
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: isDark ? const Color(0xFF2C2C3E) : Colors.white,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        Icons.tune,
-                        color: isDark ? Colors.white : Colors.black87,
-                        size: 20,
-                      ),
-                    ),
-                  ],
+                const SizedBox(height: 4),
+                Text(
+                  'Your relationship log',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    fontSize: 16,
+                    color: isDark ? Colors.grey[400] : Colors.grey[600],
+                  ),
                 ),
+              ],
+            ),
+            floating: true,
+            pinned: true,
+            actions: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: isDark ? const Color(0xFF2C2C3E) : Colors.white,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.tune,
+                  color: isDark ? Colors.white : Colors.black87,
+                  size: 20,
+                ),
+              ),  
+            ],
+          ),
+          // Header
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.only(
+                left: 20,
+                right: 20,
+                bottom: 20,
               ),
             ),
-
-            // Filter Pills
-            const SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                child: FilterPills(),
-              ),
+          ),
+      
+          // Filter Pills
+          const SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+              child: FilterPills(),
             ),
-
-            // Insight Card (Only visible if Today has items or just hardcoded for demo)
-            // In the design, it's under "TODAY" section or just at the top?
-            // "TODAY" header is above the insight card in the image.
-
-            // We'll put Insight Card inside the list or just as a static item at the top of Today for now.
-            // Let's verify the image structure:
-            // "TODAY" -> Insight Card -> Sarah Item -> Dad Item.
-            BlocBuilder<CallLogBloc, CallLogState>(
-              builder: (context, state) {
-                if (state is CallLogLoading) {
-                  return SliverToBoxAdapter(
+          ),
+      
+          // Insight Card (Only visible if Today has items or just hardcoded for demo)
+          // In the design, it's under "TODAY" section or just at the top?
+          // "TODAY" header is above the insight card in the image.
+      
+          // We'll put Insight Card inside the list or just as a static item at the top of Today for now.
+          // Let's verify the image structure:
+          // "TODAY" -> Insight Card -> Sarah Item -> Dad Item.
+          BlocBuilder<CallLogBloc, CallLogState>(
+            builder: (context, state) {
+              if (state is CallLogLoading) {
+                return SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 100),
+                    child: Center(
+                      child: LoadingAnimationWidget.threeRotatingDots(
+                        color: const Color(0xFF2D8CFF),
+                        size: 30,
+                      ),
+                    ),
+                  ),
+                );
+              } else if (state is CallLogFailure) {
+                return SliverToBoxAdapter(
+                  child: Center(child: Text(state.message)),
+                );
+              } else if (state is CallLogSuccess) {
+                final groupedLogs = _groupLogsByDate(state.callLogEntries);
+                final keys = groupedLogs.keys.toList();
+                final insights = state.insights;
+      
+                if (groupedLogs.isEmpty && insights.isEmpty) {
+                  return const SliverToBoxAdapter(
                     child: Padding(
-                      padding: const EdgeInsets.only(top: 100),
-                      child: Center(
-                        child: LoadingAnimationWidget.threeRotatingDots(
-                          color: const Color(0xFF2D8CFF),
-                          size: 30,
-                        ),
-                      ),
+                      padding: EdgeInsets.all(20),
+                      child: Center(child: Text("No recent activity.")),
                     ),
                   );
-                } else if (state is CallLogFailure) {
-                  return SliverToBoxAdapter(
-                    child: Center(child: Text(state.message)),
-                  );
-                } else if (state is CallLogSuccess) {
-                  final groupedLogs = _groupLogsByDate(state.callLogEntries);
-                  final keys = groupedLogs.keys.toList();
-                  final insights = state.insights;
-
-                  if (groupedLogs.isEmpty && insights.isEmpty) {
-                    return const SliverToBoxAdapter(
-                      child: Padding(
-                        padding: EdgeInsets.all(20),
-                        child: Center(child: Text("No recent activity.")),
-                      ),
-                    );
-                  }
-
-                  return SliverList(
-                    delegate: SliverChildBuilderDelegate((context, index) {
-                      // This is a bit of a hack to combine two lists (insights and logs)
-                      // A better approach would be a single list of a sealed type.
-                      // For now, we render insights first, then the log groups.
-
-                      if (index == 0 && insights.isNotEmpty) {
-                        // Render Insights Section
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                  top: 24,
-                                  bottom: 12,
-                                ),
-                                child: Text(
-                                  '✨ SMART INSIGHTS',
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.grey[500],
-                                    letterSpacing: 1.2,
-                                  ),
-                                ),
-                              ),
-                              ...insights.map(
-                                (insight) => InsightCard(insight: insight),
-                              ),
-                            ],
-                          ),
-                        );
-                      }
-
-                      // Adjust index for logs
-                      final logIndex = insights.isNotEmpty ? index - 1 : index;
-                      if (logIndex < 0 || logIndex >= keys.length) {
-                        return const SizedBox.shrink();
-                      }
-
-                      final key = keys[logIndex];
-                      final logs = groupedLogs[key]!;
-
+                }
+      
+                return SliverList(
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    // This is a bit of a hack to combine two lists (insights and logs)
+                    // A better approach would be a single list of a sealed type.
+                    // For now, we render insights first, then the log groups.
+      
+                    if (index == 0 && insights.isNotEmpty) {
+                      // Render Insights Section
                       return Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Column(
@@ -235,8 +203,8 @@ class _RecentsPageState extends State<RecentsPage> {
                                 bottom: 12,
                               ),
                               child: Text(
-                                key,
-                                style: TextStyle(
+                                '✨ SMART INSIGHTS',
+                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                   fontSize: 13,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.grey[500],
@@ -244,19 +212,53 @@ class _RecentsPageState extends State<RecentsPage> {
                                 ),
                               ),
                             ),
-                            ...logs.map((log) => ActivityItem(log: log)),
+                             InsightCard(insight: insights.first),
                           ],
                         ),
                       );
-                    }, childCount: keys.length + (insights.isNotEmpty ? 1 : 0)),
-                  );
-                }
-                return const SliverToBoxAdapter(child: SizedBox.shrink());
-              },
-            ),
-            const SliverPadding(padding: EdgeInsets.only(bottom: 100)),
-          ],
-        ),
+                    }
+      
+                    // Adjust index for logs
+                    final logIndex = insights.isNotEmpty ? index - 1 : index;
+                    if (logIndex < 0 || logIndex >= keys.length) {
+                      return const SizedBox.shrink();
+                    }
+      
+                    final key = keys[logIndex];
+                    final logs = groupedLogs[key]!;
+      
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              top: 24,
+                              bottom: 12,
+                            ),
+                            child: Text(
+                              key,
+                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey[500],
+                                letterSpacing: 1.2,
+                              ),
+                            ),
+                          ),
+                          ...logs.map((log) => ActivityItem(log: log)),
+                        ],
+                      ),
+                    );
+                  }, childCount: keys.length + (insights.isNotEmpty ? 1 : 0)),
+                );
+              }
+              return const SliverToBoxAdapter(child: SizedBox.shrink());
+            },
+          ),
+          const SliverPadding(padding: EdgeInsets.only(bottom: 100)),
+        ],
       ),
     );
   }

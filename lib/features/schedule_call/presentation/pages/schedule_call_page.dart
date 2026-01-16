@@ -1,3 +1,4 @@
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
@@ -50,9 +51,12 @@ class _ScheduleCallPageState extends ConsumerState<ScheduleCallPage> {
         },
         child: Scaffold(
           appBar: AppBar(
-            backgroundColor: Colors.transparent,
             elevation: 0,
             centerTitle: true,
+            leading: IconButton(
+              icon: Icon(EvaIcons.arrowIosBack),
+              onPressed: () => Navigator.pop(context),
+            ),
             title: Text(
               "Schedule a Call",
               style: Theme.of(context)
@@ -60,12 +64,6 @@ class _ScheduleCallPageState extends ConsumerState<ScheduleCallPage> {
                   .headlineSmall
                   ?.copyWith(fontWeight: FontWeight.bold),
             ),
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.more_horiz),
-                onPressed: () {},
-              ),
-            ],
           ),
           body: Builder(
             builder: (context) {
@@ -117,23 +115,25 @@ class _ScheduleCallPageState extends ConsumerState<ScheduleCallPage> {
                               action: SnackBarAction(
                                 label: 'View', 
                                 onPressed: () => navigator.push(MaterialPageRoute(builder: (ctx) => ScheduleDetailsPage(scheduleCall: scheduleCall))),
-                                textColor: Colors.lightBlue,
+                                textColor: Theme.of(
+                                  context,
+                                ).colorScheme.primary,
                               )
                             ),
                           );
                           navigator.pop();
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
+                          backgroundColor: Theme.of(context).colorScheme.primary,
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                           elevation: 4,
-                          shadowColor: Colors.blue.withValues(alpha: 0.4),
+                          shadowColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.4),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(
-                              Icons.calendar_month,
+                            Icon(
+                              EvaIcons.calendar,
                               color: Colors.white,
                             ),
                             const SizedBox(width: 8),

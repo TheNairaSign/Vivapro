@@ -46,7 +46,7 @@ class _AuthCheckerState extends State<AuthChecker> {
       child: Scaffold(
         body: Center(
           child: LoadingAnimationWidget.threeRotatingDots(
-            color: Colors.lightBlue,
+            color: Theme.of(context).colorScheme.primary,
             size: 20,
           ),
         ),

@@ -67,22 +67,12 @@ class _VivaproState extends ConsumerState<Vivapro> {
           systemNavigationBarColor: Theme.of(context).scaffoldBackgroundColor,
           systemNavigationBarIconBrightness: Brightness.dark,
         ),
-        child: DynamicColorBuilder(
-          builder: (lightColorScheme, darkColorScheme) {
-            return MaterialApp(
-              title: 'Vivapro',
-              debugShowCheckedModeBanner: false,
-              theme: AppTheme.lightTheme.copyWith(
-                colorScheme: lightColorScheme,
-                brightness: Brightness.light,
-              ),
-              darkTheme: AppTheme.darkTheme.copyWith(
-                colorScheme: darkColorScheme,
-                brightness: Brightness.dark,
-              ),
-              home: const AuthChecker(),
-            );
-          },
+        child: MaterialApp(
+          title: 'Vivapro',
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          home: const AuthChecker(),
         ),
       ),
       ),

@@ -18,7 +18,7 @@ class ContactProfileHeader extends StatelessWidget {
             Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: Colors.lightBlue, width: 3),
+                border: Border.all(color: Theme.of(context).colorScheme.primary, width: 3),
               ),
               child: CircleAvatar(
                 radius: 60,

@@ -2,7 +2,6 @@ import 'package:call_log/call_log.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:vivapro/features/call_log/data/call_log_model.dart';
-import 'package:vivapro/core/theme/global_colors.dart';
 
 class ActivityItem extends StatelessWidget {
   final CallLogModel log;
@@ -74,7 +73,7 @@ class ActivityItem extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: GlobalColors.containerColor(context),
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(

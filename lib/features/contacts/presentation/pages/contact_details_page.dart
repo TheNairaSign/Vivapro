@@ -38,11 +38,10 @@ class _ContactDetailsPageState extends ConsumerState<ContactDetailsPage> {
             onPressed: () {
               // Edit functionality
             },
-            child: const Text(
+            child: Text(
               'Edit',
-              style: TextStyle(
-                color: Colors.lightBlue,
-                fontSize: 16,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Theme.of(context).colorScheme.primary,
                 fontWeight: FontWeight.w500,
               ),
             ),
