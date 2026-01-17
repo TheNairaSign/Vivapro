@@ -1,10 +1,13 @@
-
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:vivapro/core/services/interaction_tracker.dart';
 import 'package:vivapro/features/schedule_call/data/schedule_call.dart';
+import 'package:vivapro/features/schedule_call/presentation/pages/schedule_call_page.dart';
 
-class ScheduleDetailsPage extends StatelessWidget {
+class ScheduleDetailsPage extends ConsumerWidget {
   final ScheduleCall scheduleCall;
 
   const ScheduleDetailsPage({super.key, required this.scheduleCall});
@@ -20,18 +23,18 @@ class ScheduleDetailsPage extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     final cardColor = Theme.of(context).colorScheme.surface;
+    final interactionTracker = ref.read(interactionTrackerProvider);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text("Schedule Details"),
         centerTitle: true,
-        backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(EvaIcons.arrowIosBackOutline),
+          icon: const Icon(EvaIcons.arrowIosBackOutline),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -112,7 +115,7 @@ class ScheduleDetailsPage extends StatelessWidget {
                         const SizedBox(height: 4),
                         Text(
                           _formatDate(scheduleCall.date),
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
@@ -141,7 +144,7 @@ class ScheduleDetailsPage extends StatelessWidget {
                         const SizedBox(height: 4),
                         Text(
                           _formatTime(scheduleCall.time),
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
@@ -184,7 +187,7 @@ class ScheduleDetailsPage extends StatelessWidget {
                     const SizedBox(height: 12),
                     Text(
                       scheduleCall.note,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 16,
                         height: 1.5,
                       ),
@@ -201,7 +204,14 @@ class ScheduleDetailsPage extends StatelessWidget {
               height: 56,
               child: ElevatedButton.icon(
                 onPressed: () {
-                  // TODO: Functionality to update call
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ScheduleCallPage(
+                        contact: scheduleCall.contact,
+                      ),
+                    ),
+                  );
                 },
                  style: ElevatedButton.styleFrom(
                   backgroundColor: Theme.of(context).colorScheme.primary,
@@ -223,8 +233,18 @@ class ScheduleDetailsPage extends StatelessWidget {
               width: double.infinity,
               height: 56,
               child: OutlinedButton.icon(
-                onPressed: () {
-                   // TODO: Functionality to call now
+                onPressed: () async {
+                  final phoneNumber = scheduleCall.contact.phones.isNotEmpty
+                                ? scheduleCall.contact.phones.first.number
+                                : null;
+                            
+                  if (phoneNumber != null) {
+                    await interactionTracker.recordInteraction(scheduleCall.contact.id);
+                    final uri = Uri(scheme: 'tel', path: phoneNumber);
+                    if (await canLaunchUrl(uri)) {
+                      await launchUrl(uri);
+                    }
+                  }
                 },
                  style: OutlinedButton.styleFrom(
                   foregroundColor: Colors.green,

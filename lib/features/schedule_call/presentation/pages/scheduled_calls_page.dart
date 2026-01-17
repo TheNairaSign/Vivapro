@@ -1,8 +1,11 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:vivapro/core/services/interaction_tracker.dart';
 import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_bloc.dart';
 import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_event.dart';
 import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_state.dart';
@@ -11,14 +14,14 @@ import 'package:vivapro/features/schedule_call/presentation/pages/schedule_detai
 import 'package:vivapro/core/services/notification_service.dart';
 import 'package:vivapro/pages/contact_picker_page.dart';
 
-class ScheduledCallsPage extends StatefulWidget {
+class ScheduledCallsPage extends ConsumerStatefulWidget {
   const ScheduledCallsPage({super.key});
 
   @override
-  State<ScheduledCallsPage> createState() => _ScheduledCallsPageState();
+  ConsumerState<ScheduledCallsPage> createState() => _ScheduledCallsPageState();
 }
 
-class _ScheduledCallsPageState extends State<ScheduledCallsPage> {
+class _ScheduledCallsPageState extends ConsumerState<ScheduledCallsPage> {
   @override
   void initState() {
     super.initState();
@@ -38,6 +41,8 @@ class _ScheduledCallsPageState extends State<ScheduledCallsPage> {
   @override
   Widget build(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final interactionTracker = ref.read(interactionTrackerProvider);
+    
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -46,7 +51,7 @@ class _ScheduledCallsPageState extends State<ScheduledCallsPage> {
         ),
         centerTitle: false,
         elevation: 2,
-        actionsPadding: EdgeInsets.only(right: 15),
+        actionsPadding: const EdgeInsets.only(right: 15),
         actions: [
           IconButton(
             icon: const Icon(EvaIcons.shoppingBagOutline, color: Colors.orange),
@@ -227,8 +232,21 @@ class _ScheduledCallsPageState extends State<ScheduledCallsPage> {
                         ),
                         trailing: IconButton(
                           icon: const Icon(EvaIcons.phoneCallOutline, color: Colors.green),
-                          onPressed: () {
-                            // TODO: Initiate call logic
+                          onPressed: () async {
+                            final phoneNumber = schedule.contact.phones.isNotEmpty
+                                ? schedule.contact.phones.first.number
+                                : null;
+                            
+                            if (phoneNumber != null) {
+                              // Record interaction
+                              await interactionTracker.recordInteraction(schedule.contact.id);
+                              
+                              // Open dialer
+                              final uri = Uri(scheme: 'tel', path: phoneNumber);
+                              if (await canLaunchUrl(uri)) {
+                                await launchUrl(uri);
+                              }
+                            }
                           },
                         ),
                       ),

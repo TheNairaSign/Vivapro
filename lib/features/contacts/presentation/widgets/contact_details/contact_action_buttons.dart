@@ -1,22 +1,37 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/contact.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:vivapro/core/services/interaction_tracker.dart';
 
-class ContactActionButtons extends StatelessWidget {
+class ContactActionButtons extends ConsumerWidget {
   final Contact contact;
 
   const ContactActionButtons({super.key, required this.contact});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Column(
       children: [
         SizedBox(
           width: double.infinity,
           height: 50,
           child: ElevatedButton(
-            onPressed: () {
-              // Call action
+            onPressed: () async {
+              final interactionTracker = ref.read(interactionTrackerProvider);
+              final phoneNumber = contact.phones.isNotEmpty ? contact.phones.first.number : null;
+              
+              if (phoneNumber != null) {
+                // Record the interaction if it's a favorite
+                await interactionTracker.recordInteraction(contact.id);
+                
+                // Open phone dialer
+                final uri = Uri(scheme: 'tel', path: phoneNumber);
+                if (await canLaunchUrl(uri)) {
+                  await launchUrl(uri);
+                }
+              }
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.primary,
@@ -90,7 +105,7 @@ class ContactActionButtons extends StatelessWidget {
             const SizedBox(width: 8),
             Text(
               label,
-              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
             ),
           ],
         ),

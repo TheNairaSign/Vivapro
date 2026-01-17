@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/contact.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:vivapro/core/services/interaction_tracker.dart';
 import 'package:vivapro/features/contacts/repositories/favorite_repository.dart';
 import 'package:vivapro/core/enums/call_frequency.dart';
 import 'package:vivapro/core/extensions/capitalization.dart';
@@ -28,10 +30,6 @@ class FavoriteTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
-
-    final isDark = theme.brightness == Brightness.dark;
-
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(12),
@@ -97,9 +95,26 @@ class FavoriteTile extends ConsumerWidget {
             ),
           ),
           const SizedBox(width: 8),
-          CircleAvatar(
-            backgroundColor: Theme.of(context).colorScheme.primary,
-            child: const Icon(Icons.call, color: Colors.white),
+          GestureDetector(
+            onTap: () async {
+              final interactionTracker = ref.read(interactionTrackerProvider);
+              final phoneNumber = contact.phones.isNotEmpty ? contact.phones.first.number : null;
+              
+              if (phoneNumber != null) {
+                // Record the interaction if it's a favorite
+                await interactionTracker.recordInteraction(contact.id);
+                
+                // Open phone dialer
+                final uri = Uri(scheme: 'tel', path: phoneNumber);
+                if (await canLaunchUrl(uri)) {
+                  await launchUrl(uri);
+                }
+              }
+            },
+            child: CircleAvatar(
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              child: const Icon(Icons.call, color: Colors.white),
+            ),
           ),
         ],
       ),

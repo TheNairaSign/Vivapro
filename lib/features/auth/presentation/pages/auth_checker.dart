@@ -9,22 +9,51 @@ import 'package:vivapro/features/auth/presentation/bloc/auth_change/auth_change_
 import 'package:vivapro/features/auth/presentation/pages/auth_page.dart';
 import 'package:vivapro/pages/navigation/navigation_page.dart';
 
-class AuthChecker extends StatefulWidget {
+class AuthChecker extends StatelessWidget {
   const AuthChecker({super.key});
 
   @override
-  State<AuthChecker> createState() => _AuthCheckerState();
+  Widget build(BuildContext context) {
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Scaffold(
+            body: Center(
+              child: LoadingAnimationWidget.threeRotatingDots(
+                color: Theme.of(context).colorScheme.primary,
+                size: 20,
+              ),
+            ),
+          );
+        }
+
+        final user = snapshot.data;
+        if (user == null) {
+          return AuthPage();
+        } else {
+          return _LoggedInAuthHandler(user: user);
+        }
+      },
+    );
+  }
 }
 
-class _AuthCheckerState extends State<AuthChecker> {
-  final _firebaseAuth = FirebaseAuth.instance;
+class _LoggedInAuthHandler extends StatefulWidget {
+  const _LoggedInAuthHandler({required this.user});
+  final User user;
+
+  @override
+  State<_LoggedInAuthHandler> createState() => _LoggedInAuthHandlerState();
+}
+
+class _LoggedInAuthHandlerState extends State<_LoggedInAuthHandler> {
   @override
   void initState() {
     super.initState();
-    if (_firebaseAuth.currentUser == null) return;
     context.read<AuthStateChangeBloc>().add(
-      AuthStateChange(AuthUser.fromFirebaseUser(_firebaseAuth.currentUser!)),
-    );
+          AuthStateChange(AuthUser.fromFirebaseUser(widget.user)),
+        );
   }
 
   @override

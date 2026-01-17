@@ -1,16 +1,21 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:vivapro/core/services/interaction_tracker.dart';
 import 'package:vivapro/features/contacts/data/favorite_contact.dart';
 import 'package:vivapro/features/contacts/presentation/pages/contact_details_page.dart';
 import 'package:vivapro/core/app_constants.dart';
 import 'package:vivapro/core/extensions/first_name_extension.dart';
 
-class FavoritesCard extends StatelessWidget {
+class FavoritesCard extends ConsumerWidget {
   const FavoritesCard({super.key, required this.contact});
   final FavoriteContact contact;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final interactionTracker = ref.read(interactionTrackerProvider);
+    
     return GestureDetector(
       onTap: () => Navigator.of(context).push(
         MaterialPageRoute(
@@ -26,8 +31,8 @@ class FavoritesCard extends StatelessWidget {
           ),
           padding: const EdgeInsets.all(10.0),
           child: Column(
-            mainAxisAlignment: .center,
-            mainAxisSize: .min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Stack(
                 children: [
@@ -80,7 +85,7 @@ class FavoritesCard extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                'Last called: ${contact.lastCalledAt}',
+                'Last called: ${contact.lastInteractionAt != null ? _formatLastInteraction(contact.lastInteractionAt!) : 'Never'}',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Colors.grey[500],
                   fontSize: 12,
@@ -91,8 +96,23 @@ class FavoritesCard extends StatelessWidget {
                 width: double.infinity,
                 height: 36,
                 child: ElevatedButton(
-                  onPressed: () {
-                    // Call action
+                  onPressed: () async {
+                    final phoneNumber = contact.contactDetails.phones.isNotEmpty
+                        ? contact.contactDetails.phones.first.number
+                        : null;
+                    
+                    if (phoneNumber != null) {
+                      // Record the interaction
+                      if (contact.id != null) {
+                        await interactionTracker.recordInteraction(contact.id!);
+                      }
+                      
+                      // Open phone dialer
+                      final uri = Uri(scheme: 'tel', path: phoneNumber);
+                      if (await canLaunchUrl(uri)) {
+                        await launchUrl(uri);
+                      }
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     // backgroundColor: const Color(0xFF2D8CFF),
@@ -118,5 +138,20 @@ class FavoritesCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _formatLastInteraction(DateTime lastInteraction) {
+    final now = DateTime.now();
+    final difference = now.difference(lastInteraction);
+    
+    if (difference.inDays > 0) {
+      return '${difference.inDays}d ago';
+    } else if (difference.inHours > 0) {
+      return '${difference.inHours}h ago';
+    } else if (difference.inMinutes > 0) {
+      return '${difference.inMinutes}m ago';
+    } else {
+      return 'Just now';
+    }
   }
 }

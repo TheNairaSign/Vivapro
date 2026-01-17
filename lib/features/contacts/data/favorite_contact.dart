@@ -9,7 +9,8 @@ class FavoriteContact {
   final String? inAppUserId;
   final CallPriority priority;
   final CallFrequency callFrequency;
-  final DateTime? lastCalledAt;
+  final DateTime? lastInteractionAt;
+  final DateTime? createdAt;
 
   FavoriteContact({
     this.id,
@@ -17,7 +18,8 @@ class FavoriteContact {
     this.inAppUserId,
     required this.priority,
     required this.callFrequency,
-    this.lastCalledAt,
+    this.lastInteractionAt,
+    this.createdAt,
   });
 
   Map<String, dynamic> toMap() {
@@ -26,8 +28,8 @@ class FavoriteContact {
       'inAppUserId': inAppUserId,
       'priority': priority.name,
       'callFrequency': callFrequency.name,
-      'lastCalledAt': lastCalledAt,
-      'createdAt': FieldValue.serverTimestamp(),
+      'lastInteractionAt': lastInteractionAt,
+      'createdAt': createdAt ?? FieldValue.serverTimestamp(),
     };
   }
 
@@ -46,8 +48,28 @@ class FavoriteContact {
             (map['callFrequency'] as String?)?.toLowerCase(),
         orElse: () => CallFrequency.daily,
       ),
-      lastCalledAt: (map['lastCalledAt'] as Timestamp?)?.toDate(),
+      lastInteractionAt: (map['lastInteractionAt'] as Timestamp?)?.toDate(),
+      createdAt: (map['createdAt'] as Timestamp?)?.toDate(),
     );
   }
 
+  FavoriteContact copyWith({
+    String? id,
+    Contact? contactDetails,
+    String? inAppUserId,
+    CallPriority? priority,
+    CallFrequency? callFrequency,
+    DateTime? lastInteractionAt,
+    DateTime? createdAt,
+  }) {
+    return FavoriteContact(
+      id: id ?? this.id,
+      contactDetails: contactDetails ?? this.contactDetails,
+      inAppUserId: inAppUserId ?? this.inAppUserId,
+      priority: priority ?? this.priority,
+      callFrequency: callFrequency ?? this.callFrequency,
+      lastInteractionAt: lastInteractionAt ?? this.lastInteractionAt,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
 }

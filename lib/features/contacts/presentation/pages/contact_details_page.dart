@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/contact.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vivapro/features/contacts/data/favorite_contact.dart';
+import 'package:vivapro/features/contacts/repositories/favorite_repository.dart';
 import 'package:vivapro/features/contacts/presentation/widgets/contact_details/contact_action_buttons.dart';
 import 'package:vivapro/features/contacts/presentation/widgets/contact_details/contact_history_section.dart';
 import 'package:vivapro/features/contacts/presentation/widgets/contact_details/contact_profile_header.dart';
@@ -9,7 +11,8 @@ import 'package:vivapro/features/contacts/presentation/widgets/contact_details/c
 
 class ContactDetailsPage extends ConsumerStatefulWidget {
   final Contact contact;
-  const ContactDetailsPage(this.contact, {super.key});
+  final FavoriteContact? favoriteContact;
+  const ContactDetailsPage(this.contact, {super.key, this.favoriteContact});
 
   @override
   ConsumerState<ContactDetailsPage> createState() => _ContactDetailsPageState();
@@ -18,7 +21,21 @@ class ContactDetailsPage extends ConsumerStatefulWidget {
 class _ContactDetailsPageState extends ConsumerState<ContactDetailsPage> {
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    // Watch if this contact is a favorite
+    final favoritesAsync = ref.watch(favoritesStreamProvider);
+    
+    FavoriteContact? currentFavorite = widget.favoriteContact;
+    
+    // If we don't have the favorite contact passed in, find it in the list
+    if (currentFavorite == null) {
+      favoritesAsync.whenData((favorites) {
+        try {
+          currentFavorite = favorites.firstWhere((f) => f.id == widget.contact.id);
+        } catch (_) {
+          currentFavorite = null;
+        }
+      });
+    }
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -56,14 +73,21 @@ class _ContactDetailsPageState extends ConsumerState<ContactDetailsPage> {
           const SizedBox(height: 30),
           ContactActionButtons(contact: widget.contact),
           const SizedBox(height: 30),
-          ContactRelationshipHealth(),
-          const SizedBox(height: 30),
+          if (currentFavorite != null) ...[
+            ContactRelationshipHealth(favorite: currentFavorite!),
+            const SizedBox(height: 30),
+          ],
           ContactSettingsList(),
           const SizedBox(height: 30),
-          ContactHistorySection(contact: widget.contact),
+          ContactHistorySection(contact: widget.contact, favorite: currentFavorite),
           const SizedBox(height: 100),
         ],
       ),
     );
   }
 }
+
+// Stream provider for favorites if not already defined
+final favoritesStreamProvider = StreamProvider<List<FavoriteContact>>((ref) {
+  return ref.watch(favoritesRepository).watchFavorites();
+});

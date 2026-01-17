@@ -16,17 +16,32 @@ import 'package:vivapro/pages/navigation/widgets/schedule_call/time_selection_ca
 
 class ScheduleCallPage extends ConsumerStatefulWidget {
   final Contact contact;
+  final ScheduleCall? scheduleCall;
 
-  const ScheduleCallPage({super.key, required this.contact});
+  const ScheduleCallPage({super.key, required this.contact, this.scheduleCall});
 
   @override
   ConsumerState<ScheduleCallPage> createState() => _ScheduleCallPageState();
 }
 
 class _ScheduleCallPageState extends ConsumerState<ScheduleCallPage> {
-  DateTime _selectedDate = DateTime.now();
-  TimeOfDay _selectedTime = TimeOfDay.now();
-  final _noteController = TextEditingController();
+  late DateTime _selectedDate;
+  late TimeOfDay _selectedTime;
+  late TextEditingController _noteController;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedDate = widget.scheduleCall?.date ?? DateTime.now();
+    _selectedTime = widget.scheduleCall?.time ?? TimeOfDay.now();
+    _noteController = TextEditingController(text: widget.scheduleCall?.note ?? '');
+  }
+
+  @override
+  void dispose() {
+    _noteController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,25 +55,18 @@ class _ScheduleCallPageState extends ConsumerState<ScheduleCallPage> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(state.message)),
             );
-            return;
           }
-          // Note: Ideally we'd listen for a Success state here to pop.
-          // Since the current Bloc implementation doesn't have a specific Success state for Add,
-          // we might assume success if we don't get an error quickly,
-          // BUT for this task I will handle the pop after a short delay or modification.
-          // For now, I will modify the button to pop after dispatching, keeping it simple
-          // but acknowledging the race condition risk in a real production app without a persistent Bloc.
         },
         child: Scaffold(
           appBar: AppBar(
             elevation: 0,
             centerTitle: true,
             leading: IconButton(
-              icon: Icon(EvaIcons.arrowIosBack),
+              icon: const Icon(EvaIcons.arrowIosBack),
               onPressed: () => Navigator.pop(context),
             ),
             title: Text(
-              "Schedule a Call",
+              widget.scheduleCall == null ? "Schedule a Call" : "Update Call",
               style: Theme.of(context)
                   .textTheme
                   .headlineSmall
@@ -99,25 +107,28 @@ class _ScheduleCallPageState extends ConsumerState<ScheduleCallPage> {
                       child: ElevatedButton(
                         onPressed: () {
                           final scheduleCall = ScheduleCall(
+                            id: widget.scheduleCall?.id ?? '',
                             contact: widget.contact,
                             date: _selectedDate,
                             time: _selectedTime,
                             note: _noteController.text,
                           );
-                          context.read<ScheduleCallBloc>().add(ScheduleCallAdd(scheduleCall: scheduleCall));
+                          
+                          if (widget.scheduleCall == null) {
+                            context.read<ScheduleCallBloc>().add(ScheduleCallAdd(scheduleCall: scheduleCall));
+                          } else {
+                            context.read<ScheduleCallBloc>().add(ScheduleCallReschedule(scheduleCall: scheduleCall));
+                          }
                           
                           final navigator = Navigator.of(context);
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: const Text("Call Scheduled"),
-                              duration: Duration(seconds: 3),
-                              persist: false,
+                              content: Text(widget.scheduleCall == null ? "Call Scheduled" : "Call Updated"),
+                              duration: const Duration(seconds: 3),
                               action: SnackBarAction(
                                 label: 'View', 
                                 onPressed: () => navigator.push(MaterialPageRoute(builder: (ctx) => ScheduleDetailsPage(scheduleCall: scheduleCall))),
-                                textColor: Theme.of(
-                                  context,
-                                ).colorScheme.primary,
+                                textColor: Theme.of(context).colorScheme.primary,
                               )
                             ),
                           );
@@ -132,13 +143,13 @@ class _ScheduleCallPageState extends ConsumerState<ScheduleCallPage> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(
+                            const Icon(
                               EvaIcons.calendar,
                               color: Colors.white,
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              "Schedule Call",
+                              widget.scheduleCall == null ? "Schedule Call" : "Update Call",
                               style: Theme.of(context)
                                 .textTheme
                                 .headlineSmall
@@ -162,5 +173,6 @@ class _ScheduleCallPageState extends ConsumerState<ScheduleCallPage> {
     );
   }
 }
+
 
 

@@ -7,10 +7,13 @@ import 'package:vivapro/features/call_log/presentation/bloc/call_log_bloc.dart';
 import 'package:vivapro/features/call_log/presentation/bloc/call_log_state.dart';
 import 'package:vivapro/core/utils/get_time_ago.dart';
 
+import 'package:vivapro/features/contacts/data/favorite_contact.dart';
+
 class ContactHistorySection extends StatelessWidget {
   final Contact contact;
+  final FavoriteContact? favorite;
 
-  const ContactHistorySection({super.key, required this.contact});
+  const ContactHistorySection({super.key, required this.contact, this.favorite});
 
   @override
   Widget build(BuildContext context) {

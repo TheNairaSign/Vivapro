@@ -23,6 +23,8 @@ import 'package:vivapro/features/messaging/repositories/message_repository.dart'
 import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_bloc.dart';
 import 'package:vivapro/features/schedule_call/repositories/schedule_call_repository.dart';
 
+import 'package:vivapro/core/services/notification_handler.dart';
+
 class Vivapro extends ConsumerStatefulWidget {
   const Vivapro({super.key});
 
@@ -35,6 +37,11 @@ class _VivaproState extends ConsumerState<Vivapro> {
   void initState() {
     super.initState();
     applyModernStatusBarStyle(context);
+    
+    // Listen to notifications
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      NotificationHandler(ref).listenToNotifications();
+    });
   }
 
   @override
