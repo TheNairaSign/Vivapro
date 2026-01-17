@@ -6,7 +6,7 @@ import 'package:vivapro/features/contacts/presentation/pages/add_favorite_page.d
 import 'package:vivapro/features/contacts/presentation/widgets/favorite_filter_chips.dart';
 import 'package:vivapro/features/contacts/presentation/widgets/favorite_tile.dart';
 import 'package:vivapro/features/contacts/repositories/favorite_repository.dart';
-import 'package:vivapro/features/schedule_call/presentation/pages/schedule_call_page.dart';
+import 'package:vivapro/features/contacts/presentation/providers/favorite_filter_provider.dart';
 import 'package:vivapro/pages/contact_picker_page.dart';
 
 class FavoritesPage extends ConsumerStatefulWidget {
@@ -80,7 +80,11 @@ class _FavoritesPageState extends ConsumerState<FavoritesPage> {
                     ),
                   );
                 }
-                final favorites = snapshot.data ?? [];
+                final selectedFilter = ref.watch(favoriteFilterProvider);
+                final favorites = (snapshot.data ?? []).where((f) {
+                  if (selectedFilter == 'All') return true;
+                  return f.callFrequency.name.toLowerCase() == selectedFilter.toLowerCase();
+                }).toList();
                 
                 if (favorites.isEmpty) {
                   return Center(
@@ -90,7 +94,9 @@ class _FavoritesPageState extends ConsumerState<FavoritesPage> {
                         Icon(Icons.star_border_rounded, size: 64, color: Colors.grey[300]),
                         const SizedBox(height: 16),
                         Text(
-                          'No favorites yet',
+                          selectedFilter == 'All' 
+                              ? 'No favorites yet' 
+                              : 'No $selectedFilter favorites',
                           style: Theme.of(context).textTheme.titleMedium?.copyWith(
                                 color: Colors.grey[400],
                               ),
