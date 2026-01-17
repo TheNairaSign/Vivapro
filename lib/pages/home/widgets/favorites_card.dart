@@ -47,6 +47,7 @@ class FavoritesCard extends ConsumerWidget {
                     ),
                     child: CircleAvatar(
                       radius: 33,
+                      backgroundColor: Colors.grey[200],
                       backgroundImage: contact.contactDetails.photo != null
                           ? MemoryImage(contact.contactDetails.photo!)
                           : CachedNetworkImageProvider(

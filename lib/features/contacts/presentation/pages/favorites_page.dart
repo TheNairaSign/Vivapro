@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_contacts/contact.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vivapro/features/contacts/data/favorite_contact.dart';
+import 'package:vivapro/features/contacts/presentation/pages/add_favorite_page.dart';
 import 'package:vivapro/features/contacts/presentation/widgets/favorite_filter_chips.dart';
 import 'package:vivapro/features/contacts/presentation/widgets/favorite_tile.dart';
 import 'package:vivapro/features/contacts/repositories/favorite_repository.dart';
+import 'package:vivapro/features/schedule_call/presentation/pages/schedule_call_page.dart';
+import 'package:vivapro/pages/contact_picker_page.dart';
 
 class FavoritesPage extends ConsumerStatefulWidget {
   const FavoritesPage({super.key});
@@ -24,14 +28,37 @@ class _FavoritesPageState extends ConsumerState<FavoritesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Favorites')),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: const Icon(Icons.add),
+      appBar: AppBar(
+        elevation: 0,
+        centerTitle: false,
+        title: Text(
+          'Keep in Touch',
+          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+            fontWeight: FontWeight.w900,
+            letterSpacing: -0.5,
+          ),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () async {
+          final contact = await Navigator.of(context).push<Contact?>(
+            MaterialPageRoute(builder: (ctx) => const ContactPickerPage()),
+          );
+    
+          if (contact != null && context.mounted) {
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (ctx) => AddFavoritePage(contact: contact)),
+            );
+          }
+        },
+        icon: const Icon(Icons.add_rounded),
+        label: const Text('Add Favorite'),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        foregroundColor: Colors.white,
       ),
       body: Column(
         children: [
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
           const FilterChips(),
           const SizedBox(height: 16),
           Expanded(
@@ -42,21 +69,49 @@ class _FavoritesPageState extends ConsumerState<FavoritesPage> {
                   return const Center(child: CircularProgressIndicator());
                 }
                 if (snapshot.hasError) {
-                  debugPrint("Error loading favorites: ${snapshot.error}");
-                  return const Center(child: Text('Error loading favorites'));
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.error_outline_rounded, size: 48, color: Colors.red[300]),
+                        const SizedBox(height: 16),
+                        const Text('Error loading favorites'),
+                      ],
+                    ),
+                  );
                 }
                 final favorites = snapshot.data ?? [];
-                return ListView(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  children: favorites
-                      .map(
-                        (favorite) => FavoriteTile(
-                          contact: favorite.contactDetails,
-                          frequency: favorite.callFrequency,
-                          isStarred: true,
+                
+                if (favorites.isEmpty) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.star_border_rounded, size: 64, color: Colors.grey[300]),
+                        const SizedBox(height: 16),
+                        Text(
+                          'No favorites yet',
+                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                color: Colors.grey[400],
+                              ),
                         ),
-                      )
-                      .toList(),
+                      ],
+                    ),
+                  );
+                }
+    
+                return ListView.separated(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 100),
+                  itemCount: favorites.length,
+                  separatorBuilder: (context, index) => const SizedBox(height: 4),
+                  itemBuilder: (context, index) {
+                    final favorite = favorites[index];
+                    return FavoriteTile(
+                      contact: favorite.contactDetails,
+                      frequency: favorite.callFrequency,
+                      isStarred: true,
+                    );
+                  },
                 );
               },
             ),

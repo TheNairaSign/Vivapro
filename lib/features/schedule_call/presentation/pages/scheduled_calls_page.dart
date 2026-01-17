@@ -1,49 +1,45 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:intl/intl.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:vivapro/core/services/interaction_tracker.dart';
+import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_bloc.dart';
 import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_event.dart';
 import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_state.dart';
 import 'package:vivapro/features/schedule_call/presentation/pages/schedule_call_page.dart';
-import 'package:vivapro/features/schedule_call/presentation/pages/schedule_details_page.dart';
-import 'package:vivapro/core/services/notification_service.dart';
 import 'package:vivapro/pages/contact_picker_page.dart';
+import 'package:vivapro/pages/home/widgets/upcoming_reminder_card.dart';
 
-class ScheduledCallsPage extends ConsumerStatefulWidget {
+class ScheduledCallsPage extends StatefulWidget {
   const ScheduledCallsPage({super.key});
 
   @override
-  ConsumerState<ScheduledCallsPage> createState() => _ScheduledCallsPageState();
+  State<ScheduledCallsPage> createState() => _ScheduledCallsPageState();
 }
 
-class _ScheduledCallsPageState extends ConsumerState<ScheduledCallsPage> {
+class _ScheduledCallsPageState extends State<ScheduledCallsPage> {
   @override
   void initState() {
     super.initState();
     context.read<ScheduleCallBloc>().add(ScheduleCallFetch());
   }
 
-  String _formatDate(DateTime date) {
-    return DateFormat('EEE, MMM d, y').format(date);
-  }
+  void _addSchedule() async {
+    final contact = await Navigator.of(context).push<Contact?>(MaterialPageRoute(builder: (ctx) => ContactPickerPage()));
 
-  String _formatTime(TimeOfDay time) {
-    final now = DateTime.now();
-    final dt = DateTime(now.year, now.month, now.day, time.hour, time.minute);
-    return DateFormat('h:mm a').format(dt);
+    if (contact != null && mounted) {
+      Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => ScheduleCallPage(contact: contact,)));
+    }
   }
-
+  
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final interactionTracker = ref.read(interactionTrackerProvider);
     
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        onPressed: _addSchedule,
+        child: const Icon(EvaIcons.plus, color: Colors.white),
+      ),
       appBar: AppBar(
         title: Text(
           "Planned Calls",
@@ -52,41 +48,11 @@ class _ScheduledCallsPageState extends ConsumerState<ScheduledCallsPage> {
         centerTitle: false,
         elevation: 2,
         actionsPadding: const EdgeInsets.only(right: 15),
-        actions: [
-          IconButton(
-            icon: const Icon(EvaIcons.shoppingBagOutline, color: Colors.orange),
-            onPressed: () => NotificationService().showTestNotification(),
-          ),
-          GestureDetector(
-            onTap: () async {
-              final contact = await Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const ContactPickerPage()),
-              );
-              if (contact != null && context.mounted) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ScheduleCallPage(contact: contact)),
-                );
-              }
-            },
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              decoration: BoxDecoration(
-                color: !isDarkMode ? Colors.grey[800] : Colors.grey[200],
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: SvgPicture.asset('assets/svgs/plus.svg', width: 20, height: 20, colorFilter: ColorFilter.mode(!isDarkMode ? Colors.white : Colors.grey[900]!, BlendMode.srcIn)),
-          )
-          )
-        ],
       ),
       body: BlocConsumer<ScheduleCallBloc, ScheduleCallState>(
         listener: (context, state) {
           if (state is ScheduleCallError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message)),
-            );
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
           }
         },
         builder: (context, state) {
@@ -117,143 +83,8 @@ class _ScheduledCallsPageState extends ConsumerState<ScheduledCallsPage> {
             return ListView.separated(
               padding: const EdgeInsets.all(16),
               itemCount: calls.length,
-              separatorBuilder: (context, index) => const SizedBox(height: 12),
-              itemBuilder: (context, index) {
-                final schedule = calls[index];
-                return Dismissible(
-                  key: Key(schedule.id),
-                  direction: DismissDirection.endToStart,
-                  background: Container(
-                    alignment: Alignment.centerRight,
-                    padding: const EdgeInsets.only(right: 20),
-                    decoration: BoxDecoration(
-                      color: Colors.red.shade400,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: const Icon(EvaIcons.trash2Outline, color: Colors.white),
-                  ),
-                  confirmDismiss: (direction) async {
-                     return await showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text("Delete Schedule"),
-                          content: const Text("Are you sure you want to delete this scheduled call?"),
-                          actions: <Widget>[
-                            TextButton(
-                              onPressed: () => Navigator.of(context).pop(false),
-                              child: const Text("Cancel"),
-                            ),
-                            TextButton(
-                              onPressed: () => Navigator.of(context).pop(true),
-                              child: const Text("Delete", style: TextStyle(color: Colors.red)),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  },
-                  onDismissed: (direction) {
-                    context.read<ScheduleCallBloc>().add(ScheduleCallDelete(scheduleId: schedule.id));
-                  },
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ScheduleDetailsPage(scheduleCall: schedule),
-                        ),
-                      );
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.surface,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: ListTile(
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 8,
-                        ),
-                        leading: CircleAvatar(
-                          radius: 24,
-                          backgroundImage: (schedule.contact.photo != null)
-                              ? MemoryImage(schedule.contact.photo!)
-                              : null,
-                          child: (schedule.contact.photo == null)
-                              ? Text(
-                                  schedule.contact.displayName.isNotEmpty
-                                      ? schedule.contact.displayName[0]
-                                      : '?',
-                                  style: const TextStyle(fontWeight: FontWeight.bold),
-                                )
-                              : null,
-                        ),
-                        title: Text(
-                          schedule.contact.displayName,
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: 4),
-                            Row(
-                              children: [
-                                Icon(EvaIcons.calendarOutline,
-                                    size: 14, color: Colors.grey[600]),
-                                const SizedBox(width: 4),
-                                Text(
-                                  _formatDate(schedule.date),
-                                  style: TextStyle(color: Colors.grey[600]),
-                                ),
-                                const SizedBox(width: 12),
-                                Icon(EvaIcons.clockOutline,
-                                    size: 14, color: Colors.grey[600]),
-                                const SizedBox(width: 4),
-                                Text(
-                                  _formatTime(schedule.time),
-                                  style: TextStyle(color: Colors.grey[600]),
-                                ),
-                              ],
-                            ),
-                            if (schedule.note.isNotEmpty) ...[
-                              const SizedBox(height: 4),
-                              Text(
-                                schedule.note,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  color: Colors.grey[500],
-                                  fontStyle: FontStyle.italic,
-                                ),
-                              ),
-                            ],
-                          ],
-                        ),
-                        trailing: IconButton(
-                          icon: const Icon(EvaIcons.phoneCallOutline, color: Colors.green),
-                          onPressed: () async {
-                            final phoneNumber = schedule.contact.phones.isNotEmpty
-                                ? schedule.contact.phones.first.number
-                                : null;
-                            
-                            if (phoneNumber != null) {
-                              // Record interaction
-                              await interactionTracker.recordInteraction(schedule.contact.id);
-                              
-                              // Open dialer
-                              final uri = Uri(scheme: 'tel', path: phoneNumber);
-                              if (await canLaunchUrl(uri)) {
-                                await launchUrl(uri);
-                              }
-                            }
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              },
+              separatorBuilder: (context, index) => const SizedBox(height: 10),
+              itemBuilder: (context, index) => UpcomingReminderCard(call: calls[index], callDateTime: calls[index].date),
             );
           }
           // Default or Initial state

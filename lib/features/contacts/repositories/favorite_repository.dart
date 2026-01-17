@@ -16,41 +16,39 @@ class FavoritesRepository {
 
   FavoritesRepository(this._firestore, this._auth);
 
+  /// Reference to the current user's favorites collection
+  CollectionReference<Map<String, dynamic>> _getFavoritesRef(String uid) {
+    return _firestore.collection('users').doc(uid).collection('favorites');
+  }
+
+  /// Adds a new contact to the user's favorites
   Future<void> addFavorite(FavoriteContact contact) async {
     final uid = _auth.currentUser?.uid;
     if (uid == null) return;
-    final favoritesRef = _firestore
-        .collection('users')
-        .doc(uid)
-        .collection('favorites');
-    await favoritesRef.doc(contact.id).set(contact.toMap());
+    
+    await _getFavoritesRef(uid).doc(contact.id).set(contact.toMap());
   }
 
-  /// Remove favorite contact
+  /// Removes a contact from the user's favorites
   Future<void> removeFavorite(String contactId) async {
     final uid = _auth.currentUser?.uid;
     if (uid == null) return;
-    final favoritesRef = _firestore
-        .collection('users')
-        .doc(uid)
-        .collection('favorites');
-    await favoritesRef.doc(contactId).delete();
+    
+    await _getFavoritesRef(uid).doc(contactId).delete();
   }
 
-  /// Check if contact is favorite
+  /// Checks if a specific contact is already in favorites
   Future<bool> isFavorite(String contactId) async {
     final uid = _auth.currentUser?.uid;
     if (uid == null) return false;
-    final favoritesRef = _firestore
-        .collection('users')
-        .doc(uid)
-        .collection('favorites');
-    final doc = await favoritesRef.doc(contactId).get();
+    
+    final doc = await _getFavoritesRef(uid).doc(contactId).get();
     return doc.exists;
   }
 
-  Future<void> toggleFavorite(bool isFavorite, Contact contact) async {
-    if (isFavorite) {
+  /// Toggles the favorite status of a contact
+  Future<void> toggleFavorite(bool currentlyFavorite, Contact contact) async {
+    if (currentlyFavorite) {
       await removeFavorite(contact.id);
     } else {
       final favorite = FavoriteContact(
@@ -61,52 +59,42 @@ class FavoritesRepository {
       );
       await addFavorite(favorite);
     }
-    // setState(() {}); // Refresh icon
   }
 
-  /// Listen to favorites
+  /// Watches all favorite contacts for the currently authenticated user
   Stream<List<FavoriteContact>> watchFavorites() {
-    final controller = StreamController<List<FavoriteContact>>();
-    StreamSubscription? favoritesSubscription;
-
-    final authSubscription = _auth.authStateChanges().listen((user) {
-      favoritesSubscription?.cancel();
+    return _auth.authStateChanges().switchMap((user) {
       if (user == null) {
-        controller.add([]);
-      } else {
-        final favoritesRef = _firestore
-          .collection('users')
-          .doc(user.uid)
-          .collection('favorites');
-        favoritesSubscription = favoritesRef
+        return Stream.value(<FavoriteContact>[]);
+      }
+      
+      return _getFavoritesRef(user.uid)
           .orderBy('createdAt', descending: true)
           .snapshots()
-          .map(
-            (snapshot) => snapshot.docs
-            .map((doc) => FavoriteContact.fromMap(doc.id, doc.data()))
-            .toList(),
-          )
-          .listen(controller.add, onError: controller.addError);
-      }
-      favoritesSubscription?.onError((error) => developer.log('Error listening to favorites: $error'));
+          .map((snapshot) => snapshot.docs
+              .map((doc) => FavoriteContact.fromMap(doc.id, doc.data()))
+              .toList());
+    }).handleError((error) {
+      developer.log('Error watching favorites: $error');
+      // On error, we emit an empty list of the correct type
     });
-
-    controller.onCancel = () {
-      favoritesSubscription?.cancel();
-      authSubscription.cancel();
-    };
-
-    return controller.stream;
   }
 
+  /// Watches the favorite status of a specific contact
   Stream<bool> watchIsFavorite(String contactId) {
     final uid = _auth.currentUser?.uid;
     if (uid == null) return Stream.value(false);
-    final favoritesRef = _firestore
-        .collection('users')
-        .doc(uid)
-        .collection('favorites');
-    return favoritesRef.doc(contactId).snapshots().map((doc) => doc.exists);
+    
+    return _getFavoritesRef(uid)
+        .doc(contactId)
+        .snapshots()
+        .map((doc) => doc.exists);
+  }
+}
+
+extension _StreamExtension<T> on Stream<T> {
+  Stream<R> switchMap<R>(Stream<R> Function(T) mapper) {
+    return map(mapper).asyncExpand((stream) => stream);
   }
 }
 
