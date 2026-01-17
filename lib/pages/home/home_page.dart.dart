@@ -14,6 +14,13 @@ import 'package:vivapro/features/contacts/data/favorite_contact.dart';
 import 'package:vivapro/pages/home/widgets/favorites_section.dart';
 import 'package:vivapro/pages/home/widgets/insights_section.dart';
 import 'package:vivapro/pages/home/widgets/recents_item.dart';
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
+import 'package:vivapro/features/schedule_call/data/schedule_call.dart';
+import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_bloc.dart';
+import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_event.dart';
+import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_state.dart';
+import 'package:vivapro/features/schedule_call/presentation/pages/schedule_details_page.dart';
+import 'package:vivapro/features/schedule_call/presentation/pages/scheduled_calls_page.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage(this.user, {super.key});
@@ -28,6 +35,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   void initState() {
     super.initState();
     context.read<CallLogBloc>().add(GetCallLogs());
+    context.read<ScheduleCallBloc>().add(ScheduleCallFetch());
   }
 
   @override
@@ -94,12 +102,181 @@ class _HomePageState extends ConsumerState<HomePage> {
               
               // Favorites Section
               FavoritesSection(),
+              const SizedBox(height: 32),
+
+              // Upcoming Reminders Section
+              _buildUpcomingReminders(),
               const SizedBox(height: 80), // Bottom padding for nav bar
             ],
           ),
         ),
       ),
     );
+  }
+
+  Widget _buildUpcomingReminders() {
+    return BlocBuilder<ScheduleCallBloc, ScheduleCallState>(
+      builder: (context, state) {
+        if (state is ScheduleCallLoaded) {
+          final upcomingCalls = state.scheduleCalls
+              .where((call) {
+                final callDateTime = DateTime(
+                  call.date.year,
+                  call.date.month,
+                  call.date.day,
+                  call.time.hour,
+                  call.time.minute,
+                );
+                return callDateTime.isAfter(DateTime.now());
+              })
+              .take(3)
+              .toList();
+
+          if (upcomingCalls.isEmpty) {
+            return const SizedBox.shrink();
+          }
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Upcoming Reminders',
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ScheduledCallsPage(),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      'View All',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              ...upcomingCalls.map((call) => _buildReminderCard(call)),
+            ],
+          );
+        }
+        return const SizedBox.shrink();
+      },
+    );
+  }
+
+  Widget _buildReminderCard(ScheduleCall call) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ScheduleDetailsPage(scheduleCall: call),
+          ),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 50,
+              height: 50,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Icon(
+                EvaIcons.calendarOutline,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    call.contact.displayName,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Icon(
+                        EvaIcons.clockOutline,
+                        size: 14,
+                        color: Colors.grey[500],
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        _formatReminderTime(call),
+                        style: TextStyle(
+                          color: Colors.grey[500],
+                          fontSize: 13,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              EvaIcons.chevronRightOutline,
+              color: Colors.grey[400],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _formatReminderTime(ScheduleCall call) {
+    final now = DateTime.now();
+    final callDate = DateTime(call.date.year, call.date.month, call.date.day);
+    final today = DateTime(now.year, now.month, now.day);
+    final tomorrow = today.add(const Duration(days: 1));
+
+    String dateStr;
+    if (callDate == today) {
+      dateStr = 'Today';
+    } else if (callDate == tomorrow) {
+      dateStr = 'Tomorrow';
+    } else {
+      dateStr = DateFormat('MMM d').format(callDate);
+    }
+
+    final time = DateTime(0, 0, 0, call.time.hour, call.time.minute);
+    final timeStr = DateFormat('h:mm a').format(time);
+
+    return '$dateStr at $timeStr';
   }
 
   Widget _buildRecentsList() {
