@@ -5,8 +5,6 @@ import 'package:vivapro/features/call_log/data/call_log_model.dart';
 import 'package:vivapro/features/call_log/presentation/bloc/call_log_bloc.dart';
 import 'package:vivapro/features/call_log/presentation/bloc/call_log_state.dart';
 import 'package:vivapro/features/call_log/presentation/bloc/call_log_event.dart';
-import 'package:vivapro/features/contacts/presentation/pages/add_favorite_page.dart';
-import 'package:vivapro/pages/contact_picker_page.dart';
 import 'package:vivapro/pages/navigation/widgets/activity_item.dart';
 import 'package:vivapro/pages/navigation/widgets/filter_pills.dart';
 import 'package:vivapro/pages/navigation/widgets/insight_card.dart';

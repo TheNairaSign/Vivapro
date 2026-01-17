@@ -1,3 +1,4 @@
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vivapro/features/contacts/presentation/widgets/favorites/frequency_selection_chip.dart';
@@ -21,87 +22,100 @@ class _FrequencyContainerState extends State<FrequencyContainer> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(25),
+        border: null,
       ),
       child: Column(
         children: [
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: Colors.blue.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8),
+                  color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(Icons.calendar_month, size: 20, color: Colors.blue),
+                child: Icon(EvaIcons.calendarOutline, size: 22, color: Theme.of(context).colorScheme.primary),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 16),
               Text(
                 'Call Frequency',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: isDark ? Colors.white : const Color(0xFF101828),
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -0.5,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 24),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
+            physics: const BouncingScrollPhysics(),
             child: Row(
-              spacing: 10,
+              spacing: 12,
               children: List.generate(
                 CallFrequency.values.length,
                 (index) => FrequencySelectionChip(
                   frequency: CallFrequency.values[index],
-                  onTap: () => setState(
-                    () => favoritesProvider.updateCallFrequency(CallFrequency.values[index]),
-                  ),
+                  onTap: () => favoritesProvider.updateCallFrequency(CallFrequency.values[index]),
                   isSelected: favoritesProvider.callFrequency == CallFrequency.values[index],
                 ),
               ),
             ),
           ),
           const SizedBox(height: 32),
-          Container(
+          Divider(
             height: 1,
-            color: isDark ? Colors.grey[800] : const Color(0xFFEAECF0),
+            thickness: 1,
+            color: isDark ? Colors.white.withValues(alpha: 0.05) : const Color(0xFFF2F4F7),
           ),
           const SizedBox(height: 32),
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   color: const Color(0xFFFFF4E0),
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: const Color(0xFFFFE0A0).withValues(alpha: 0.3), width: 1),
                 ),
-                child: Icon(
-                  Icons.notifications_active,
-                  size: 20,
-                  color: const Color(0xFFD68F00),
+                child: const Icon(
+                  Icons.notifications_active_rounded,
+                  size: 22,
+                  color: Color(0xFFD68F00),
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 16),
               Text(
                 'Priority Level',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                style: TextStyle(
+                  fontSize: 18, 
+                  fontWeight: FontWeight.w800,
+                  color: isDark ? Colors.white : const Color(0xFF101828),
+                  letterSpacing: -0.5,
+                ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 24),
           Row(
-            mainAxisAlignment: .spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: CallPriority.values
                 .map(
-                  (priority) => PrioritySectionContainer(
-                    priority: priority,
-                    isSelected: favoritesProvider.callPriority == priority,
-                    onTap: () => setState(() => favoritesProvider.updateCallPriority(priority)),
+                  (priority) => Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        right: priority == CallPriority.values.last ? 0 : 12,
+                      ),
+                      child: PrioritySectionContainer(
+                        priority: priority,
+                        isSelected: favoritesProvider.callPriority == priority,
+                        onTap: () => favoritesProvider.updateCallPriority(priority),
+                      ),
+                    ),
                   ),
                 )
                 .toList(),

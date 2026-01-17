@@ -1,3 +1,4 @@
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' hide Provider;
@@ -83,11 +84,10 @@ class _AddFavoritePageState extends ConsumerState<AddFavoritePage> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primaryColor = Theme.of(context).colorScheme.primary;
 
     return Scaffold(
-      // backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
         elevation: 0,
         leadingWidth: 80,
         leading: TextButton(
@@ -96,106 +96,147 @@ class _AddFavoritePageState extends ConsumerState<AddFavoritePage> {
             'Cancel',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: isDark ? Colors.grey[400] : Colors.grey[600],
+              fontWeight: FontWeight.w600,
             ),
           ),
         ),
         title: Text(
           'Add Favorite',
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            color: isDark ? Colors.white : const Color(0xFF101828),
-            fontWeight: FontWeight.bold,
-          ),
+                color: isDark ? Colors.white : const Color(0xFF101828),
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+              ),
         ),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 40),
         child: Column(
           children: [
-            const SizedBox(height: 20),
             _buildProfileUploader(isDark),
-            const SizedBox(height: 40),
+            const SizedBox(height: 48),
+            
+            // Main Info Card
             Container(
-              padding: const EdgeInsets.all(20), // Card padding
+              padding: const EdgeInsets.all(28),
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.surface,
-                borderRadius: BorderRadius.circular(24),
-                boxShadow: isDark
-                    ? null
-                    : [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.05),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
+                borderRadius: BorderRadius.circular(25),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildLabel('FULL NAME'),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 14),
                   CustomTextfield(
                     controller: _nameController,
                     hintText: 'e.g. Grandma Rose',
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 32),
                   _buildLabel('PHONE NUMBER'),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 14),
                   CustomTextfield(
                     controller: _phoneController,
                     hintText: '(555) 000-0000',
-                    suffixIcon: Icon(
-                      Icons.perm_contact_calendar_outlined,
-                      color: Colors.blue[400],
+                    suffixIcon: Container(
+                      margin: const EdgeInsets.all(8),
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Icon(
+                        EvaIcons.personAdd,
+                        color: Theme.of(context).colorScheme.primary,
+                        size: 20,
+                      ),
                     ),
                     keyboardType: TextInputType.phone,
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 24),
+            
+            const SizedBox(height: 28),
+            
+            // Frequency & Priority
             FrequencyContainer(),
-            const SizedBox(height: 40),
-            SizedBox(
-              width: double.infinity,
-              height: 56,
-              child: ElevatedButton(
-                onPressed: isLoading ? null : submitContact,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  elevation: 0,
-                  shadowColor: Colors.transparent,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                    side: BorderSide(
-                      color: Theme.of(context).colorScheme.primary,
-                      width: 1,
-                    ),
-                  ),
-                ),
-                child: isLoading
-                    ? const CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                      )
-                    : Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Save Contact',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
-                    ),
-                    SizedBox(width: 8),
-                    Icon(Icons.check, color: Colors.white, size: 20),
-                  ],
-                ),
-              ),
-            ),
+            
+            const SizedBox(height: 48),
+            
+            // Save Button
+            _buildSaveButton(primaryColor),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildSaveButton(Color primaryColor) {
+    return Container(
+      width: double.infinity,
+      height: 64,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(22),
+        boxShadow: [
+          BoxShadow(
+            color: primaryColor.withValues(alpha: 0.4),
+            blurRadius: 25,
+            offset: const Offset(0, 10),
+          ),
+        ],
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            primaryColor,
+            primaryColor.withBlue(220).withRed(100), // Vibrant shift
+          ],
+        ),
+      ),
+      child: ElevatedButton(
+        onPressed: isLoading ? null : submitContact,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.transparent,
+          foregroundColor: Colors.white,
+          elevation: 0,
+          shadowColor: Colors.transparent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(22),
+          ),
+        ),
+        child: isLoading
+            ? const SizedBox(
+                height: 24,
+                width: 24,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2.5,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
+              )
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    'Save to Favorites',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0.8,
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: const BoxDecoration(
+                      color: Colors.white24,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(Icons.check_rounded, size: 18),
+                  ),
+                ],
+              ),
       ),
     );
   }
@@ -204,69 +245,88 @@ class _AddFavoritePageState extends ConsumerState<AddFavoritePage> {
     return Column(
       children: [
         Stack(
+          alignment: Alignment.center,
           children: [
             Container(
+              width: 120,
+              height: 120,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: Colors.white, width: 4),
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.1),
+                  width: 1.5,
+                ),
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.white.withValues(alpha: 0.8),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.1),
-                    blurRadius: 10,
+                    blurRadius: 30,
+                    spreadRadius: 2,
                   ),
                 ],
+                border: Border.all(
+                  color: Colors.white.withValues(alpha: 0.2),
+                  width: 1,
+                ),
               ),
-              child: const CircleAvatar(
-                radius: 45,
-                backgroundColor: Color(0xFFFAB896),
-                child: Icon(Icons.person, size: 50, color: Color(0xFF101828)),
+              child: CircleAvatar(
+                radius: 52,
+                backgroundColor: const Color(0xffFFE5D9), // Softer peach
+                child: Icon(
+                  Icons.person_rounded,
+                  size: 60,
+                  color: const Color(0xFF101828).withValues(alpha: 0.7),
+                ),
               ),
             ),
             Positioned(
-              bottom: 0,
-              right: 0,
+              bottom: 6,
+              right: 6,
               child: Container(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF5A9BD5), Color(0xFF3A7BC5)],
+                  ),
                   shape: BoxShape.circle,
+                  border: Border.all(color: Colors.white, width: 2.5),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.1),
-                      blurRadius: 4,
+                      color: Colors.black.withValues(alpha: 0.2),
+                      blurRadius: 15,
                     ),
                   ],
                 ),
                 child: const Icon(
-                  Icons.camera_alt,
-                  color: Color(0xFF5A9BD5),
-                  size: 16,
+                  Icons.camera_enhance_rounded,
+                  color: Colors.white,
+                  size: 18,
                 ),
               ),
             ),
           ],
         ),
-        const SizedBox(height: 12),
-        TextButton(
-          style: TextButton.styleFrom(
-            backgroundColor: Theme.of(context).colorScheme.primary,
-            foregroundColor: Colors.white,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-              side: BorderSide(
-                color: Theme.of(context).colorScheme.primary,
-                width: 1,
-              ),
+        const SizedBox(height: 20),
+        GestureDetector(
+          onTap: () {},
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.08),
+              borderRadius: BorderRadius.circular(14),
             ),
-          ),
-          onPressed: () {},
-          child: Text(
-            'Upload Photo',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.w500,
-              fontSize: 14,
+            child: Text(
+              'Update Photo',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Theme.of(context).colorScheme.primary,
+                fontWeight: FontWeight.w800,
+              ),
             ),
           ),
         ),
@@ -277,12 +337,13 @@ class _AddFavoritePageState extends ConsumerState<AddFavoritePage> {
   Widget _buildLabel(String text) {
     return Text(
       text,
-      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-        fontSize: 11,
-        fontWeight: FontWeight.bold,
+      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+        fontWeight: FontWeight.w900,
         color: Color(0xFF98A2B3),
-        letterSpacing: 0.5,
+        letterSpacing: 2.0,
       ),
     );
   }
 }
+
+

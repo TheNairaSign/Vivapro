@@ -2,15 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:vivapro/features/auth/data/auth_user.dart';
 import 'package:vivapro/features/messaging/presentation/pages/chat_screen.dart';
 import 'package:vivapro/pages/home/home_page.dart.dart';
-import 'package:vivapro/pages/navigation/contacts_page.dart';
 import 'package:vivapro/pages/navigation/profile_page.dart';
 import 'package:vivapro/pages/navigation/recents_page.dart';
-import 'package:flutter_contacts/flutter_contacts.dart';
-import 'package:vivapro/features/contacts/presentation/pages/add_favorite_page.dart';
-import 'package:vivapro/features/messaging/presentation/pages/new_chat_screen.dart';
 import 'package:vivapro/pages/contact_picker_page.dart';
 import 'package:vivapro/pages/navigation/widgets/bottom_nav_bar.dart';
-import 'package:vivapro/pages/navigation/widgets/custom_navigation_bar.dart';
 import 'package:vivapro/features/schedule_call/presentation/pages/schedule_call_page.dart';
 
 class NavigationPage extends StatefulWidget {

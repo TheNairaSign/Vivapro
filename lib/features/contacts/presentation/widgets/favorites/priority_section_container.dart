@@ -32,41 +32,42 @@ class PrioritySectionContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 100,
         height: 100,
         decoration: BoxDecoration(
           color: isSelected
-              ? _iconColor.withValues(alpha: 0.1)
-              : Theme.of(context).scaffoldBackgroundColor,
-          borderRadius: BorderRadius.circular(16),
-          border: isSelected ? Border.all(color: _iconColor, width: 1.5) : null,
+              ? _iconColor.withValues(alpha: isDark ? 0.12 : 0.08)
+              : (isDark ? Colors.white.withValues(alpha: 0.03) : Colors.black.withValues(alpha: 0.02)),
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(
+            color: isSelected 
+                ? _iconColor.withValues(alpha: 0.5) 
+                : (isDark ? Colors.white.withValues(alpha: 0.1) : Colors.black.withValues(alpha: 0.05)),
+            width: isSelected ? 2 : 1.5,
+          ),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: isSelected
-                    ? _iconColor.withValues(alpha: 0.1)
-                    : Theme.of(context).colorScheme.surface,
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                _priorityIcon,
-                color: isSelected ? _iconColor : const Color(0xFF98A2B3),
-                size: 30,
-              ),
+            Icon(
+              _priorityIcon,
+              color: isSelected ? _iconColor : const Color(0xFF98A2B3),
+              size: 26,
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 10),
             Text(
               priority.name.capitalize(),
-              style: Theme.of(
-                context,
-              ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                color: isSelected 
+                    ? (isDark ? Colors.white : Colors.black87) 
+                    : const Color(0xFF98A2B3),
+                letterSpacing: 0.2,
+              ),
             ),
           ],
         ),

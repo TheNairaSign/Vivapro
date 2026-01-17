@@ -21,6 +21,7 @@ class CustomTextfield extends StatefulWidget {
     this.maxLines = 1,
     this.minLines = 1,
     this.keyboardType = TextInputType.text,
+    this.fillColor,
   }) : assert(maxLines > 0),
        assert(minLines > 0),
        assert(maxLines >= minLines),
@@ -31,6 +32,7 @@ class CustomTextfield extends StatefulWidget {
   final Widget? prefixIcon, suffixIcon;
   final bool showSuffix;
   final double? height;
+  final Color? fillColor;
   bool obscure, enabled;
   final int maxLines, minLines;
   final Function(String)? onChanged;
@@ -52,18 +54,17 @@ class _CustomTextfieldState extends State<CustomTextfield> {
       minLines: widget.minLines,
       obscureText: widget.obscure,
       initialValue: widget.initialValue,
-      cursorColor: Colors.green,
+      cursorColor: Theme.of(context).colorScheme.primary,
       onChanged: widget.onChanged,
       validator: widget.validator,
       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
         color: Theme.of(context).colorScheme.onSurface,
+        fontWeight: FontWeight.w500,
       ),
       decoration: InputDecoration(
-        contentPadding: const EdgeInsets.all(10),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         hintText: widget.hintText,
-        hintStyle: Theme.of(
-          context,
-        ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
+        hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey.withValues(alpha: 0.6)),
         prefixIcon: widget.prefixIcon,
         labelText: widget.label,
         labelStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(),
@@ -78,29 +79,37 @@ class _CustomTextfieldState extends State<CustomTextfield> {
                     },
                     child: Icon(
                       widget.obscure ? EvaIcons.eyeOff : EvaIcons.eye,
-                      color: Theme.of(context).colorScheme.onSurface,
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                       size: 20,
                     ),
                   )
                 : null),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.grey, width: .3),
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(
+            color: isDarkMode ? Colors.white.withValues(alpha: 0.05) : Colors.black.withValues(alpha: 0.05),
+            width: 1,
+          ),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1),
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(
+            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
+            width: 1.5,
+          ),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Colors.red, width: .5),
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(color: Colors.redAccent, width: 1),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Colors.black, width: .5),
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(color: Colors.redAccent, width: 1.5),
         ),
         enabled: widget.enabled,
-        fillColor: Theme.of(context).colorScheme.surface,
+        fillColor: widget.fillColor ?? (isDarkMode 
+            ? Colors.white.withValues(alpha: 0.03) 
+            : Colors.black.withValues(alpha: 0.03)),
         filled: true,
       ),
     );

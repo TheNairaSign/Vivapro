@@ -2,6 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
+
+  static const accentLight = Color(0xFFF59E0B); // Amber 500
+  static const accentDark = Color(0xFFFBBF24); // Amber 400
+
+  static const accentLight2 = Color(0xFF14B8A6); // Teal 500
+  static const accentDark2 = Color(0xFF5EEAD4); // Teal 300
+
   // Private color classes
   static const _lightColors = (
     primary: Color(0xFF22C55E),
@@ -14,6 +21,7 @@ class AppTheme {
     onSurface: Color(0xFF1F2937),
     error: Color(0xFFEF4444),
     onError: Colors.white,
+    tertiary: accentLight,
   );
 
   static const _darkColors = (
@@ -27,6 +35,7 @@ class AppTheme {
     onSurface: Color(0xFFF9FAFB),
     error: Color(0xFFF87171),
     onError: Colors.black,
+    tertiary: accentDark,
   );
   /*
 
@@ -104,6 +113,7 @@ class AppTheme {
       secondary: _darkColors.primary,
       background: Color(0xFF121212),
       surface: Color(0xFF1E1E1E),
+      tertiary: _darkColors.tertiary,
     ),
   );
 
@@ -118,7 +128,8 @@ class AppTheme {
       secondary: _darkColors.secondary,
       background: Colors.white,
       // surface: Color(0xFFF0F0F0),
-      surface: Colors.white
+      surface: Colors.white,
+      tertiary: _darkColors.tertiary,
     ),
   );
 }
