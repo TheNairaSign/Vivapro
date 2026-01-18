@@ -1,3 +1,4 @@
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,6 +13,7 @@ import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_b
 import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_event.dart';
 import 'package:vivapro/pages/home/widgets/people_to_call_section.dart';
 import 'package:vivapro/pages/home/widgets/upcoming_reminders_section.dart';
+import 'package:vivapro/features/schedule_call/presentation/pages/scheduled_calendar_page.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage(this.user, {super.key});
@@ -56,22 +58,27 @@ class _HomePageState extends ConsumerState<HomePage> {
           ],
         ),
         actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ScheduledCalendarPage()),
+              );
+            }, 
+            icon: const Icon(EvaIcons.calendarOutline, size: 20,)
+          ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
               color: Theme.of(context).scaffoldBackgroundColor,
               borderRadius: BorderRadius.circular(20),
             ),
-            child: Row(
-              children: [
-                Text(
-                  'SOS',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Colors.red,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
+            child: Text(
+              'SOS',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Colors.red,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ],

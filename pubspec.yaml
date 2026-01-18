@@ -65,6 +65,7 @@ dependencies:
   flutter_timezone: ^5.0.1
   provider: ^6.1.5+1
   another_flushbar: ^1.12.32
+  table_calendar: ^3.0.9
 
 dev_dependencies:
   flutter_test:
