@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:vivapro/widgets/custom_back_button.dart';
 
 class ContactPickerPage extends StatefulWidget {
   const ContactPickerPage({super.key});
@@ -40,10 +41,7 @@ class _ContactPickerPageState extends State<ContactPickerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, size: 20),
-          onPressed: () => Navigator.pop(context),
-        ),
+         leading: CustomBackButton(),
         title: Text(
           'Select a Contact',
           style: Theme.of(

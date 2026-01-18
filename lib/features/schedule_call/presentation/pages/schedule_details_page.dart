@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:vivapro/core/services/interaction_tracker.dart';
 import 'package:vivapro/features/schedule_call/data/schedule_call.dart';
 import 'package:vivapro/features/schedule_call/presentation/pages/schedule_call_page.dart';
+import 'package:vivapro/widgets/custom_back_button.dart';
 
 class ScheduleDetailsPage extends ConsumerWidget {
   final ScheduleCall scheduleCall;
@@ -33,10 +34,7 @@ class ScheduleDetailsPage extends ConsumerWidget {
         title: const Text("Schedule Details"),
         centerTitle: true,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(EvaIcons.arrowIosBackOutline),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
+        leading: CustomBackButton(),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),

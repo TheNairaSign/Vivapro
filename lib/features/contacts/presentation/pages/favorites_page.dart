@@ -8,6 +8,7 @@ import 'package:vivapro/features/contacts/presentation/widgets/favorite_tile.dar
 import 'package:vivapro/features/contacts/repositories/favorite_repository.dart';
 import 'package:vivapro/features/contacts/presentation/providers/favorite_filter_provider.dart';
 import 'package:vivapro/pages/contact_picker_page.dart';
+import 'package:vivapro/widgets/custom_back_button.dart';
 
 class FavoritesPage extends ConsumerStatefulWidget {
   const FavoritesPage({super.key});
@@ -38,6 +39,7 @@ class _FavoritesPageState extends ConsumerState<FavoritesPage> {
             letterSpacing: -0.5,
           ),
         ),
+        leading: CustomBackButton(),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
