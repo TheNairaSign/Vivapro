@@ -2,6 +2,7 @@ import 'package:call_log/call_log.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:vivapro/features/call_log/data/call_log_model.dart';
+import 'package:vivapro/widgets/text_avatar.dart';
 
 class ActivityItem extends StatelessWidget {
   final CallLogModel log;
@@ -89,21 +90,7 @@ class ActivityItem extends StatelessWidget {
           Stack(
             clipBehavior: Clip.none,
             children: [
-              CircleAvatar(
-                radius: 26,
-                backgroundColor: isDark
-                    ? const Color(0xFF3E3E4A)
-                    : const Color(0xFFE0E0E0),
-                backgroundImage: null, // TODO: Load actual image if available
-                child: Text(
-                  name.isNotEmpty ? name[0].toUpperCase() : '?',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: isDark ? Colors.grey[300] : Colors.grey,
-                  ),
-                ),
-              ),
+              TextAvatar(name: name),
               Positioned(
                 bottom: -2,
                 right: -2,

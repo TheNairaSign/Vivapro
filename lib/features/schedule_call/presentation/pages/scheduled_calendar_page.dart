@@ -109,236 +109,238 @@ class _ScheduledCalendarPageState extends State<ScheduledCalendarPage> {
 
           final selectedEvents = _selectedDay != null ? _getEventsForDay(_selectedDay!, allCalls) : [];
 
-          return Column(
-            children: [
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surface,
-                  borderRadius: BorderRadius.circular(28),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.03),
-                          blurRadius: 20,
-                          offset: const Offset(0, 10),
-                        ),
-                      ],
-                    ),
-                    child: TableCalendar<ScheduleCall>(
-                      firstDay: DateTime.now().subtract(const Duration(days: 365)),
-                      lastDay: DateTime.now().add(const Duration(days: 365)),
-                      focusedDay: _focusedDay,
-                      calendarFormat: _calendarFormat,
-                      rowHeight: 52,
-                      daysOfWeekHeight: 30,
-                      selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-                      eventLoader: (day) => _getEventsForDay(day, allCalls),
-                      onDaySelected: (selectedDay, focusedDay) => _onDaySelected(selectedDay, focusedDay, allCalls),
-                      onFormatChanged: (format) {
-                        if (_calendarFormat != format) {
-                          setState(() {
-                            _calendarFormat = format;
-                          });
-                        }
-                      },
-                      onPageChanged: (focusedDay) {
-                        _focusedDay = focusedDay;
-                      },
-                      calendarStyle: CalendarStyle(
-                        markerDecoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.primary,
-                          shape: BoxShape.circle,
-                        ),
-                        markerSize: 5,
-                        markersMaxCount: 1,
-                        markerMargin: const EdgeInsets.only(top: 6),
-                        todayDecoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Theme.of(context).colorScheme.primary, width: 1),
-                        ),
-                        todayTextStyle: TextStyle(
-                          color: Theme.of(context).colorScheme.primary,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        selectedDecoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              Theme.of(context).colorScheme.primary,
-                              Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
-                            ],
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+            child: Column(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surface,
+                    borderRadius: BorderRadius.circular(28),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.03),
+                            blurRadius: 20,
+                            offset: const Offset(0, 10),
                           ),
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
-                              blurRadius: 12,
-                              offset: const Offset(0, 6),
-                            ),
-                          ],
-                        ),
-                        outsideDaysVisible: false,
-                        defaultTextStyle: const TextStyle(fontWeight: FontWeight.w500),
-                        weekendTextStyle: TextStyle(
-                          color: Colors.red.withValues(alpha: 0.6),
-                          fontWeight: FontWeight.w500,
-                        ),
+                        ],
                       ),
-                      daysOfWeekStyle: DaysOfWeekStyle(
-                        weekdayStyle: TextStyle(
-                          color: Colors.grey[400],
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
-                          letterSpacing: 0.5,
-                        ),
-                        weekendStyle: TextStyle(
-                          color: Colors.red[200],
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
-                          letterSpacing: 0.5,
-                        ),
-                      ),
-                      headerStyle: HeaderStyle(
-                        formatButtonVisible: false,
-                        titleCentered: true,
-                        titleTextStyle: Theme.of(context).textTheme.titleLarge!.copyWith(
-                              fontWeight: FontWeight.w800,
-                              fontSize: 18,
-                              letterSpacing: -0.5,
-                            ),
-                        headerPadding: const EdgeInsets.symmetric(vertical: 16),
-                        leftChevronIcon: Icon(EvaIcons.chevronLeft, color: Theme.of(context).colorScheme.primary),
-                        rightChevronIcon: Icon(EvaIcons.chevronRight, color: Theme.of(context).colorScheme.primary),
-                        leftChevronMargin: const EdgeInsets.only(left: 12),
-                        rightChevronMargin: const EdgeInsets.only(right: 12),
-                      ),
-                      calendarBuilders: CalendarBuilders(
-                        markerBuilder: (context, date, events) {
-                          if (events.isEmpty) return null;
-                          return Positioned(
-                            bottom: 8,
-                            child: Container(
-                              width: 4,
-                              height: 4,
-                              decoration: BoxDecoration(
-                                color: isSameDay(date, _selectedDay)
-                                    ? Colors.white
-                                    : Theme.of(context).colorScheme.primary,
-                                shape: BoxShape.circle,
-                              ),
-                            ),
-                          );
+                      child: TableCalendar<ScheduleCall>(
+                        firstDay: DateTime.now().subtract(const Duration(days: 365)),
+                        lastDay: DateTime.now().add(const Duration(days: 365)),
+                        focusedDay: _focusedDay,
+                        calendarFormat: _calendarFormat,
+                        rowHeight: 52,
+                        daysOfWeekHeight: 30,
+                        selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+                        eventLoader: (day) => _getEventsForDay(day, allCalls),
+                        onDaySelected: (selectedDay, focusedDay) => _onDaySelected(selectedDay, focusedDay, allCalls),
+                        onFormatChanged: (format) {
+                          if (_calendarFormat != format) {
+                            setState(() {
+                              _calendarFormat = format;
+                            });
+                          }
                         },
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
-                    child: Row(
-                      children: [
-                        Text(
-                          "Planned for ${_selectedDay?.day}",
-                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                            color: Colors.grey[500],
+                        onPageChanged: (focusedDay) {
+                          _focusedDay = focusedDay;
+                        },
+                        calendarStyle: CalendarStyle(
+                          markerDecoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.primary,
+                            shape: BoxShape.circle,
+                          ),
+                          markerSize: 5,
+                          markersMaxCount: 1,
+                          markerMargin: const EdgeInsets.only(top: 6),
+                          todayDecoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Theme.of(context).colorScheme.primary, width: 1),
+                          ),
+                          todayTextStyle: TextStyle(
+                            color: Theme.of(context).colorScheme.primary,
                             fontWeight: FontWeight.bold,
-                            letterSpacing: 1.2,
                           ),
-                        ),
-                        const Spacer(),
-                        Container(
-                          width: 40,
-                          height: 2,
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
-                            borderRadius: BorderRadius.circular(1),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 400),
-                  transitionBuilder: (child, animation) {
-                    return FadeTransition(
-                      opacity: animation,
-                      child: SlideTransition(
-                        position: Tween<Offset>(
-                          begin: const Offset(0, 0.05),
-                          end: Offset.zero,
-                        ).animate(animation),
-                        child: child,
-                      ),
-                    );
-                  },
-                  child: selectedEvents.isEmpty
-                      ? Center(
-                          key: const ValueKey('no_events'),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.all(24),
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).colorScheme.surface,
-                                  borderRadius: BorderRadius.circular(30),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withValues(alpha: 0.02),
-                                      blurRadius: 20,
-                                      offset: const Offset(0, 10),
-                                    ),
-                                  ],
-                                ),
-                                child: Icon(EvaIcons.calendarOutline, size: 56, color: Colors.grey[300]),
-                              ),
-                              const SizedBox(height: 24),
-                              Text(
-                                "Rest Day",
-                                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                  color: Colors.grey[600],
-                                  fontWeight: FontWeight.w800,
-                                  letterSpacing: -0.5,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                "No calls scheduled for this day",
-                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  color: Colors.grey[500],
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              const SizedBox(height: 24),
-                              OutlinedButton.icon(
-                                onPressed: () => _selectedDay != null ? _showNoScheduleDialog(_selectedDay!) : null,
-                                icon: const Icon(EvaIcons.plus, size: 18),
-                                label: const Text("Plan a Call"),
-                                style: OutlinedButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                                  side: BorderSide(color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3)),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                                ),
+                          selectedDecoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                Theme.of(context).colorScheme.primary,
+                                Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
+                              ],
+                            ),
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
+                                blurRadius: 12,
+                                offset: const Offset(0, 6),
                               ),
                             ],
                           ),
-                        )
-                      : ListView.separated(
-                          key: ValueKey('events_${_selectedDay?.millisecondsSinceEpoch}'),
-                          padding: const EdgeInsets.fromLTRB(20, 0, 20, 100),
-                          itemCount: selectedEvents.length,
-                          physics: const BouncingScrollPhysics(),
-                          separatorBuilder: (context, index) => const SizedBox(height: 12),
-                          itemBuilder: (context, index) {
-                            final call = selectedEvents[index];
-                            return UpcomingReminderCard(call: call, callDateTime: call.date);
+                          outsideDaysVisible: false,
+                          defaultTextStyle: const TextStyle(fontWeight: FontWeight.w500),
+                          weekendTextStyle: TextStyle(
+                            color: Colors.red.withValues(alpha: 0.6),
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        daysOfWeekStyle: DaysOfWeekStyle(
+                          weekdayStyle: TextStyle(
+                            color: Colors.grey[400],
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                            letterSpacing: 0.5,
+                          ),
+                          weekendStyle: TextStyle(
+                            color: Colors.red[200],
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                        headerStyle: HeaderStyle(
+                          formatButtonVisible: false,
+                          titleCentered: true,
+                          titleTextStyle: Theme.of(context).textTheme.titleLarge!.copyWith(
+                            fontWeight: FontWeight.w800,
+                            fontSize: 18,
+                            letterSpacing: -0.5,
+                          ),
+                          headerPadding: const EdgeInsets.symmetric(vertical: 16),
+                          leftChevronIcon: Icon(EvaIcons.chevronLeft, color: Theme.of(context).colorScheme.primary),
+                          rightChevronIcon: Icon(EvaIcons.chevronRight, color: Theme.of(context).colorScheme.primary),
+                          leftChevronMargin: const EdgeInsets.only(left: 12),
+                          rightChevronMargin: const EdgeInsets.only(right: 12),
+                        ),
+                        calendarBuilders: CalendarBuilders(
+                          markerBuilder: (context, date, events) {
+                            if (events.isEmpty) return null;
+                            return Positioned(
+                              bottom: 8,
+                              child: Container(
+                                width: 4,
+                                height: 4,
+                                decoration: BoxDecoration(
+                                  color: isSameDay(date, _selectedDay)
+                                      ? Colors.white
+                                      : Theme.of(context).colorScheme.primary,
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                            );
                           },
                         ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
+                      child: Row(
+                        children: [
+                          Text(
+                            "Planned for ${_selectedDay?.day}",
+                            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                              color: Colors.grey[500],
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1.2,
+                            ),
+                          ),
+                          const Spacer(),
+                          Container(
+                            width: 40,
+                            height: 2,
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
+                              borderRadius: BorderRadius.circular(1),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 400),
+                    transitionBuilder: (child, animation) {
+                      return FadeTransition(
+                        opacity: animation,
+                        child: SlideTransition(
+                          position: Tween<Offset>(
+                            begin: const Offset(0, 0.05),
+                            end: Offset.zero,
+                          ).animate(animation),
+                          child: child,
+                        ),
+                      );
+                    },
+                    child: selectedEvents.isEmpty
+                        ? Center(
+                            key: const ValueKey('no_events'),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(24),
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context).colorScheme.surface,
+                                    borderRadius: BorderRadius.circular(30),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withValues(alpha: 0.02),
+                                        blurRadius: 20,
+                                        offset: const Offset(0, 10),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Icon(EvaIcons.calendarOutline, size: 56, color: Colors.grey[300]),
+                                ),
+                                const SizedBox(height: 24),
+                                Text(
+                                  "Rest Day",
+                                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                    color: Colors.grey[600],
+                                    fontWeight: FontWeight.w800,
+                                    letterSpacing: -0.5,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  "No calls scheduled for this day",
+                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    color: Colors.grey[500],
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                const SizedBox(height: 24),
+                                OutlinedButton.icon(
+                                  onPressed: () => _selectedDay != null ? _showNoScheduleDialog(_selectedDay!) : null,
+                                  icon: const Icon(EvaIcons.plus, size: 18),
+                                  label: const Text("Plan a Call"),
+                                  style: OutlinedButton.styleFrom(
+                                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                                    side: BorderSide(color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3)),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        : ListView.separated(
+                            key: ValueKey('events_${_selectedDay?.millisecondsSinceEpoch}'),
+                            padding: const EdgeInsets.fromLTRB(20, 0, 20, 100),
+                            itemCount: selectedEvents.length,
+                            physics: const BouncingScrollPhysics(),
+                            separatorBuilder: (context, index) => const SizedBox(height: 12),
+                            itemBuilder: (context, index) {
+                              final call = selectedEvents[index];
+                              return UpcomingReminderCard(call: call, callDateTime: call.date);
+                            },
+                          ),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           );
         },
       ),

@@ -1,12 +1,11 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vivapro/core/services/interaction_tracker.dart';
 import 'package:vivapro/features/contacts/data/favorite_contact.dart';
 import 'package:vivapro/features/contacts/presentation/pages/contact_details_page.dart';
-import 'package:vivapro/core/app_constants.dart';
 import 'package:vivapro/core/extensions/first_name_extension.dart';
+import 'package:vivapro/widgets/text_avatar.dart';
 
 class FavoritesCard extends ConsumerWidget {
   const FavoritesCard({super.key, required this.contact});
@@ -39,21 +38,19 @@ class FavoritesCard extends ConsumerWidget {
                   Container(
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(
-                        // color: priorityMap(contact.priority),
-                        color: Theme.of(context).colorScheme.primary,
-                        width: 2,
-                      ),
+                      // border: Border.all(
+                      //   // color: priorityMap(contact.priority),
+                      //   color: Theme.of(context).colorScheme.primary,
+                      //   width: 2,
+                      // ),
                     ),
-                    child: CircleAvatar(
-                      radius: 33,
-                      backgroundColor: Colors.grey[200],
+                    child: contact.contactDetails.photo != null ? CircleAvatar(
+                      radius: 30,
+                      backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
                       backgroundImage: contact.contactDetails.photo != null
                           ? MemoryImage(contact.contactDetails.photo!)
-                          : CachedNetworkImageProvider(
-                              AppConstants.placeHolderProfileImage,
-                            ),
-                    ),
+                          : null,
+                    ) : TextAvatar(name: contact.contactDetails.displayName, radius: 30),
                   ),
                   // Positioned(
                   //   bottom: 0,

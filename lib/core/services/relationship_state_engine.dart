@@ -105,6 +105,9 @@ class RelationshipStateEngine {
         return "You haven't called $name yet";
       case RelationshipState.overdue:
         if (daysSince != null) {
+          if (daysSince == 1) {
+            return "You haven't spoken to $name in a day";
+          }
           return "You haven't spoken to $name in $daysSince days";
         }
         return "Time to reconnect with $name";

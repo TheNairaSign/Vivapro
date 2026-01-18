@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:vivapro/core/services/insight_generator.dart';
 import 'package:vivapro/core/services/interaction_tracker.dart';
 import 'package:vivapro/features/contacts/data/favorite_contact.dart';
+import 'package:vivapro/widgets/text_avatar.dart';
 
 class PeopleToCallSection extends ConsumerWidget {
   const PeopleToCallSection({super.key});
@@ -53,21 +54,13 @@ class PeopleToCallSection extends ConsumerWidget {
       ),
       child: Row(
         children: [
-          CircleAvatar(
+         contact.contactDetails.photo != null ? CircleAvatar(
             radius: 28,
-            backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+            backgroundColor: const Color(0xFF3E3E4A),
             backgroundImage: contact.contactDetails.photo != null
                 ? MemoryImage(contact.contactDetails.photo!)
                 : null,
-            child: contact.contactDetails.photo == null
-              ? Text(
-                  contact.contactDetails.displayName.isNotEmpty
-                      ? contact.contactDetails.displayName[0].toUpperCase()
-                      : '?',
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.primary),
-                )
-              : null,
-          ),
+          ) : TextAvatar(name: contact.contactDetails.displayName),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
