@@ -2,6 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vivapro/core/services/relationship_state_engine.dart';
 import 'package:vivapro/features/contacts/data/favorite_contact.dart';
 import 'package:vivapro/features/contacts/repositories/favorite_repository.dart';
+import 'package:vivapro/features/schedule_call/data/schedule_call.dart';
+import 'package:vivapro/features/schedule_call/repositories/schedule_call_repository.dart';
 
 /// Represents a generated insight about a favorite contact
 class ContactInsight {
@@ -111,15 +113,33 @@ class InsightGenerator {
     return priorityOrder[a]!.compareTo(priorityOrder[b]!);
   }
 
-  /// Get contacts that should be called today
-  Stream<List<FavoriteContact>> watchPeopleToCallToday() {
+  /// Get contacts that should be called today, filtered by those who have upcoming reminders
+  Stream<List<FavoriteContact>> watchPeopleToCallToday(List<ScheduleCall> scheduledCalls) {
     return _favoritesRepository.watchFavorites().map((favorites) {
-      final peopleToCall = favorites.where((contact) {
-        return RelationshipStateEngine.shouldCallToday(contact);
+      final now = DateTime.now();
+
+      final filteredFavorites = favorites.where((contact) {
+        // 1. Check if they SHOULD be called based on engine logic
+        if (!RelationshipStateEngine.shouldCallToday(contact)) return false;
+
+        // 2. Check if they have an upcoming reminder (future scheduled call)
+        final hasUpcomingReminder = scheduledCalls.any((call) {
+          final isSamePerson = call.contact.id == contact.contactDetails.id;
+          final callDateTime = DateTime(
+            call.date.year,
+            call.date.month,
+            call.date.day,
+            call.time.hour,
+            call.time.minute,
+          );
+          return isSamePerson && callDateTime.isAfter(now);
+        });
+
+        return !hasUpcomingReminder;
       }).toList();
 
       // Sort by priority
-      return RelationshipStateEngine.sortByCallPriority(peopleToCall);
+      return RelationshipStateEngine.sortByCallPriority(filteredFavorites);
     });
   }
 }
@@ -136,8 +156,16 @@ final insightsStreamProvider = StreamProvider<List<ContactInsight>>((ref) {
   return generator.watchInsights();
 });
 
+/// Provider for watching scheduled calls stream
+final scheduledCallsStreamProvider = StreamProvider<List<ScheduleCall>>((ref) {
+  final repo = ref.watch(scheduleCallRepositoryProvider);
+  return repo.watchScheduledCalls();
+});
+
 /// Provider for watching people to call today
 final peopleToCallTodayProvider = StreamProvider<List<FavoriteContact>>((ref) {
   final generator = ref.watch(insightGeneratorProvider);
-  return generator.watchPeopleToCallToday();
+  final schedulesAsync = ref.watch(scheduledCallsStreamProvider);
+  final schedules = schedulesAsync.asData?.value ?? [];
+  return generator.watchPeopleToCallToday(schedules);
 });

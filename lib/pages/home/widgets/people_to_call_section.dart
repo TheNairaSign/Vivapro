@@ -5,14 +5,23 @@ import 'package:vivapro/components/show_flushbar.dart';
 import 'package:vivapro/core/services/insight_generator.dart';
 import 'package:vivapro/core/services/interaction_tracker.dart';
 import 'package:vivapro/features/contacts/data/favorite_contact.dart';
+import 'package:vivapro/features/schedule_call/presentation/pages/schedule_call_page.dart';
 import 'package:vivapro/features/schedule_call/repositories/schedule_call_repository.dart';
+import 'package:vivapro/pages/home/widgets/feature_tip_card.dart';
 import 'package:vivapro/widgets/text_avatar.dart';
 
-class PeopleToCallSection extends ConsumerWidget {
+class PeopleToCallSection extends ConsumerStatefulWidget {
   const PeopleToCallSection({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<PeopleToCallSection> createState() => _PeopleToCallSectionState();
+}
+
+class _PeopleToCallSectionState extends ConsumerState<PeopleToCallSection> {
+  bool _showTip = true;
+
+  @override
+  Widget build(BuildContext context) {
     final peopleToCallAsync = ref.watch(peopleToCallTodayProvider);
 
     return peopleToCallAsync.when(
@@ -24,13 +33,17 @@ class PeopleToCallSection extends ConsumerWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            if (_showTip)
+              FeatureTipCard(
+                onDismiss: () => setState(() => _showTip = false),
+              ),
             Text(
               'People to Call Today',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             ...peopleToCall.take(3).map((contact) {
-              return _buildCallTodayCard(context, ref, contact);
+              return _buildCallTodayCard(context, contact);
             }),
           ],
         );
@@ -40,20 +53,77 @@ class PeopleToCallSection extends ConsumerWidget {
     );
   }
 
-  Widget _buildCallTodayCard(BuildContext context, WidgetRef ref, FavoriteContact contact) {
+  Widget _buildCallTodayCard(BuildContext context, FavoriteContact contact) {
     final interactionTracker = ref.read(interactionTrackerProvider);
+    final scheduleRepo = ref.read(scheduleCallRepositoryProvider);
     
     return InkWell(
-      onTapDown: (details) async {
-        final insightsAsync = ref.watch(insightsStreamProvider);
-        final insights = insightsAsync.asData?.value ?? [];
+      onLongPress: () async {
+        // We need the position for the menu. Since onLongPress doesn't provide it directly,
+        // we'll use a standard Material approach or approximate with a generic position.
+        // For a more precise position, one would usually use a Gesture detector or GlobalKey.
+        // For now, we'll center it relative to the context.
         
-        final result = await ref.read(scheduleCallRepositoryProvider).setReminder(insights.first);
-        if (context.mounted && result) {
-          showFlushbar(context, 'Reminder set', 'Reminder set for tomorrow at 10:00 AM');
-        } else {
-          if (!context.mounted) return;
-          showFlushbar(context, 'Failed to set reminder', 'Failed to set reminder');
+        final RenderBox button = context.findRenderObject() as RenderBox;
+        final RenderBox overlay = Navigator.of(context).overlay!.context.findRenderObject() as RenderBox;
+        final RelativeRect position = RelativeRect.fromRect(
+          Rect.fromPoints(
+            button.localToGlobal(Offset.zero, ancestor: overlay),
+            button.localToGlobal(button.size.bottomRight(Offset.zero), ancestor: overlay),
+          ),
+          Offset.zero & overlay.size,
+        );
+        
+        final choice = await showMenu<String>(
+          context: context,
+          position: position,
+          items: [
+            const PopupMenuItem(
+              value: 'tomorrow_10am',
+              child: Text('Remind tomorrow at 10 AM'),
+            ),
+            const PopupMenuItem(
+              value: 'tomorrow_evening',
+              child: Text('Remind tomorrow evening (6 PM)'),
+            ),
+            const PopupMenuItem(
+              value: 'custom',
+              child: Text('Custom reminder...'),
+            ),
+          ],
+        );
+
+        if (choice == null || !context.mounted) return;
+
+        DateTime? scheduledTime;
+        final now = DateTime.now();
+
+        if (choice == 'tomorrow_10am') {
+          scheduledTime = DateTime(now.year, now.month, now.day + 1, 10, 0);
+        } else if (choice == 'tomorrow_evening') {
+          scheduledTime = DateTime(now.year, now.month, now.day + 1, 18, 0);
+        } else if (choice == 'custom') {
+          // Navigate to custom schedule page
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ScheduleCallPage(
+                contact: contact.contactDetails,
+              ),
+            ),
+          );
+          return;
+        }
+
+        if (scheduledTime != null) {
+          final success = await scheduleRepo.setContactReminder(contact, scheduledTime);
+          if (success && context.mounted) {
+            showFlushbar(
+              context, 
+              'Reminder Set', 
+              'Reminder set for ${contact.contactDetails.displayName} at ${scheduledTime.hour}:00',
+            );
+          }
         }
       },
       child: Container(
@@ -68,9 +138,7 @@ class PeopleToCallSection extends ConsumerWidget {
            contact.contactDetails.photo != null ? CircleAvatar(
               radius: 28,
               backgroundColor: const Color(0xFF3E3E4A),
-              backgroundImage: contact.contactDetails.photo != null
-                  ? MemoryImage(contact.contactDetails.photo!)
-                  : null,
+              backgroundImage: MemoryImage(contact.contactDetails.photo!),
             ) : TextAvatar(name: contact.contactDetails.displayName),
             const SizedBox(width: 12),
             Expanded(

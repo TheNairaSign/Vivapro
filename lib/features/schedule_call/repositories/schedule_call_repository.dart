@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vivapro/core/failures/failure.dart';
 import 'package:vivapro/core/services/insight_generator.dart';
 import 'package:vivapro/core/services/notification_service.dart';
+import 'package:vivapro/features/contacts/data/favorite_contact.dart';
 import 'package:vivapro/features/schedule_call/data/schedule_call.dart';
 
 class ScheduleCallRepository {
@@ -96,11 +97,23 @@ class ScheduleCallRepository {
         0,
       );
 
-      final call = ScheduleCall(
-        contact: insight.contact.contactDetails,
-        date: tomorrow,
-        time: const TimeOfDay(hour: 10, minute: 0),
+      return setContactReminder(
+        insight.contact, 
+        tomorrow,
         note: 'Follow up from insight: ${insight.message}',
+      );
+    }
+
+    Future<bool> setContactReminder(
+      FavoriteContact contact, 
+      DateTime scheduledDateTime, 
+      {String? note}
+    ) async {
+      final call = ScheduleCall(
+        contact: contact.contactDetails,
+        date: scheduledDateTime,
+        time: TimeOfDay(hour: scheduledDateTime.hour, minute: scheduledDateTime.minute),
+        note: note ?? 'Reminder for ${contact.contactDetails.displayName}',
       );
 
       final result = await scheduleCall(call);
