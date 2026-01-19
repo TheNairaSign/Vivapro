@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:vivapro/components/show_flushbar.dart';
 import 'package:vivapro/core/services/insight_generator.dart';
 import 'package:vivapro/core/services/interaction_tracker.dart';
 import 'package:vivapro/features/schedule_call/data/schedule_call.dart';
@@ -101,29 +102,12 @@ class InsightsCard extends ConsumerWidget {
                           height: 36,
                           child: OutlinedButton(
                             onPressed: () async {
-                              final repo = ref.read(scheduleCallRepositoryProvider);
-                              final now = DateTime.now();
-                              final tomorrow = DateTime(
-                                now.year,
-                                now.month,
-                                now.day + 1,
-                                10,
-                                0,
-                              );
-
-                              final call = ScheduleCall(
-                                contact: insight.contact.contactDetails,
-                                date: tomorrow,
-                                time: const TimeOfDay(hour: 10, minute: 0),
-                                note: 'Follow up from insight: ${insight.message}',
-                              );
-
-                              await repo.scheduleCall(call);
-
-                              if (context.mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Reminder set for tomorrow at 10:00 AM',),),
-                                );
+                              final result = await ref.read(scheduleCallRepositoryProvider).setReminder(insight);
+                              if (context.mounted && result) {
+                                showFlushbar(context, 'Reminder set', 'Reminder set for tomorrow at 10:00 AM');
+                              } else {
+                                if (!context.mounted) return;
+                                showFlushbar(context, 'Failed to set reminder', 'Failed to set reminder');
                               }
                             },
                             style: OutlinedButton.styleFrom(

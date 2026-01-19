@@ -9,9 +9,21 @@ import 'package:vivapro/pages/home/widgets/insights/insights_card.dart';
 class InsightsSection extends ConsumerWidget {
   const InsightsSection({super.key});
 
+  Color getHealthColor(int health, BuildContext context) {
+    if (health == 100) return Theme.of(context).colorScheme.primary;
+    if (health > 80) return const Color(0xFF4CAF50);
+    if (health > 60) return const Color(0xFFFFC107);
+    if (health > 40) return const Color(0xFFFF9800);
+    return const Color(0xFFF44336);
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final insightsAsync = ref.watch(insightsStreamProvider);
+    
+    final insights = insightsAsync.asData?.value ?? [];
+    final healthPercentage = _calculateRelationshipHealth(insights);
+    final healthColor = getHealthColor(healthPercentage, context);
     
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -42,7 +54,7 @@ class InsightsSection extends ConsumerWidget {
                 height: 140,
                 padding: const EdgeInsets.all(15),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary.withValues(alpha: .25),
+                  color: healthColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(24),
                 ),
                 child: Column(
@@ -56,35 +68,16 @@ class InsightsSection extends ConsumerWidget {
                       ),
                       child: Icon(
                         EvaIcons.peopleOutline,
-                        color: Theme.of(context).colorScheme.primary,
+                        color: healthColor,
                         size: 20,
                       ),
                     ),
                     const Spacer(),
-                    insightsAsync.when(
-                      data: (insights) {
-                        final healthPercentage = _calculateRelationshipHealth(insights);
-                        return Text(
-                          '$healthPercentage%',
-                          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                            color: Theme.of(context).colorScheme.primary,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        );
-                      },
-                      loading: () => Text(
-                        '--',
-                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          color: Theme.of(context).colorScheme.primary,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      error: (_, _) => Text(
-                        '--',
-                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          color: Theme.of(context).colorScheme.primary,
-                          fontWeight: FontWeight.bold,
-                        ),
+                    Text(
+                      '$healthPercentage%',
+                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                        color: healthColor,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                     const SizedBox(height: 4),

@@ -5,13 +5,13 @@ void showFlushbar(
   BuildContext context,
   String title,
   String message,
-  Color color,
+  {Color? color}
 ) {
   Flushbar(
     titleText: Text(title, style: Theme.of(context).textTheme.bodyMedium),
     message: message,
-    icon: Icon(Icons.info_outline, size: 28.0, color: color),
-    leftBarIndicatorColor: color,
+    icon: Icon(Icons.info_outline, size: 28.0, color: color ?? Theme.of(context).colorScheme.primary),
+    leftBarIndicatorColor: color ?? Theme.of(context).colorScheme.primary,
     duration: const Duration(seconds: 3),
     flushbarPosition: FlushbarPosition.TOP,
     margin: const EdgeInsets.all(8),

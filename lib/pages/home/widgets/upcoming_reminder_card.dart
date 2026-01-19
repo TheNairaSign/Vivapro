@@ -56,7 +56,7 @@ class UpcomingReminderCard extends ConsumerWidget {
                 ],
               ),
             )
-          : null,
+          : const SizedBox.shrink(),
       secondaryBackground: Container(
         alignment: Alignment.centerRight,
         margin: const EdgeInsets.only(bottom: 12),

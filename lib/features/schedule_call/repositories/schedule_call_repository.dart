@@ -1,18 +1,22 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vivapro/core/failures/failure.dart';
+import 'package:vivapro/core/services/insight_generator.dart';
 import 'package:vivapro/core/services/notification_service.dart';
 import 'package:vivapro/features/schedule_call/data/schedule_call.dart';
 
 class ScheduleCallRepository {
   final FirebaseFirestore _firestore;
   final FirebaseAuth _auth;
+  final Ref ref;
 
   ScheduleCallRepository({
     required FirebaseFirestore firestore,
     required FirebaseAuth auth,
+    required this.ref,
   })  : _firestore = firestore,
         _auth = auth;
 
@@ -81,11 +85,37 @@ class ScheduleCallRepository {
       return left(Failure(e.toString()));
     }
   }
+
+   Future<bool> setReminder(ContactInsight insight) async {
+      final now = DateTime.now();
+      final tomorrow = DateTime(
+        now.year,
+        now.month,
+        now.day + 1,
+        10,
+        0,
+      );
+
+      final call = ScheduleCall(
+        contact: insight.contact.contactDetails,
+        date: tomorrow,
+        time: const TimeOfDay(hour: 10, minute: 0),
+        note: 'Follow up from insight: ${insight.message}',
+      );
+
+      final result = await scheduleCall(call);
+
+      return result.fold(
+        (failure) => false,
+        (r) => true,
+      );
+    }
 }
 
 final scheduleCallRepositoryProvider = Provider<ScheduleCallRepository>((ref) {
   return ScheduleCallRepository(
     firestore: FirebaseFirestore.instance,
     auth: FirebaseAuth.instance,
+    ref: ref
   );
 });
