@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vivapro/features/schedule_call/data/schedule_cache_service.dart';
 import 'package:vivapro/features/schedule_call/data/schedule_call.dart';
+import 'package:vivapro/features/schedule_call/dom/schedule_call_manager.dart';
 import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_bloc.dart';
 import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_event.dart';
 import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_state.dart';
@@ -47,7 +49,7 @@ class _ScheduleCallPageState extends ConsumerState<ScheduleCallPage> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => ScheduleCallBloc(
-        repository: ref.read(scheduleCallRepositoryProvider),
+        manager: ref.read(scheduleCallManagerProvider),
       ),
       child: BlocListener<ScheduleCallBloc, ScheduleCallState>(
         listener: (context, state) {
@@ -106,7 +108,7 @@ class _ScheduleCallPageState extends ConsumerState<ScheduleCallPage> {
                       height: 56,
                       child: ElevatedButton(
                         onPressed: () {
-                          final scheduleCall = ScheduleCall(
+                          final scheduleCall = ScheduleCall.create(
                             id: widget.scheduleCall?.id ?? '',
                             contact: widget.contact,
                             date: _selectedDate,

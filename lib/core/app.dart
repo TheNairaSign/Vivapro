@@ -20,8 +20,8 @@ import 'package:vivapro/features/messaging/presentation/bloc/chat/chat_bloc.dart
 import 'package:vivapro/features/messaging/presentation/bloc/message_bloc.dart';
 import 'package:vivapro/features/messaging/repositories/chat_repository.dart';
 import 'package:vivapro/features/messaging/repositories/message_repository.dart';
+import 'package:vivapro/features/schedule_call/dom/schedule_call_manager.dart';
 import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_bloc.dart';
-import 'package:vivapro/features/schedule_call/repositories/schedule_call_repository.dart';
 
 import 'package:vivapro/core/services/notification_handler.dart';
 
@@ -66,7 +66,7 @@ class _VivaproState extends ConsumerState<Vivapro> {
           ),
         ),
         BlocProvider(create: (create) => MessageBloc(ref.read(messageRepository))),
-        BlocProvider(create: (create) => ScheduleCallBloc(repository: ref.read(scheduleCallRepositoryProvider))),
+        BlocProvider(create: (create) => ScheduleCallBloc(manager: ref.read(scheduleCallManagerProvider))),
       ],
       child: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle(

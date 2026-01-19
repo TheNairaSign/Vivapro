@@ -5,6 +5,7 @@ import 'package:vivapro/components/show_flushbar.dart';
 import 'package:vivapro/core/services/insight_generator.dart';
 import 'package:vivapro/core/services/interaction_tracker.dart';
 import 'package:vivapro/features/schedule_call/data/schedule_call.dart';
+import 'package:vivapro/features/schedule_call/dom/schedule_call_use_case.dart';
 import 'package:vivapro/features/schedule_call/repositories/schedule_call_repository.dart';
 
 class InsightsCard extends ConsumerWidget {
@@ -102,7 +103,8 @@ class InsightsCard extends ConsumerWidget {
                           height: 36,
                           child: OutlinedButton(
                             onPressed: () async {
-                              final result = await ref.read(scheduleCallRepositoryProvider).setReminder(insight);
+                              final usecase = ref.watch(scheduleCallUseCase);
+                              final result = await usecase.setReminder(insight);
                               if (context.mounted && result) {
                                 showFlushbar(context, 'Reminder set', 'Reminder set for tomorrow at 10:00 AM');
                               } else {

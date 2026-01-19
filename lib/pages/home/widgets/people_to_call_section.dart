@@ -5,6 +5,7 @@ import 'package:vivapro/components/show_flushbar.dart';
 import 'package:vivapro/core/services/insight_generator.dart';
 import 'package:vivapro/core/services/interaction_tracker.dart';
 import 'package:vivapro/features/contacts/data/favorite_contact.dart';
+import 'package:vivapro/features/schedule_call/dom/schedule_call_use_case.dart';
 import 'package:vivapro/features/schedule_call/presentation/pages/schedule_call_page.dart';
 import 'package:vivapro/features/schedule_call/repositories/schedule_call_repository.dart';
 import 'package:vivapro/pages/home/widgets/feature_tip_card.dart';
@@ -116,7 +117,8 @@ class _PeopleToCallSectionState extends ConsumerState<PeopleToCallSection> {
         }
 
         if (scheduledTime != null) {
-          final success = await scheduleRepo.setContactReminder(contact, scheduledTime);
+          final useCase = ref.watch(scheduleCallUseCase);
+          final success = await useCase.setContactReminder(contact, scheduledTime);
           if (success && context.mounted) {
             showFlushbar(
               context, 

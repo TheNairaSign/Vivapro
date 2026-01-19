@@ -1,13 +1,13 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vivapro/features/schedule_call/data/schedule_call.dart';
+import 'package:vivapro/features/schedule_call/dom/schedule_call_manager.dart';
 import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_event.dart';
 import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_state.dart';
-import 'package:vivapro/features/schedule_call/repositories/schedule_call_repository.dart';
 
 class ScheduleCallBloc extends Bloc<ScheduleCallEvent, ScheduleCallState> {
-  final ScheduleCallRepository _repository;
+  final ScheduleCallManager _manager;
 
-  ScheduleCallBloc({required ScheduleCallRepository repository}) : _repository = repository, super(ScheduleCallInitial()) {
+  ScheduleCallBloc({required ScheduleCallManager manager}) : _manager = manager, super(ScheduleCallInitial()) {
     on<ScheduleCallFetch>(_onFetch);
     on<ScheduleCallAdd>(_onAdd);
     on<ScheduleCallReschedule>(_onReschedule);
@@ -20,7 +20,7 @@ class ScheduleCallBloc extends Bloc<ScheduleCallEvent, ScheduleCallState> {
   ) async {
     emit(ScheduleCallLoading());
     await emit.forEach<List<ScheduleCall>>(
-      _repository.watchScheduledCalls(),
+      _manager.watchScheduledCalls(),
       onData: (scheduleCalls) => ScheduleCallLoaded(scheduleCalls: scheduleCalls),
       onError: (error, stackTrace) => ScheduleCallError(message: error.toString()),
     );
@@ -30,7 +30,7 @@ class ScheduleCallBloc extends Bloc<ScheduleCallEvent, ScheduleCallState> {
     ScheduleCallAdd event,
     Emitter<ScheduleCallState> emit,
   ) async {
-    final result = await _repository.scheduleCall(event.scheduleCall);
+    final result = await _manager.scheduleCall(event.scheduleCall);
     result.fold(
       (failure) => emit(ScheduleCallError(message: failure.message)),
       (_) {
@@ -43,7 +43,7 @@ class ScheduleCallBloc extends Bloc<ScheduleCallEvent, ScheduleCallState> {
     ScheduleCallReschedule event,
     Emitter<ScheduleCallState> emit,
   ) async {
-    final result = await _repository.rescheduleCall(event.scheduleCall);
+    final result = await _manager.rescheduleCall(event.scheduleCall);
     result.fold(
       (failure) => emit(ScheduleCallError(message: failure.message)),
       (_) {
@@ -56,7 +56,7 @@ class ScheduleCallBloc extends Bloc<ScheduleCallEvent, ScheduleCallState> {
     ScheduleCallDelete event,
     Emitter<ScheduleCallState> emit,
   ) async {
-    final result = await _repository.deleteSchedule(event.scheduleId);
+    final result = await _manager.deleteSchedule(event.scheduleId);
     result.fold(
       (failure) => emit(ScheduleCallError(message: failure.message)),
       (_) {

@@ -1,15 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vivapro/core/failures/failure.dart';
-import 'package:vivapro/core/services/insight_generator.dart';
 import 'package:vivapro/core/services/notification_service.dart';
-import 'package:vivapro/features/contacts/data/favorite_contact.dart';
 import 'package:vivapro/features/schedule_call/data/schedule_call.dart';
+import 'package:vivapro/features/schedule_call/dom/schedule_call_dom.dart';
 
-class ScheduleCallRepository {
+class ScheduleCallRepository extends ScheduleCallDom {
   final FirebaseFirestore _firestore;
   final FirebaseAuth _auth;
   final Ref ref;
@@ -29,6 +27,7 @@ class ScheduleCallRepository {
     return _firestore.collection('users').doc(uid).collection('schedule_calls');
   }
 
+  @override
   Stream<List<ScheduleCall>> watchScheduledCalls() {
     final ref = _userSchedulesRef;
     if (ref == null) return Stream.value([]);
@@ -42,6 +41,7 @@ class ScheduleCallRepository {
 
   final _notificationService = NotificationService();
 
+  @override
   Future<Either<Failure, Unit>> scheduleCall(ScheduleCall scheduleCall) async {
     try {
       final ref = _userSchedulesRef;
@@ -58,6 +58,7 @@ class ScheduleCallRepository {
   }
 
   /// Reschedule a call (Update)
+  @override
   Future<Either<Failure, Unit>> rescheduleCall(ScheduleCall scheduleCall) async {
     try {
       final ref = _userSchedulesRef;
@@ -73,6 +74,7 @@ class ScheduleCallRepository {
     }
   }
 
+  @override
   Future<Either<Failure, Unit>> deleteSchedule(String scheduleId) async {
     try {
       final ref = _userSchedulesRef;
@@ -87,42 +89,6 @@ class ScheduleCallRepository {
     }
   }
 
-   Future<bool> setReminder(ContactInsight insight) async {
-      final now = DateTime.now();
-      final tomorrow = DateTime(
-        now.year,
-        now.month,
-        now.day + 1,
-        10,
-        0,
-      );
-
-      return setContactReminder(
-        insight.contact, 
-        tomorrow,
-        note: 'Follow up from insight: ${insight.message}',
-      );
-    }
-
-    Future<bool> setContactReminder(
-      FavoriteContact contact, 
-      DateTime scheduledDateTime, 
-      {String? note}
-    ) async {
-      final call = ScheduleCall(
-        contact: contact.contactDetails,
-        date: scheduledDateTime,
-        time: TimeOfDay(hour: scheduledDateTime.hour, minute: scheduledDateTime.minute),
-        note: note ?? 'Reminder for ${contact.contactDetails.displayName}',
-      );
-
-      final result = await scheduleCall(call);
-
-      return result.fold(
-        (failure) => false,
-        (r) => true,
-      );
-    }
 }
 
 final scheduleCallRepositoryProvider = Provider<ScheduleCallRepository>((ref) {

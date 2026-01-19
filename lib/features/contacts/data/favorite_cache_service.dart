@@ -1,12 +1,20 @@
+import 'package:flutter_contacts/contact.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:vivapro/core/enums/call_frequency.dart';
+import 'package:vivapro/core/enums/priority.dart';
 import 'package:vivapro/features/contacts/data/favorite_contact.dart';
 
 class FavoriteCacheService {
   final Isar isar;
 
   FavoriteCacheService(this.isar);
+
+  Future<void> addFavorite(FavoriteContact favorite) async {
+    await isar.writeTxn(() async {
+      await isar.favoriteContacts.put(favorite);
+    });
+  }
 
   Future<void> cacheFavorites(List<FavoriteContact> favorites) async {
     await isar.writeTxn(() async {
@@ -29,24 +37,35 @@ class FavoriteCacheService {
       await isar.favoriteContacts.clear();
     });
   }
+
+  Future<bool> isFavorite(String id) async {
+    final favorite = await isar.favoriteContacts.where().idEqualTo(id).findFirst();
+    return favorite != null;
+  }
+
+  Future<void> toggleFavorite(bool currentlyFavorite, Contact contact) async {
+    if (currentlyFavorite) {
+      await removeFavorite(contact.id);
+    } else {
+      await addFavorite(
+        FavoriteContact.create(
+          id: contact.id,
+          contactDetails: contact,
+          priority: CallPriority.low,
+          callFrequency: CallFrequency.daily,
+        ),
+      );
+    }
+  }
 }
 
-final isarProvider = FutureProvider<Isar>((ref) async {
-  final dir = await getApplicationDocumentsDirectory();
-  final isar = await Isar.open([
-    FavoriteContactSchema,
-  ],
-    directory: dir.path,
-  );
-  return isar;
+/// Provider for Isar instance. Should be overridden in main.dart
+final isarProvider = Provider<Isar>((ref) {
+  throw UnimplementedError('Isar has not been initialized');
 });
 
 /// Provider for FavoriteCacheService
 final favoriteCacheServiceProvider = Provider<FavoriteCacheService>((ref) {
   final isar = ref.watch(isarProvider);
-  if (isar.hasError) {
-    throw isar.error!;
-  }
-
-  return FavoriteCacheService(isar.value!);
+  return FavoriteCacheService(isar);
 });
