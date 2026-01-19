@@ -47,7 +47,7 @@ class _AddFavoritePageState extends ConsumerState<AddFavoritePage> {
 
     try {
       await ref.read(favoritesRepository).addFavorite(
-        FavoriteContact(
+        FavoriteContact.create(
           id: widget.contact.id,
           callFrequency: favoritesProvider.callFrequency,
           contactDetails: widget.contact,

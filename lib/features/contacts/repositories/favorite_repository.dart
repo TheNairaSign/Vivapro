@@ -51,7 +51,7 @@ class FavoritesRepository {
     if (currentlyFavorite) {
       await removeFavorite(contact.id);
     } else {
-      final favorite = FavoriteContact(
+      final favorite = FavoriteContact.create(
         id: contact.id,
         contactDetails: contact,
         priority: CallPriority.low,
