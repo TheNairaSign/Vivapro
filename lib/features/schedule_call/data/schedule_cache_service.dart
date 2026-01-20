@@ -11,8 +11,17 @@ class ScheduleCacheService extends ScheduleCallDom {
 
   ScheduleCacheService(this.isar);
 
+  Future<Either<Failure, List<ScheduleCall>>> getAllScheduledCalls() async {
+    try {
+      final calls = await isar.scheduleCalls.where().findAll();
+      return right(calls);
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
+
   @override
-  Future<Either<Failure, Unit>> scheduleCall(ScheduleCall schedule) async {
+  Future<Either<Failure, String>> scheduleCall(ScheduleCall schedule) async {
     try {
       await isar.writeTxn(() async {
       await isar.scheduleCalls.put(schedule);
@@ -20,13 +29,16 @@ class ScheduleCacheService extends ScheduleCallDom {
     } catch (e) {
       return left(Failure(e.toString()));
     }
-    return right(unit);
+    return right('');
   }
 
-  Future<void> cacheSchedules(List<ScheduleCall> schedules) async {
-    await isar.writeTxn(() async {
-      await isar.scheduleCalls.putAll(schedules);
-    });
+  Future<Either<Failure, Unit>> cacheSchedules(List<ScheduleCall> schedules) async {
+    try {
+      await isar.writeTxn(() => isar.scheduleCalls.putAll(schedules));
+      return right(unit);
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
   }
 
   @override
@@ -73,6 +85,7 @@ class ScheduleCacheService extends ScheduleCallDom {
         .dateBetween(startOfDay, endOfDay)
         .findAll();
   }
+
 }
 
 final scheduleCacheServiceProvider = Provider<ScheduleCacheService>((ref) {

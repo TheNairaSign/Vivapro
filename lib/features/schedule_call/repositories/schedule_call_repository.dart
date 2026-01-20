@@ -3,7 +3,6 @@ import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vivapro/core/failures/failure.dart';
-import 'package:vivapro/core/services/notification_service.dart';
 import 'package:vivapro/features/schedule_call/data/schedule_call.dart';
 import 'package:vivapro/features/schedule_call/dom/schedule_call_dom.dart';
 
@@ -39,19 +38,15 @@ class ScheduleCallRepository extends ScheduleCallDom {
     });
   }
 
-  final _notificationService = NotificationService();
-
   @override
-  Future<Either<Failure, Unit>> scheduleCall(ScheduleCall scheduleCall) async {
+  Future<Either<Failure, String>> scheduleCall(ScheduleCall scheduleCall) async {
     try {
       final ref = _userSchedulesRef;
       if (ref == null) return left(Failure('User not authenticated'));
 
       final docRef = await ref.add(scheduleCall.toJson());
-      final callWithId = scheduleCall.copyWith(id: docRef.id);
-      await _notificationService.scheduleCallNotification(callWithId);
       
-      return right(unit);
+      return right(docRef.id);
     } catch (e) {
       return left(Failure(e.toString()));
     }
@@ -66,7 +61,6 @@ class ScheduleCallRepository extends ScheduleCallDom {
       if (scheduleCall.id.isEmpty) return left(Failure('Invalid schedule ID'));
 
       await ref.doc(scheduleCall.id).update(scheduleCall.toJson());
-      await _notificationService.scheduleCallNotification(scheduleCall);
 
       return right(unit);
     } catch (e) {
@@ -81,9 +75,24 @@ class ScheduleCallRepository extends ScheduleCallDom {
       if (ref == null) return left(Failure('User not authenticated'));
 
       await ref.doc(scheduleId).delete();
-      await _notificationService.cancelNotification(scheduleId.hashCode);
 
       return right(unit);
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
+
+  Future<Either<Failure, List<ScheduleCall>>> restoreAllScheduledCalls() async {
+    try {
+      final ref = _userSchedulesRef;
+      if (ref == null) return left(Failure('User not authenticated'));
+
+      final snapshot = await ref.get();
+      final calls = snapshot.docs.map((doc) {
+        return ScheduleCall.fromMap(doc.id, doc.data());
+      }).toList();
+
+      return right(calls);
     } catch (e) {
       return left(Failure(e.toString()));
     }

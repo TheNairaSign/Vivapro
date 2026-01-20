@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vivapro/core/services/insight_generator.dart';
 import 'package:vivapro/features/contacts/data/favorite_contact.dart';
-import 'package:vivapro/features/schedule_call/data/schedule_cache_service.dart';
 import 'package:vivapro/features/schedule_call/data/schedule_call.dart';
 import 'package:vivapro/features/schedule_call/dom/schedule_call_manager.dart';
-import 'package:vivapro/features/schedule_call/repositories/schedule_call_repository.dart';
 
 class ScheduleCallUseCase {
   final ScheduleCallManager manager;

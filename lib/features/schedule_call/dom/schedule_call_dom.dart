@@ -4,7 +4,7 @@ import 'package:vivapro/features/schedule_call/data/schedule_call.dart';
 
 abstract class ScheduleCallDom {
   Stream<List<ScheduleCall>> watchScheduledCalls();
-  Future<Either<Failure, Unit>> scheduleCall(ScheduleCall scheduleCall);
+  Future<Either<Failure, String>> scheduleCall(ScheduleCall scheduleCall);
   Future<Either<Failure, Unit>> rescheduleCall(ScheduleCall scheduleCall);
   Future<Either<Failure, Unit>> deleteSchedule(String id);
 }
