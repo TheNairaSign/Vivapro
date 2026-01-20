@@ -13,7 +13,7 @@ class BackupBloc extends Bloc<BackupEvent, BackupState> {
   Future<void> onBackupEvent(BackupEvent event, Emitter<BackupState> emit) async {
     emit(BackupLoading());
     try {
-      final result = await backupWorker.backupAllScheduledCalls();
+      final result = await backupWorker.backupAll();
       result.fold((l) => emit(BackupFailure(l.message)), (r) => emit(BackupSuccess(r)));
     } catch (e) {
       emit(BackupFailure(e.toString()));
@@ -23,7 +23,7 @@ class BackupBloc extends Bloc<BackupEvent, BackupState> {
   Future<void> onRestoreEvent(RestoreBackupEvent event, Emitter<BackupState> emit) async {
     emit(RestoreBackupLoading());
     try {
-      final result = await backupWorker.restoreAllScheduledCalls();
+      final result = await backupWorker.restoreAll();
       result.fold((l) => emit(RestoreBackupFailure(l.message)), (r) => emit(RestoreBackupSuccess(r)));
     } catch (e) {
       emit(RestoreBackupFailure(e.toString()));

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/contact.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vivapro/features/contacts/data/favorite_cache_service.dart';
 import 'package:vivapro/features/contacts/data/favorite_contact.dart';
-import 'package:vivapro/features/contacts/repositories/favorite_repository.dart';
 import 'package:vivapro/features/contacts/presentation/widgets/contact_details/contact_action_buttons.dart';
 import 'package:vivapro/features/contacts/presentation/widgets/contact_details/contact_history_section.dart';
 import 'package:vivapro/features/contacts/presentation/widgets/contact_details/contact_profile_header.dart';
@@ -89,5 +89,5 @@ class _ContactDetailsPageState extends ConsumerState<ContactDetailsPage> {
 
 // Stream provider for favorites if not already defined
 final favoritesStreamProvider = StreamProvider<List<FavoriteContact>>((ref) {
-  return ref.watch(favoritesRepository).watchFavorites();
+  return ref.watch(favoriteCacheServiceProvider).watchFavorites();
 });

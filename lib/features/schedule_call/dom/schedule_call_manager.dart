@@ -60,49 +60,61 @@ class ScheduleCallManager extends ScheduleCallDom {
     }
   }
 
- // lib/features/schedule_call/dom/schedule_call_manager.dart
-
   // 1. Sync: Local -> Remote
   Future<Either<Failure, Unit>> syncAllToCloud() async {
-    final localData = await local.getAllScheduledCalls();
-    return localData.fold((l) => left(l), (calls) async {
-      for (var call in calls) {
-        if (call.id.isNotEmpty) {
-          // Already synced once, perform update
-          final updateResult = await remote.rescheduleCall(call);
-          updateResult.fold(
-            (failure) => developer.log('Sync Update failed for ${call.id}: $failure'),
-            (_) => null,
-          );
-        } else {
-          // First time syncing, perform creation and link ID
-          final result = await remote.scheduleCall(call);
-          result.fold(
-            (failure) => developer.log('Sync Create failed for ${call.isarId}: $failure'),
-            (cloudId) async {
-              final updatedCall = call.copyWith(id: cloudId);
-              updatedCall.isarId = call.isarId;
-              await local.scheduleCall(updatedCall);
-            },
-          );
-        }
-      }
-      return right(unit);
-    });
+    try {
+      final localDataResult = await local.getAllScheduledCalls();
+      return await localDataResult.fold((l) => left(l), (localCalls) async {
+        final remoteCallsResult = await remote.restoreAllScheduledCalls();
+        return await remoteCallsResult.fold((l) => left(l), (remoteCalls) async {
+          final remoteMap = {for (var c in remoteCalls) c.id: c};
+          final List<ScheduleCall> localUpdates = [];
+
+          for (var localCall in localCalls) {
+            final remoteCall = remoteMap[localCall.id];
+
+            if (localCall.id.isEmpty) {
+              // Create new and link ID
+              final result = await remote.scheduleCall(localCall);
+              await result.fold(
+                (failure) async => developer.log('Sync Create failed: $failure'),
+                (cloudId) async {
+                  final updatedCall = localCall.copyWith(id: cloudId);
+                  updatedCall.isarId = localCall.isarId;
+                  localUpdates.add(updatedCall);
+                },
+              );
+            } else if (remoteCall == null || localCall.updatedAt.isAfter(remoteCall.updatedAt)) {
+              // Update remote (Last Write Wins)
+              await remote.rescheduleCall(localCall);
+            }
+          }
+
+          if (localUpdates.isNotEmpty) {
+            await local.cacheSchedules(localUpdates);
+          }
+          
+          return right(unit);
+        });
+      });
+    } catch (e) {
+      developer.log('Error syncing scheduled calls: $e', name: 'SC Manager');
+      return left(Failure(e.toString()));
+    }
   }
 
   // 2. Restore: Remote -> Local
   Future<Either<Failure, Unit>> restoreFromCloud() async {
     final remoteData = await remote.restoreAllScheduledCalls();
     return remoteData.fold((l) => left(l), (calls) async {
-      // Clear local
-      await local.clearCache();
       // Cancel all existing notifications
       await notifications.cancelAllNotifications();
       
-      // Rehydrate local and recompute notifications
+      // Atomic Replace local
+      await local.replaceCache(calls);
+
+      // Re-schedule notifications
       for (var call in calls) {
-        await local.scheduleCall(call);
         await notifications.scheduleCallNotification(call);
       }
       

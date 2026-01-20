@@ -41,6 +41,18 @@ class ScheduleCacheService extends ScheduleCallDom {
     }
   }
 
+  Future<Either<Failure, Unit>> replaceCache(List<ScheduleCall> schedules) async {
+    try {
+      await isar.writeTxn(() async {
+        await isar.scheduleCalls.clear();
+        await isar.scheduleCalls.putAll(schedules);
+      });
+      return right(unit);
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
+
   @override
   Stream<List<ScheduleCall>> watchScheduledCalls() {
     return isar.scheduleCalls.where().watch(fireImmediately: true);

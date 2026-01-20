@@ -22,6 +22,13 @@ class FavoriteCacheService {
     });
   }
 
+  Future<void> replaceCache(List<FavoriteContact> favorites) async {
+    await isar.writeTxn(() async {
+      await isar.favoriteContacts.clear();
+      await isar.favoriteContacts.putAll(favorites);
+    });
+  }
+
   Stream<List<FavoriteContact>> watchFavorites() {
     return isar.favoriteContacts.where().watch(fireImmediately: true);
   }
@@ -36,6 +43,10 @@ class FavoriteCacheService {
     await isar.writeTxn(() async {
       await isar.favoriteContacts.clear();
     });
+  }
+
+  Future<List<FavoriteContact>> getAllFavorites() async {
+    return isar.favoriteContacts.where().findAll();
   }
 
   Future<bool> isFavorite(String id) async {

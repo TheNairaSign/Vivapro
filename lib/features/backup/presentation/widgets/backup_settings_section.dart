@@ -6,7 +6,6 @@ import 'package:vivapro/features/backup/bloc/backup_bloc.dart';
 import 'package:vivapro/features/backup/bloc/backup_event.dart';
 import 'package:vivapro/features/backup/bloc/backup_state.dart';
 import 'package:vivapro/features/backup/data/backup_service.dart';
-import 'package:vivapro/features/backup/data/backup_worker.dart';
 
 class BackupSettingsSection extends ConsumerStatefulWidget {
   const BackupSettingsSection({super.key});
@@ -52,33 +51,29 @@ class _BackupSettingsSectionState extends ConsumerState<BackupSettingsSection> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final backupWorker = ref.watch(backupWorkerProvider);
 
-    return BlocProvider(
-      create: (context) => BackupBloc(backupWorker: backupWorker),
-      child: BlocListener<BackupBloc, BackupState>(
-        listener: (context, state) {
-          if (state is BackupSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message), backgroundColor: Colors.green),
-            );
-            _updateLastBackupTime();
-          } else if (state is BackupFailure) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.error), backgroundColor: theme.colorScheme.error),
-            );
-          } else if (state is RestoreBackupSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message), backgroundColor: Colors.blue),
-            );
-          } else if (state is RestoreBackupFailure) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.error), backgroundColor: theme.colorScheme.error),
-            );
-          }
-        },
-        child: _buildBody(context),
-      ),
+    return BlocListener<BackupBloc, BackupState>(
+      listener: (context, state) {
+        if (state is BackupSuccess) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message), backgroundColor: Colors.green),
+          );
+          _updateLastBackupTime();
+        } else if (state is BackupFailure) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.error), backgroundColor: theme.colorScheme.error),
+          );
+        } else if (state is RestoreBackupSuccess) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message), backgroundColor: Colors.blue),
+          );
+        } else if (state is RestoreBackupFailure) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.error), backgroundColor: theme.colorScheme.error),
+          );
+        }
+      },
+      child: _buildBody(context),
     );
   }
 

@@ -90,6 +90,16 @@ class FavoritesRepository {
         .snapshots()
         .map((doc) => doc.exists);
   }
+
+  Future<List<FavoriteContact>> fetchAllFavorites() async {
+    final uid = _auth.currentUser?.uid;
+    if (uid == null) return [];
+    
+    final snapshot = await _getFavoritesRef(uid).get();
+    return snapshot.docs
+        .map((doc) => FavoriteContact.fromMap(doc.id, doc.data()))
+        .toList();
+  }
 }
 
 extension _StreamExtension<T> on Stream<T> {

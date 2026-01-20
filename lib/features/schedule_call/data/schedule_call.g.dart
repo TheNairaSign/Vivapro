@@ -46,6 +46,11 @@ const ScheduleCallSchema = CollectionSchema(
       id: 5,
       name: r'timeMinute',
       type: IsarType.long,
+    ),
+    r'updatedAt': PropertySchema(
+      id: 6,
+      name: r'updatedAt',
+      type: IsarType.dateTime,
     )
   },
   estimateSize: _scheduleCallEstimateSize,
@@ -64,6 +69,19 @@ const ScheduleCallSchema = CollectionSchema(
           name: r'id',
           type: IndexType.hash,
           caseSensitive: true,
+        )
+      ],
+    ),
+    r'date': IndexSchema(
+      id: -7552997827385218417,
+      name: r'date',
+      unique: false,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'date',
+          type: IndexType.value,
+          caseSensitive: false,
         )
       ],
     )
@@ -100,6 +118,7 @@ void _scheduleCallSerialize(
   writer.writeString(offsets[3], object.note);
   writer.writeLong(offsets[4], object.timeHour);
   writer.writeLong(offsets[5], object.timeMinute);
+  writer.writeDateTime(offsets[6], object.updatedAt);
 }
 
 ScheduleCall _scheduleCallDeserialize(
@@ -116,6 +135,7 @@ ScheduleCall _scheduleCallDeserialize(
     note: reader.readString(offsets[3]),
     timeHour: reader.readLong(offsets[4]),
     timeMinute: reader.readLong(offsets[5]),
+    updatedAt: reader.readDateTime(offsets[6]),
   );
   return object;
 }
@@ -139,6 +159,8 @@ P _scheduleCallDeserializeProp<P>(
       return (reader.readLong(offset)) as P;
     case 5:
       return (reader.readLong(offset)) as P;
+    case 6:
+      return (reader.readDateTime(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -216,6 +238,14 @@ extension ScheduleCallQueryWhereSort
   QueryBuilder<ScheduleCall, ScheduleCall, QAfterWhere> anyIsarId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
+    });
+  }
+
+  QueryBuilder<ScheduleCall, ScheduleCall, QAfterWhere> anyDate() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        const IndexWhereClause.any(indexName: r'date'),
+      );
     });
   }
 }
@@ -333,6 +363,96 @@ extension ScheduleCallQueryWhere
               includeUpper: false,
             ));
       }
+    });
+  }
+
+  QueryBuilder<ScheduleCall, ScheduleCall, QAfterWhereClause> dateEqualTo(
+      DateTime date) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'date',
+        value: [date],
+      ));
+    });
+  }
+
+  QueryBuilder<ScheduleCall, ScheduleCall, QAfterWhereClause> dateNotEqualTo(
+      DateTime date) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'date',
+              lower: [],
+              upper: [date],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'date',
+              lower: [date],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'date',
+              lower: [date],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'date',
+              lower: [],
+              upper: [date],
+              includeUpper: false,
+            ));
+      }
+    });
+  }
+
+  QueryBuilder<ScheduleCall, ScheduleCall, QAfterWhereClause> dateGreaterThan(
+    DateTime date, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'date',
+        lower: [date],
+        includeLower: include,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<ScheduleCall, ScheduleCall, QAfterWhereClause> dateLessThan(
+    DateTime date, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'date',
+        lower: [],
+        upper: [date],
+        includeUpper: include,
+      ));
+    });
+  }
+
+  QueryBuilder<ScheduleCall, ScheduleCall, QAfterWhereClause> dateBetween(
+    DateTime lowerDate,
+    DateTime upperDate, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'date',
+        lower: [lowerDate],
+        includeLower: includeLower,
+        upper: [upperDate],
+        includeUpper: includeUpper,
+      ));
     });
   }
 }
@@ -960,6 +1080,62 @@ extension ScheduleCallQueryFilter
       ));
     });
   }
+
+  QueryBuilder<ScheduleCall, ScheduleCall, QAfterFilterCondition>
+      updatedAtEqualTo(DateTime value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'updatedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ScheduleCall, ScheduleCall, QAfterFilterCondition>
+      updatedAtGreaterThan(
+    DateTime value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'updatedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ScheduleCall, ScheduleCall, QAfterFilterCondition>
+      updatedAtLessThan(
+    DateTime value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'updatedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ScheduleCall, ScheduleCall, QAfterFilterCondition>
+      updatedAtBetween(
+    DateTime lower,
+    DateTime upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'updatedAt',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
 }
 
 extension ScheduleCallQueryObject
@@ -1042,6 +1218,18 @@ extension ScheduleCallQuerySortBy
       sortByTimeMinuteDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'timeMinute', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ScheduleCall, ScheduleCall, QAfterSortBy> sortByUpdatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'updatedAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ScheduleCall, ScheduleCall, QAfterSortBy> sortByUpdatedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'updatedAt', Sort.desc);
     });
   }
 }
@@ -1134,6 +1322,18 @@ extension ScheduleCallQuerySortThenBy
       return query.addSortBy(r'timeMinute', Sort.desc);
     });
   }
+
+  QueryBuilder<ScheduleCall, ScheduleCall, QAfterSortBy> thenByUpdatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'updatedAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ScheduleCall, ScheduleCall, QAfterSortBy> thenByUpdatedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'updatedAt', Sort.desc);
+    });
+  }
 }
 
 extension ScheduleCallQueryWhereDistinct
@@ -1175,6 +1375,12 @@ extension ScheduleCallQueryWhereDistinct
   QueryBuilder<ScheduleCall, ScheduleCall, QDistinct> distinctByTimeMinute() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'timeMinute');
+    });
+  }
+
+  QueryBuilder<ScheduleCall, ScheduleCall, QDistinct> distinctByUpdatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'updatedAt');
     });
   }
 }
@@ -1221,6 +1427,12 @@ extension ScheduleCallQueryProperty
   QueryBuilder<ScheduleCall, int, QQueryOperations> timeMinuteProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'timeMinute');
+    });
+  }
+
+  QueryBuilder<ScheduleCall, DateTime, QQueryOperations> updatedAtProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'updatedAt');
     });
   }
 }

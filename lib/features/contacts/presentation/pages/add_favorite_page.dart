@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' hide Provider;
 import 'package:provider/provider.dart';
+import 'package:vivapro/features/contacts/data/favorite_cache_service.dart';
 import 'package:vivapro/features/contacts/data/favorite_contact.dart';
 import 'package:vivapro/features/contacts/presentation/widgets/favorites/frequency_container.dart';
-import 'package:vivapro/features/contacts/repositories/favorite_repository.dart';
 import 'package:vivapro/widgets/custom_text_field.dart';
 
 class AddFavoritePage extends ConsumerStatefulWidget {
@@ -46,12 +46,13 @@ class _AddFavoritePageState extends ConsumerState<AddFavoritePage> {
     final favoritesProvider = context.read<AddFavoritesProvider>();
 
     try {
-      await ref.read(favoritesRepository).addFavorite(
+      await ref.read(favoriteCacheServiceProvider).addFavorite(
         FavoriteContact.create(
           id: widget.contact.id,
           callFrequency: favoritesProvider.callFrequency,
           contactDetails: widget.contact,
           priority: favoritesProvider.callPriority,
+          updatedAt: DateTime.now(),
         ),
       );
 
@@ -345,5 +346,3 @@ class _AddFavoritePageState extends ConsumerState<AddFavoritePage> {
     );
   }
 }
-
-

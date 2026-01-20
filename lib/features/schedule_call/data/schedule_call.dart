@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart' hide Index;
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:isar/isar.dart';
@@ -29,6 +30,8 @@ class ScheduleCall {
   @ignore
   TimeOfDay get time => TimeOfDay(hour: timeHour, minute: timeMinute);
 
+  final DateTime updatedAt;
+
   ScheduleCall({
     this.isarId = Isar.autoIncrement,
     required this.id,
@@ -37,6 +40,7 @@ class ScheduleCall {
     required this.timeMinute,
     required this.note,
     required this.contactDetailsJson,
+    required this.updatedAt,
   }) : contact = Contact.fromJson(jsonDecode(contactDetailsJson));
 
   /// Factory constructor to create a ScheduleCall from a Contact object
@@ -47,6 +51,7 @@ class ScheduleCall {
     required DateTime date,
     required TimeOfDay time,
     required String note,
+    DateTime? updatedAt,
   }) {
     return ScheduleCall(
       isarId: isarId,
@@ -56,6 +61,7 @@ class ScheduleCall {
       timeMinute: time.minute,
       note: note,
       contactDetailsJson: jsonEncode(contact.toJson()),
+      updatedAt: updatedAt ?? DateTime.now(),
     );
   }
 
@@ -66,6 +72,7 @@ class ScheduleCall {
     DateTime? date,
     TimeOfDay? time,
     String? note,
+    DateTime? updatedAt,
   }) {
     return ScheduleCall.create(
       isarId: isarId ?? this.isarId,
@@ -74,6 +81,7 @@ class ScheduleCall {
       date: date ?? this.date,
       time: time ?? this.time,
       note: note ?? this.note,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 
@@ -87,6 +95,7 @@ class ScheduleCall {
         minute: map['time']['minute'] as int,
       ),
       note: map['note'] as String,
+      updatedAt: (map['updatedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
     );
   }
 
@@ -100,6 +109,7 @@ class ScheduleCall {
         minute: json['time']['minute'] as int,
       ),
       note: json['note'] as String,
+      updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : DateTime.now(),
     );
   }
 
@@ -113,6 +123,7 @@ class ScheduleCall {
         'minute': timeMinute,
       },
       'note': note,
+      'updatedAt': updatedAt.toIso8601String(),
     };
   }
 

@@ -20,5 +20,6 @@ void main(List<String> args) async {
     overrides: [
       isarProvider.overrideWith((ref) => isar),
     ],
-    child: const Vivapro()));
+    child: const Vivapro()),
+  );
 }

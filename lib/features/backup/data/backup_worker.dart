@@ -1,45 +1,43 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vivapro/core/failures/failure.dart';
-import 'package:vivapro/core/services/notification_service.dart';
 import 'package:vivapro/features/schedule_call/dom/schedule_call_manager.dart';
-import 'package:vivapro/features/schedule_call/repositories/schedule_call_repository.dart';
+import 'package:vivapro/features/contacts/dom/favorite_manager.dart';
 
 class BackupWorker {
-  final ScheduleCallRepository remote;
-  final ScheduleCallManager local;
-  final NotificationService notifications;
+  final ScheduleCallManager scheduleManager;
+  final FavoriteManager favoriteManager;
 
   BackupWorker({
-    required this.remote,
-    required this.local,
-    required this.notifications,
+    required this.scheduleManager,
+    required this.favoriteManager,
   });
 
-  Future<Either<Failure, String>> backupAllScheduledCalls() async {
-    final result = await local.syncAllToCloud();
-    return result.fold(
+  Future<Either<Failure, String>> backupAll() async {
+    // 1. Backup Favorites
+    final favoriteResult = await favoriteManager.syncAllToCloud();
+    if (favoriteResult.isLeft()) {
+      return favoriteResult.fold((l) => left(l), (r) => right(''));
+    }
+
+    // 2. Backup Scheduled Calls
+    final scheduleResult = await scheduleManager.syncAllToCloud();
+    return scheduleResult.fold(
       (l) => left(l),
       (r) => right('Backup successful'),
     );
   }
 
-  Future<Either<Failure, Unit>> deleteSchedule(String scheduleId) async {
-    try {
-      final localResult = await local.deleteSchedule(scheduleId);
-      return localResult.fold((l) => left(l), (r) async {
-        await notifications.cancelNotification(scheduleId.hashCode);
-        await remote.deleteSchedule(scheduleId);
-        return right(unit);
-      });
-    } catch (e) {
-      return left(Failure(e.toString()));
+  Future<Either<Failure, String>> restoreAll() async {
+    // 1. Restore Favorites
+    final favoriteResult = await favoriteManager.restoreFromCloud();
+    if (favoriteResult.isLeft()) {
+      return favoriteResult.fold((l) => left(l), (r) => right(''));
     }
-  }
 
-  Future<Either<Failure, String>> restoreAllScheduledCalls() async {
-    final result = await local.restoreFromCloud();
-    return result.fold(
+    // 2. Restore Scheduled Calls
+    final scheduleResult = await scheduleManager.restoreFromCloud();
+    return scheduleResult.fold(
       (l) => left(l),
       (r) => right('Restore successful'),
     );
@@ -48,8 +46,7 @@ class BackupWorker {
 
 final backupWorkerProvider = Provider<BackupWorker>((ref) {
   return BackupWorker(
-    remote: ref.watch(scheduleCallRepositoryProvider),
-    local: ref.watch(scheduleCallManagerProvider),
-    notifications: NotificationService(),
+    scheduleManager: ref.watch(scheduleCallManagerProvider),
+    favoriteManager: ref.watch(favoriteManagerProvider),
   );
 });

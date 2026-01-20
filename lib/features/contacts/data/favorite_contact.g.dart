@@ -53,6 +53,11 @@ const FavoriteContactSchema = CollectionSchema(
       name: r'priority',
       type: IsarType.string,
       enumMap: _FavoriteContactpriorityEnumValueMap,
+    ),
+    r'updatedAt': PropertySchema(
+      id: 7,
+      name: r'updatedAt',
+      type: IsarType.dateTime,
     )
   },
   estimateSize: _favoriteContactEstimateSize,
@@ -115,6 +120,7 @@ void _favoriteContactSerialize(
   writer.writeString(offsets[4], object.inAppUserId);
   writer.writeDateTime(offsets[5], object.lastInteractionAt);
   writer.writeString(offsets[6], object.priority.name);
+  writer.writeDateTime(offsets[7], object.updatedAt);
 }
 
 FavoriteContact _favoriteContactDeserialize(
@@ -136,6 +142,7 @@ FavoriteContact _favoriteContactDeserialize(
     priority: _FavoriteContactpriorityValueEnumMap[
             reader.readStringOrNull(offsets[6])] ??
         CallPriority.high,
+    updatedAt: reader.readDateTimeOrNull(offsets[7]),
   );
   return object;
 }
@@ -165,6 +172,8 @@ P _favoriteContactDeserializeProp<P>(
       return (_FavoriteContactpriorityValueEnumMap[
               reader.readStringOrNull(offset)] ??
           CallPriority.high) as P;
+    case 7:
+      return (reader.readDateTimeOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -1291,6 +1300,80 @@ extension FavoriteContactQueryFilter
       ));
     });
   }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterFilterCondition>
+      updatedAtIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'updatedAt',
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterFilterCondition>
+      updatedAtIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'updatedAt',
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterFilterCondition>
+      updatedAtEqualTo(DateTime? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'updatedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterFilterCondition>
+      updatedAtGreaterThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'updatedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterFilterCondition>
+      updatedAtLessThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'updatedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterFilterCondition>
+      updatedAtBetween(
+    DateTime? lower,
+    DateTime? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'updatedAt',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
 }
 
 extension FavoriteContactQueryObject
@@ -1394,6 +1477,20 @@ extension FavoriteContactQuerySortBy
       sortByPriorityDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'priority', Sort.desc);
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterSortBy>
+      sortByUpdatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'updatedAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterSortBy>
+      sortByUpdatedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'updatedAt', Sort.desc);
     });
   }
 }
@@ -1508,6 +1605,20 @@ extension FavoriteContactQuerySortThenBy
       return query.addSortBy(r'priority', Sort.desc);
     });
   }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterSortBy>
+      thenByUpdatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'updatedAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterSortBy>
+      thenByUpdatedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'updatedAt', Sort.desc);
+    });
+  }
 }
 
 extension FavoriteContactQueryWhereDistinct
@@ -1560,6 +1671,13 @@ extension FavoriteContactQueryWhereDistinct
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'priority', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QDistinct>
+      distinctByUpdatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'updatedAt');
     });
   }
 }
@@ -1617,6 +1735,13 @@ extension FavoriteContactQueryProperty
       priorityProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'priority');
+    });
+  }
+
+  QueryBuilder<FavoriteContact, DateTime?, QQueryOperations>
+      updatedAtProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'updatedAt');
     });
   }
 }

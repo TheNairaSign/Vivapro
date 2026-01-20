@@ -26,6 +26,7 @@ class FavoriteContact {
   
   final DateTime? lastInteractionAt;
   final DateTime? createdAt;
+  final DateTime? updatedAt;
 
   /// Internal field for Isar to store the contact details
   final String contactDetailsJson;
@@ -41,6 +42,7 @@ class FavoriteContact {
     required this.callFrequency,
     this.lastInteractionAt,
     this.createdAt,
+    this.updatedAt,
     required this.contactDetailsJson,
   }) : contactDetails = Contact.fromJson(jsonDecode(contactDetailsJson));
 
@@ -54,6 +56,7 @@ class FavoriteContact {
     required CallFrequency callFrequency,
     DateTime? lastInteractionAt,
     DateTime? createdAt,
+    DateTime? updatedAt,
   }) {
     return FavoriteContact(
       isarId: isarId,
@@ -64,6 +67,7 @@ class FavoriteContact {
       callFrequency: callFrequency,
       lastInteractionAt: lastInteractionAt,
       createdAt: createdAt,
+      updatedAt: updatedAt ?? DateTime.now(),
     );
   }
 
@@ -76,6 +80,7 @@ class FavoriteContact {
       'callFrequency': callFrequency.name,
       'lastInteractionAt': lastInteractionAt,
       'createdAt': createdAt ?? FieldValue.serverTimestamp(),
+      'updatedAt': updatedAt ?? FieldValue.serverTimestamp(),
     };
   }
 
@@ -96,6 +101,7 @@ class FavoriteContact {
       ),
       lastInteractionAt: (map['lastInteractionAt'] as Timestamp?)?.toDate(),
       createdAt: (map['createdAt'] as Timestamp?)?.toDate(),
+      updatedAt: (map['updatedAt'] as Timestamp?)?.toDate(),
     );
   }
 
@@ -118,6 +124,7 @@ class FavoriteContact {
       callFrequency: callFrequency ?? this.callFrequency,
       lastInteractionAt: lastInteractionAt ?? this.lastInteractionAt,
       createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? DateTime.now(),
     );
   }
 }
