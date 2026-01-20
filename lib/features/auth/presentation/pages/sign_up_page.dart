@@ -7,6 +7,7 @@ import 'package:vivapro/features/auth/presentation/pages/confirm_email_page.dart
 import 'package:vivapro/features/auth/presentation/pages/login_page.dart';
 import 'package:vivapro/widgets/custom_text_field.dart';
 import 'package:vivapro/widgets/next_button.dart';
+import 'package:vivapro/components/show_flushbar.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -69,11 +70,11 @@ class _SignUpPageState extends State<SignUpPage> {
                 setState(() {
                   isLoading = false;
                 });
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.message),
-                    backgroundColor: Colors.red,
-                  ),
+                showFlushbar(
+                  context,
+                  'Sign Up Failed',
+                  state.message,
+                  color: Colors.red,
                 );
               } else if (state is SignUpLoading) {
                 setState(() {

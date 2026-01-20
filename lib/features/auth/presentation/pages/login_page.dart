@@ -8,6 +8,7 @@ import 'package:vivapro/features/auth/presentation/pages/sign_up_page.dart';
 import 'package:vivapro/pages/navigation/navigation_page.dart';
 import 'package:vivapro/widgets/custom_text_field.dart';
 import 'package:vivapro/widgets/next_button.dart';
+import 'package:vivapro/components/show_flushbar.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -57,11 +58,11 @@ class _LoginPageState extends State<LoginPage> {
                 setState(() {
                   isLoading = false;
                 });
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text("Could not sign in. ${state.message}"),
-                    backgroundColor: Colors.red,
-                  ),
+                showFlushbar(
+                  context,
+                  'Sign In Failed',
+                  state.message,
+                  color: Colors.red,
                 );
               } else if (state is SignInSuccess) {
                 setState(() {

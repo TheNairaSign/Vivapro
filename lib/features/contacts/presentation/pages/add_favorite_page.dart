@@ -7,6 +7,7 @@ import 'package:vivapro/features/contacts/data/favorite_cache_service.dart';
 import 'package:vivapro/features/contacts/data/favorite_contact.dart';
 import 'package:vivapro/features/contacts/presentation/widgets/favorites/frequency_container.dart';
 import 'package:vivapro/widgets/custom_text_field.dart';
+import 'package:vivapro/components/show_flushbar.dart';
 
 class AddFavoritePage extends ConsumerStatefulWidget {
   const AddFavoritePage({super.key, required this.contact});
@@ -35,9 +36,7 @@ class _AddFavoritePageState extends ConsumerState<AddFavoritePage> {
     if (isLoading) return;
 
     if (_nameController.text.isEmpty || _phoneController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill in all fields')),
-      );
+      showFlushbar(context, 'Missing Info', 'Please fill in all fields');
       return;
     }
 
@@ -57,16 +56,12 @@ class _AddFavoritePageState extends ConsumerState<AddFavoritePage> {
       );
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Contact saved successfully')),
-        );
+        showFlushbar(context, 'Success', 'Contact saved successfully');
         Navigator.pop(context);
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to save contact: $e')),
-        );
+        showFlushbar(context, 'Error', 'Failed to save contact: $e');
       }
     } finally {
       if (mounted) {

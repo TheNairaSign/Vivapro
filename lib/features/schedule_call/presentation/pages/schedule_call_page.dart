@@ -13,6 +13,7 @@ import 'package:vivapro/pages/navigation/widgets/schedule_call/call_note_card.da
 import 'package:vivapro/pages/navigation/widgets/schedule_call/date_selection_card.dart';
 import 'package:vivapro/pages/navigation/widgets/schedule_call/profile_card.dart';
 import 'package:vivapro/pages/navigation/widgets/schedule_call/time_selection_card.dart';
+import 'package:vivapro/components/show_flushbar.dart';
 
 class ScheduleCallPage extends ConsumerStatefulWidget {
   final Contact contact;
@@ -52,9 +53,7 @@ class _ScheduleCallPageState extends ConsumerState<ScheduleCallPage> {
       child: BlocListener<ScheduleCallBloc, ScheduleCallState>(
         listener: (context, state) {
           if (state is ScheduleCallError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message)),
-            );
+            showFlushbar(context, 'Error', state.message, color: Colors.red);
           }
         },
         child: Scaffold(
@@ -121,15 +120,13 @@ class _ScheduleCallPageState extends ConsumerState<ScheduleCallPage> {
                           }
                           
                           final navigator = Navigator.of(context);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(widget.scheduleCall == null ? "Call Scheduled" : "Call Updated"),
-                              duration: const Duration(seconds: 3),
-                              action: SnackBarAction(
-                                label: 'View', 
-                                onPressed: () => navigator.push(MaterialPageRoute(builder: (ctx) => ScheduleDetailsPage(scheduleCall: scheduleCall))),
-                                textColor: Theme.of(context).colorScheme.primary,
-                              )
+                          showFlushbar(
+                            context,
+                            'Schedule',
+                            widget.scheduleCall == null ? "Call Scheduled" : "Call Updated",
+                            mainButton: TextButton(
+                              onPressed: () => navigator.push(MaterialPageRoute(builder: (ctx) => ScheduleDetailsPage(scheduleCall: scheduleCall))),
+                              child: const Text('View', style: TextStyle(color: Colors.amber)),
                             ),
                           );
                           navigator.pop();

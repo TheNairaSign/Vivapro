@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vivapro/widgets/next_button.dart';
+import 'package:vivapro/components/show_flushbar.dart';
 
 class InterestSelectionPage extends StatefulWidget {
   const InterestSelectionPage({super.key});
@@ -162,12 +163,10 @@ class _InterestSelectionPageState extends State<InterestSelectionPage> {
                       borderColor: Colors.blue,
                       onPressed: selectedInterests.isEmpty
                           ? () {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    'Please select at least one interest',
-                                  ),
-                                ),
+                              showFlushbar(
+                                context,
+                                'Selection Required',
+                                'Please select at least one interest',
                               );
                             }
                           : () {

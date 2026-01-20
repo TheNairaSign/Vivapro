@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vivapro/features/auth/presentation/pages/login_page.dart';
 import 'package:vivapro/widgets/next_button.dart';
+import 'package:vivapro/components/show_flushbar.dart';
 
 class ConfirmEmailPage extends StatefulWidget {
   final String? email;
@@ -125,10 +126,10 @@ class _ConfirmEmailPageState extends State<ConfirmEmailPage> {
                         GestureDetector(
                           onTap: () {
                             // TODO: Implement resend email logic
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('Resend feature coming soon!'),
-                              ),
+                            showFlushbar(
+                              context,
+                              'Coming Soon',
+                              'Resend feature coming soon!',
                             );
                           },
                           child: Text(

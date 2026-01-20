@@ -6,6 +6,7 @@ import 'package:vivapro/features/auth/presentation/bloc/google_signin/google_sig
 import 'package:vivapro/features/auth/presentation/pages/sign_up_page.dart';
 import 'package:vivapro/features/auth/presentation/widgets/auth_button.dart';
 import 'package:vivapro/pages/navigation/navigation_page.dart';
+import 'package:vivapro/components/show_flushbar.dart';
 
 class AuthPage extends StatefulWidget {
   const AuthPage({super.key});
@@ -42,11 +43,11 @@ class _AuthPageState extends State<AuthPage> {
             setState(() {
               isLoading = false;
             });
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Sign in failed: ${state.failure.toString()}'),
-                backgroundColor: Colors.red,
-              ),
+            showFlushbar(
+              context,
+              'Sign In Failed',
+              state.failure.toString(),
+              color: Colors.red,
             );
           }
         },

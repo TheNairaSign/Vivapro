@@ -9,6 +9,7 @@ import 'package:vivapro/features/schedule_call/presentation/pages/schedule_call_
 import 'package:vivapro/pages/contact_picker_page.dart';
 import 'package:vivapro/pages/home/widgets/upcoming_reminder_card.dart';
 import 'package:vivapro/widgets/custom_back_button.dart';
+import 'package:vivapro/components/show_flushbar.dart';
 
 class ScheduledCallsPage extends StatefulWidget {
   const ScheduledCallsPage({super.key});
@@ -54,7 +55,7 @@ class _ScheduledCallsPageState extends State<ScheduledCallsPage> {
       body: BlocConsumer<ScheduleCallBloc, ScheduleCallState>(
         listener: (context, state) {
           if (state is ScheduleCallError) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
+            showFlushbar(context, 'Error', state.message, color: Colors.red);
           }
         },
         builder: (context, state) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vivapro/widgets/custom_text_field.dart';
 import 'package:vivapro/widgets/next_button.dart';
+import 'package:vivapro/components/show_flushbar.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({super.key});
@@ -32,13 +33,11 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           isLoading = false;
         });
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Password reset link sent to ${emailController.text}',
-            ),
-            backgroundColor: Colors.green,
-          ),
+        showFlushbar(
+          context,
+          'Reset Sent',
+          'Password reset link sent to ${emailController.text}',
+          color: Colors.green,
         );
 
         Navigator.pop(context);
