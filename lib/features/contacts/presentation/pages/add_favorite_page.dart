@@ -56,8 +56,8 @@ class _AddFavoritePageState extends ConsumerState<AddFavoritePage> {
       );
 
       if (mounted) {
-        showFlushbar(context, 'Success', 'Contact saved successfully');
         Navigator.pop(context);
+        showFlushbar(context, 'Success', 'Contact saved successfully');
       }
     } catch (e) {
       if (mounted) {

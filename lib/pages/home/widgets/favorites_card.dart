@@ -101,9 +101,7 @@ class FavoritesCard extends ConsumerWidget {
                     
                     if (phoneNumber != null) {
                       // Record the interaction
-                      if (contact.id != null) {
-                        await interactionTracker.recordInteraction(contact.id!);
-                      }
+                      await interactionTracker.recordInteraction(contact.id);
                       
                       // Open phone dialer
                       final uri = Uri(scheme: 'tel', path: phoneNumber);

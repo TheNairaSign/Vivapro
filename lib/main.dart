@@ -12,7 +12,8 @@ import 'package:vivapro/features/schedule_call/data/schedule_call.dart';
 void main(List<String> args) async {
   await bootstrap();
   final dir = await getApplicationDocumentsDirectory();
-  final isar = await Isar.open(
+  
+  final isar = Isar.getInstance() ?? await Isar.open(
     [FavoriteContactSchema, ScheduleCallSchema],
     directory: dir.path,
   );

@@ -7,7 +7,6 @@ import 'package:vivapro/core/services/interaction_tracker.dart';
 import 'package:vivapro/features/contacts/data/favorite_contact.dart';
 import 'package:vivapro/features/schedule_call/dom/schedule_call_use_case.dart';
 import 'package:vivapro/features/schedule_call/presentation/pages/schedule_call_page.dart';
-import 'package:vivapro/features/schedule_call/repositories/schedule_call_repository.dart';
 import 'package:vivapro/pages/home/widgets/feature_tip_card.dart';
 import 'package:vivapro/widgets/text_avatar.dart';
 
@@ -56,7 +55,6 @@ class _PeopleToCallSectionState extends ConsumerState<PeopleToCallSection> {
 
   Widget _buildCallTodayCard(BuildContext context, FavoriteContact contact) {
     final interactionTracker = ref.read(interactionTrackerProvider);
-    final scheduleRepo = ref.read(scheduleCallRepositoryProvider);
     
     return InkWell(
       onLongPress: () async {
@@ -167,9 +165,8 @@ class _PeopleToCallSectionState extends ConsumerState<PeopleToCallSection> {
                 
                 if (phoneNumber != null) {
                   // Record the interaction
-                  if (contact.id != null) {
-                    await interactionTracker.recordInteraction(contact.id!);
-                  }
+                  // Record the interaction
+                  await interactionTracker.recordInteraction(contact.id);
                   
                   // Open phone dialer
                   final uri = Uri(scheme: 'tel', path: phoneNumber);

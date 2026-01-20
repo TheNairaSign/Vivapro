@@ -54,6 +54,10 @@ class FavoriteCacheService {
     return favorite != null;
   }
 
+  Future<FavoriteContact?> getFavoriteById(String id) async {
+    return isar.favoriteContacts.where().idEqualTo(id).findFirst();
+  }
+
   Future<void> toggleFavorite(bool currentlyFavorite, Contact contact) async {
     if (currentlyFavorite) {
       await removeFavorite(contact.id);

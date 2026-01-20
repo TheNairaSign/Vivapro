@@ -54,6 +54,7 @@ class _ScheduleCallPageState extends ConsumerState<ScheduleCallPage> {
         listener: (context, state) {
           if (state is ScheduleCallError) {
             showFlushbar(context, 'Error', state.message, color: Colors.red);
+            debugPrint("Error adding schedule: ${state.message}");
           }
         },
         child: Scaffold(
@@ -120,6 +121,7 @@ class _ScheduleCallPageState extends ConsumerState<ScheduleCallPage> {
                           }
                           
                           final navigator = Navigator.of(context);
+                          navigator.pop();
                           showFlushbar(
                             context,
                             'Schedule',
@@ -129,7 +131,6 @@ class _ScheduleCallPageState extends ConsumerState<ScheduleCallPage> {
                               child: const Text('View', style: TextStyle(color: Colors.amber)),
                             ),
                           );
-                          navigator.pop();
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Theme.of(context).colorScheme.primary,

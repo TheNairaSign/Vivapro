@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vivapro/features/backup/bloc/backup_bloc.dart';
 import 'package:vivapro/features/backup/bloc/backup_event.dart';
 import 'package:vivapro/features/backup/bloc/backup_state.dart';
-import 'package:vivapro/features/backup/data/backup_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vivapro/components/show_flushbar.dart';
 
 class BackupSettingsSection extends ConsumerStatefulWidget {
@@ -26,24 +26,19 @@ class _BackupSettingsSectionState extends ConsumerState<BackupSettingsSection> {
   }
 
   Future<void> _loadBackupSettings() async {
-    final service = ref.read(backupServiceProvider);
-    final enabled = await service.isBackupEnabled();
-    final lastTime = await service.getLastBackupTime();
+    final prefs = await SharedPreferences.getInstance();
     if (mounted) {
       setState(() {
-        _isBackupEnabled = enabled;
-        _lastBackupTime = lastTime;
+        _isBackupEnabled = prefs.getBool('backupEnabled') ?? false;
+        final timeStr = prefs.getString('lastBackupTime');
+        _lastBackupTime = timeStr != null ? DateTime.parse(timeStr) : null;
       });
     }
   }
 
   Future<void> _toggleBackup(bool value) async {
-    final service = ref.read(backupServiceProvider);
-    if (value) {
-      await service.enableBackup();
-    } else {
-      await service.disableBackup();
-    }
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('backupEnabled', value);
     setState(() {
       _isBackupEnabled = value;
     });
@@ -62,6 +57,7 @@ class _BackupSettingsSectionState extends ConsumerState<BackupSettingsSection> {
           showFlushbar(context, 'Backup Failed', state.error, color: theme.colorScheme.error);
         } else if (state is RestoreBackupSuccess) {
           showFlushbar(context, 'Restore Success', state.message, color: Colors.blue);
+          _updateLastBackupTime();
         } else if (state is RestoreBackupFailure) {
           showFlushbar(context, 'Restore Failed', state.error, color: theme.colorScheme.error);
         }
@@ -72,7 +68,8 @@ class _BackupSettingsSectionState extends ConsumerState<BackupSettingsSection> {
 
   Future<void> _updateLastBackupTime() async {
     final now = DateTime.now();
-    await ref.read(backupServiceProvider).setLastBackupTime(now);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('lastBackupTime', now.toIso8601String());
     setState(() {
       _lastBackupTime = now;
     });
@@ -83,7 +80,7 @@ class _BackupSettingsSectionState extends ConsumerState<BackupSettingsSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionHeader(context, "CLOUD BACKUP"),
+        _buildSectionHeader(context, "GOOGLE DRIVE BACKUP"),
         const SizedBox(height: 8),
         Container(
           decoration: BoxDecoration(
@@ -91,7 +88,7 @@ class _BackupSettingsSectionState extends ConsumerState<BackupSettingsSection> {
             borderRadius: BorderRadius.circular(24),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.03),
+                color: Colors.black.withOpacity(0.03),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -101,9 +98,9 @@ class _BackupSettingsSectionState extends ConsumerState<BackupSettingsSection> {
             children: [
               _buildSwitchTile(
                 context,
-                icon: EvaIcons.cloudUploadOutline,
-                title: "Enable Cloud Backup",
-                subtitle: "Mirror your local data to secure cloud storage",
+                icon: EvaIcons.google,
+                title: "Enable Drive Backup",
+                subtitle: "Mirror your local data to Google Drive App Data",
                 value: _isBackupEnabled,
                 onChanged: _toggleBackup,
               ),
@@ -125,8 +122,8 @@ class _BackupSettingsSectionState extends ConsumerState<BackupSettingsSection> {
                 _buildActionTile(
                   context,
                   icon: EvaIcons.downloadOutline,
-                  title: "Restore from Cloud",
-                  subtitle: "Download your mirrored data to this device",
+                  title: "Restore from Drive",
+                  subtitle: "Replace local data with latest cloud backup",
                   onTap: (context) {
                     _showRestoreConfirmDialog(context);
                   },

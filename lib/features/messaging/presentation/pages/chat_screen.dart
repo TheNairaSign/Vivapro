@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:vivapro/features/auth/data/auth_user.dart';
 import 'package:vivapro/features/messaging/data/chat.dart';
 import 'package:vivapro/features/messaging/presentation/bloc/chat/chat_bloc.dart';
 import 'package:vivapro/features/messaging/presentation/bloc/chat/chat_event.dart';
@@ -14,8 +13,7 @@ import 'package:vivapro/features/messaging/presentation/pages/new_chat_screen.da
 import 'dart:developer' as dev;
 
 class ChatScreen extends ConsumerStatefulWidget {
-  const ChatScreen({super.key, required this.user});
-  final AuthUser user;
+  const ChatScreen({super.key});
   @override
   ConsumerState<ChatScreen> createState() => _ChatScreenState();
 }

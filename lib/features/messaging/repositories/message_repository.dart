@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vivapro/core/failures/message_failure.dart';
@@ -9,8 +8,8 @@ import 'dart:developer' as developer;
 
 class MessageRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
+  final String _currentUserId = 'local_user';
 
   Future<Either<MessageFailure, Unit>> initialiseMessage() async {
     try {
@@ -39,12 +38,7 @@ class MessageRepository {
     required String text,
   }) async {
     try {
-      final uid = _auth.currentUser?.uid;
-
-      if (uid == null || uid.isEmpty) {
-        developer.log('User is not authenticated', name: 'MessageRepository');
-        return left(MessageFailure('User is not authenticated'));
-      }
+      final uid = _currentUserId;
 
       final messageRef = _firestore
           .collection('chats')
@@ -126,10 +120,7 @@ class MessageRepository {
 
   Future<Either<MessageFailure, Unit>> sendFCMToken(String? token) async {
     try {
-      final uid = _auth.currentUser?.uid;
-      if (uid == null || uid.isEmpty) {
-        return left(MessageFailure('User not authenticated to send FCM token'));
-      }
+      final uid = _currentUserId;
 
       await FirebaseFirestore.instance.collection('users').doc(uid).update({
         'fcmToken': token ?? await getFcmToken(),
@@ -234,12 +225,7 @@ class MessageRepository {
     String messageId,
   ) async {
     try {
-      final uid = FirebaseAuth.instance.currentUser?.uid;
-      if (uid == null || uid.isEmpty) {
-        return left(
-          MessageFailure('User not authenticated to mark message as seen'),
-        );
-      }
+      final uid = _currentUserId;
 
       await FirebaseFirestore.instance
           .collection('chats')

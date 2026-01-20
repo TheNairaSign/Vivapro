@@ -1,13 +1,9 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:vivapro/features/auth/data/auth_user.dart';
 import 'package:vivapro/features/backup/presentation/widgets/backup_settings_section.dart';
 
 class ProfilePage extends StatelessWidget {
-  final AuthUser user;
-
-  const ProfilePage(this.user, {super.key});
+  const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -39,10 +35,6 @@ class ProfilePage extends StatelessWidget {
             _buildProfileHeader(context),
             const SizedBox(height: 32),
         
-            // Relationship Health Card
-            // _buildHealthCard(context),
-            // const SizedBox(height: 32),
-        
             // Personal Info Container
             _buildCategoryContainer(
               context,
@@ -59,7 +51,7 @@ class ProfilePage extends StatelessWidget {
                   context,
                   icon: EvaIcons.emailOutline,
                   title: "Email Address",
-                  subtitle: user.email ?? 'alex.j@connectionapp.com',
+                  subtitle: 'alex.j@connectionapp.com',
                   onTap: () {},
                 ),
               ],
@@ -115,28 +107,6 @@ class ProfilePage extends StatelessWidget {
             // Cloud Backup Section
             const BackupSettingsSection(),
             const SizedBox(height: 20),
-        
-            const SizedBox(height: 20),
-            ElevatedButton.icon(
-              onPressed: () {},
-              icon: Icon(EvaIcons.logOutOutline, color: theme.colorScheme.error),
-              label: Text(
-                'Sign Out',
-                style: GoogleFonts.inter(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: theme.colorScheme.error,
-                ),
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: theme.colorScheme.error.withValues(alpha: 0.1),
-                minimumSize: const Size(double.infinity, 56),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                elevation: 0,
-              ),
-            ),
           ],
         ),
       ),
@@ -160,7 +130,7 @@ class ProfilePage extends StatelessWidget {
             borderRadius: BorderRadius.circular(24),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.03),
+                color: Colors.black.withOpacity(0.03),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -182,9 +152,9 @@ class ProfilePage extends StatelessWidget {
           alignment: Alignment.bottomRight,
           children: [
             CircleAvatar(
-              backgroundColor: Colors.grey.withValues(alpha: .2),
+              backgroundColor: Colors.grey.withOpacity(.2),
               radius: 50,
-              backgroundImage: AssetImage('assets/avatars/braid-girl.jpg'),
+              backgroundImage: const AssetImage('assets/avatars/braid-girl.jpg'),
             ),
             Container(
               height: 36,
@@ -200,7 +170,7 @@ class ProfilePage extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         Text(
-          user.displayName ?? 'User Name',
+          'Alex Johnson',
           style: theme.textTheme.headlineSmall?.copyWith(
             fontWeight: FontWeight.w800,
             letterSpacing: -0.5,
@@ -210,90 +180,11 @@ class ProfilePage extends StatelessWidget {
         Text(
           "Member since July 2023",
           style: theme.textTheme.bodyMedium?.copyWith(
-            color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
+            color: theme.colorScheme.onSurface.withOpacity(0.5),
             fontWeight: FontWeight.w500,
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildHealthCard(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            colorScheme.primary,
-            colorScheme.primary.withValues(alpha: 0.8),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: colorScheme.primary.withValues(alpha: 0.3),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "Relationship Health",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: const Text(
-                  "75%",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: LinearProgressIndicator(
-              value: 0.75,
-              minHeight: 8,
-              backgroundColor: Colors.white.withValues(alpha: 0.2),
-              valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
-            ),
-          ),
-          const SizedBox(height: 16),
-          const Text(
-            "Great job! You've reached out to 4 people this week. Keep the momentum going!",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 13,
-              height: 1.4,
-            ),
-          ),
-        ],
-      ),
     );
   }
 
@@ -303,7 +194,7 @@ class ProfilePage extends StatelessWidget {
       style: Theme.of(context).textTheme.bodySmall?.copyWith(
         fontWeight: FontWeight.w800,
         letterSpacing: 1.2,
-        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
       ),
     );
   }
@@ -320,7 +211,7 @@ class ProfilePage extends StatelessWidget {
       contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
       leading: Icon(
         icon,
-        color: theme.colorScheme.onSurface.withValues(alpha: 0.8),
+        color: theme.colorScheme.onSurface.withOpacity(0.8),
       ),
       title: Text(
         title,
@@ -335,7 +226,7 @@ class ProfilePage extends StatelessWidget {
       trailing: Icon(
         Icons.arrow_forward_ios,
         size: 14,
-        color: theme.colorScheme.onSurface.withValues(alpha: 0.3),
+        color: theme.colorScheme.onSurface.withOpacity(0.3),
       ),
       onTap: onTap,
     );
@@ -354,7 +245,7 @@ class ProfilePage extends StatelessWidget {
       contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
       secondary: Icon(
         icon,
-        color: theme.colorScheme.onSurface.withValues(alpha: 0.8),
+        color: theme.colorScheme.onSurface.withOpacity(0.8),
       ),
       title: Text(
         title,
@@ -363,14 +254,13 @@ class ProfilePage extends StatelessWidget {
       subtitle: Text(
         subtitle,
         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-          color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
+          color: theme.colorScheme.onSurface.withOpacity(0.5),
         ),
       ),
       value: value,
       onChanged: onChanged,
       activeThumbColor: theme.colorScheme.primary,
-      inactiveThumbColor: theme.colorScheme.onSurface.withValues(alpha: 0.8),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(20), side: BorderSide.none),
+      inactiveThumbColor: theme.colorScheme.onSurface.withOpacity(0.8),
     );
   }
 }

@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:vivapro/core/extensions/first_name_extension.dart';
-import 'package:vivapro/features/auth/data/auth_user.dart';
 import 'package:vivapro/features/call_log/presentation/bloc/call_log_bloc.dart';
 import 'package:vivapro/features/call_log/presentation/bloc/call_log_event.dart';
 import 'package:vivapro/pages/home/widgets/favorites_section.dart';
@@ -16,8 +14,7 @@ import 'package:vivapro/pages/home/widgets/upcoming_reminders_section.dart';
 import 'package:vivapro/features/schedule_call/presentation/pages/scheduled_calendar_page.dart';
 
 class HomePage extends ConsumerStatefulWidget {
-  const HomePage(this.user, {super.key});
-  final AuthUser user;
+  const HomePage({super.key});
 
   @override
   ConsumerState<HomePage> createState() => _HomePageState();
@@ -52,7 +49,7 @@ class _HomePageState extends ConsumerState<HomePage> {
             ),
             const SizedBox(height: 4),
             Text(
-              'Good evening, ${widget.user.displayName?.firstName}',
+              'Good evening!',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
           ],

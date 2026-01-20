@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:vivapro/components/show_flushbar.dart';
 import 'package:vivapro/core/services/insight_generator.dart';
 import 'package:vivapro/core/services/interaction_tracker.dart';
-import 'package:vivapro/features/schedule_call/data/schedule_call.dart';
-import 'package:vivapro/features/schedule_call/dom/schedule_call_use_case.dart';
-import 'package:vivapro/features/schedule_call/repositories/schedule_call_repository.dart';
+import 'package:vivapro/features/schedule_call/presentation/pages/schedule_call_page.dart';
 
 class InsightsCard extends ConsumerWidget {
   const InsightsCard({super.key, required this.insight});
@@ -68,9 +65,9 @@ class InsightsCard extends ConsumerWidget {
                                   ? insight.contact.contactDetails.phones.first.number
                                   : null;
 
-                              if (phoneNumber != null && insight.contact.id != null) {
+                              if (phoneNumber != null) {
                                 // Record the interaction
-                                await interactionTracker.recordInteraction(insight.contact.id!);
+                                await interactionTracker.recordInteraction(insight.contact.id);
 
                                 // Open phone dialer
                                 final uri = Uri(scheme: 'tel', path: phoneNumber);
@@ -81,7 +78,7 @@ class InsightsCard extends ConsumerWidget {
                             },
                             style: ElevatedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                              backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: .15),
+                              backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(.15),
                               elevation: 0,
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
                             ),
@@ -103,18 +100,18 @@ class InsightsCard extends ConsumerWidget {
                           height: 36,
                           child: OutlinedButton(
                             onPressed: () async {
-                              final usecase = ref.watch(scheduleCallUseCase);
-                              final result = await usecase.setReminder(insight);
-                              if (context.mounted && result) {
-                                showFlushbar(context, 'Reminder set', 'Reminder set for tomorrow at 10:00 AM');
-                              } else {
-                                if (!context.mounted) return;
-                                showFlushbar(context, 'Failed to set reminder', 'Failed to set reminder');
-                              }
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ScheduleCallPage(
+                                    contact: insight.contact.contactDetails,
+                                  ),
+                                ),
+                              );
                             },
                             style: OutlinedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6,),
-                              side: BorderSide(color: Theme.of(context,).colorScheme.primary.withValues(alpha: .3),),
+                              side: BorderSide(color: Theme.of(context,).colorScheme.primary.withOpacity(.3),),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18),),
                             ),
                             child: Text(

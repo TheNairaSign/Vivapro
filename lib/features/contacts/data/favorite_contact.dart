@@ -105,26 +105,35 @@ class FavoriteContact {
     );
   }
 
-  FavoriteContact copyWith({
-    Id? isarId,
-    String? id,
-    Contact? contactDetails,
-    String? inAppUserId,
-    CallPriority? priority,
-    CallFrequency? callFrequency,
-    DateTime? lastInteractionAt,
-    DateTime? createdAt,
-  }) {
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'contactDetails': contactDetails.toJson(),
+      'inAppUserId': inAppUserId,
+      'priority': priority.name,
+      'callFrequency': callFrequency.name,
+      'lastInteractionAt': lastInteractionAt?.toIso8601String(),
+      'createdAt': createdAt?.toIso8601String(),
+      'updatedAt': updatedAt?.toIso8601String(),
+    };
+  }
+
+  factory FavoriteContact.fromJson(Map<String, dynamic> json) {
     return FavoriteContact.create(
-      isarId: isarId ?? this.isarId,
-      id: id ?? this.id,
-      contactDetails: contactDetails ?? this.contactDetails,
-      inAppUserId: inAppUserId ?? this.inAppUserId,
-      priority: priority ?? this.priority,
-      callFrequency: callFrequency ?? this.callFrequency,
-      lastInteractionAt: lastInteractionAt ?? this.lastInteractionAt,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? DateTime.now(),
+      id: json['id'],
+      contactDetails: Contact.fromJson(json['contactDetails']),
+      inAppUserId: json['inAppUserId'],
+      priority: CallPriority.values.firstWhere(
+        (e) => e.name == json['priority'],
+        orElse: () => CallPriority.low,
+      ),
+      callFrequency: CallFrequency.values.firstWhere(
+        (e) => e.name == json['callFrequency'],
+        orElse: () => CallFrequency.daily,
+      ),
+      lastInteractionAt: json['lastInteractionAt'] != null ? DateTime.parse(json['lastInteractionAt']) : null,
+      createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt']) : null,
+      updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : null,
     );
   }
 }

@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vivapro/core/services/relationship_state_engine.dart';
+import 'package:vivapro/features/contacts/data/favorite_cache_service.dart';
 import 'package:vivapro/features/contacts/data/favorite_contact.dart';
-import 'package:vivapro/features/contacts/repositories/favorite_repository.dart';
+import 'package:vivapro/features/schedule_call/data/schedule_cache_service.dart';
 import 'package:vivapro/features/schedule_call/data/schedule_call.dart';
-import 'package:vivapro/features/schedule_call/repositories/schedule_call_repository.dart';
 
 /// Represents a generated insight about a favorite contact
 class ContactInsight {
@@ -34,14 +34,14 @@ enum InsightPriority {
 /// - Max 2-3 insights on home screen
 /// - No guilt-based language
 class InsightGenerator {
-  final FavoritesRepository _favoritesRepository;
+  final FavoriteCacheService _favoriteCache;
 
-  InsightGenerator(this._favoritesRepository);
+  InsightGenerator(this._favoriteCache);
 
   /// Generate insights for all favorite contacts
   /// Returns a stream of insights that updates when favorites change
   Stream<List<ContactInsight>> watchInsights() {
-    return _favoritesRepository.watchFavorites().map((favorites) {
+    return _favoriteCache.watchFavorites().map((favorites) {
       return _generateInsights(favorites);
     });
   }
@@ -115,7 +115,7 @@ class InsightGenerator {
 
   /// Get contacts that should be called today, filtered by those who have upcoming reminders
   Stream<List<FavoriteContact>> watchPeopleToCallToday(List<ScheduleCall> scheduledCalls) {
-    return _favoritesRepository.watchFavorites().map((favorites) {
+    return _favoriteCache.watchFavorites().map((favorites) {
       final now = DateTime.now();
 
       final filteredFavorites = favorites.where((contact) {
@@ -146,8 +146,8 @@ class InsightGenerator {
 
 /// Provider for the insight generator
 final insightGeneratorProvider = Provider<InsightGenerator>((ref) {
-  final favoritesRepo = ref.watch(favoritesRepository);
-  return InsightGenerator(favoritesRepo);
+  final favoriteCache = ref.watch(favoriteCacheServiceProvider);
+  return InsightGenerator(favoriteCache);
 });
 
 /// Provider for watching insights
@@ -158,8 +158,8 @@ final insightsStreamProvider = StreamProvider<List<ContactInsight>>((ref) {
 
 /// Provider for watching scheduled calls stream
 final scheduledCallsStreamProvider = StreamProvider<List<ScheduleCall>>((ref) {
-  final repo = ref.watch(scheduleCallRepositoryProvider);
-  return repo.watchScheduledCalls();
+  final cache = ref.watch(scheduleCacheServiceProvider);
+  return cache.watchScheduledCalls();
 });
 
 /// Provider for watching people to call today

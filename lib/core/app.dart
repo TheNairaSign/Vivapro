@@ -5,13 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart' hide ChangeNotifierProvi
 import 'package:provider/provider.dart';
 import 'package:vivapro/core/bootstrap.dart';
 import 'package:vivapro/core/theme/app_theme.dart';
-import 'package:vivapro/features/auth/presentation/bloc/auth_change/auth_change_bloc.dart';
-import 'package:vivapro/features/auth/presentation/bloc/google_signin/google_sign_in_bloc.dart';
-import 'package:vivapro/features/auth/presentation/bloc/signin/sign_in_bloc.dart';
-import 'package:vivapro/features/auth/presentation/bloc/signup/sign_up_bloc.dart';
-import 'package:vivapro/features/auth/presentation/pages/auth_checker.dart';
-import 'package:vivapro/features/auth/repositories/firebase_auth_repository.dart';
-import 'package:vivapro/features/auth/repositories/google_sign_in_repository.dart';
+import 'package:vivapro/pages/navigation/navigation_page.dart';
 import 'package:vivapro/features/call_log/presentation/bloc/call_log_bloc.dart';
 import 'package:vivapro/features/call_log/repositories/call_log_repository.dart';
 import 'package:vivapro/features/contacts/presentation/widgets/favorites/frequency_container.dart';
@@ -65,10 +59,6 @@ class _VivaproState extends ConsumerState<Vivapro> {
       create: (context) => AddFavoritesProvider(),
       child: MultiBlocProvider(
       providers: [
-        BlocProvider(create: (create) => SignUpBloc(ref.read(firebaseAuthRepository))),
-        BlocProvider(create: (create) => SignInBloc(ref.read(firebaseAuthRepository))),
-        BlocProvider(create: (create) => AuthStateChangeBloc(ref.read(firebaseAuthRepository))),
-        BlocProvider(create: (create) => GoogleSignInBloc(ref.read(googleSignInRepositoryProvider))),
         BlocProvider(create: (create) => CallLogBloc(
             ref.read(callLogRepository),
             ref.read(contactsRepository),
@@ -94,7 +84,7 @@ class _VivaproState extends ConsumerState<Vivapro> {
           debugShowCheckedModeBanner: false,
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
-          home: const AuthChecker(),
+          home: const NavigationPage(),
         ),
       ),
       ),

@@ -24,8 +24,12 @@ class ScheduleCacheService extends ScheduleCallDom {
   Future<Either<Failure, String>> scheduleCall(ScheduleCall schedule) async {
     try {
       await isar.writeTxn(() async {
-      await isar.scheduleCalls.put(schedule);
-    });
+        final existing = await isar.scheduleCalls.filter().idEqualTo(schedule.id).findFirst();
+        if (existing != null) {
+          schedule.isarId = existing.isarId;
+        }
+        await isar.scheduleCalls.put(schedule);
+      });
     } catch (e) {
       return left(Failure(e.toString()));
     }
