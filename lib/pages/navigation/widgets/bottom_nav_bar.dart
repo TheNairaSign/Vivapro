@@ -35,9 +35,9 @@ class BottomNavBar extends StatelessWidget {
           label: 'Activity',
         ),
         BottomNavigationBarItem(
-          icon: Icon(EvaIcons.messageCircleOutline),
-          activeIcon: Icon(EvaIcons.messageCircle ),
-          label: 'Chat',
+          icon: Icon(Icons.analytics_outlined),
+          activeIcon: Icon(Icons.analytics),
+          label: 'Stats',
         ),
         BottomNavigationBarItem(
           icon: Icon(EvaIcons.personOutline),

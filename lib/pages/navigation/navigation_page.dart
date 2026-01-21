@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:vivapro/features/messaging/presentation/pages/chat_screen.dart';
+import 'package:vivapro/pages/statistics/relationship_stats_page.dart';
 import 'package:vivapro/pages/home/home_page.dart';
 import 'package:vivapro/pages/navigation/profile_page.dart';
 import 'package:vivapro/pages/navigation/recents_page.dart';
@@ -30,7 +30,7 @@ class _NavigationPageState extends State<NavigationPage> {
     List<Widget> pages = [
       HomePage(),
       const RecentsPage(),
-      ChatScreen(),
+const RelationshipStatsPage(),
       ProfilePage(),
     ];
 
