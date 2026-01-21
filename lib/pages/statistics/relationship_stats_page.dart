@@ -21,6 +21,7 @@ class _RelationshipStatsPageState extends ConsumerState<RelationshipStatsPage>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   int _totalContacts = 0;
+  String _selectedFilter = 'Weekly'; // Daily, Weekly, Monthly
 
   @override
   void initState() {
@@ -69,7 +70,7 @@ class _RelationshipStatsPageState extends ConsumerState<RelationshipStatsPage>
                 context,
               ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 5),
             Text(
               'Your relationship progress',
               style: Theme.of(
@@ -145,6 +146,27 @@ class _RelationshipStatsPageState extends ConsumerState<RelationshipStatsPage>
                 },
               ),
               
+              const SizedBox(height: 32),
+              
+              Text(
+                'Activity Summary',
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
+              const SizedBox(height: 16),
+              
+              BlocBuilder<CallLogBloc, CallLogState>(
+                builder: (context, state) {
+                  if (state is CallLogSuccess) {
+                    return _buildSummarySection(state.callLogEntries);
+                  } else if (state is CallLogLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  return const SizedBox.shrink();
+                },
+              ),
+
               const SizedBox(height: 100), // Bottom padding for nav bar
             ],
           ),
@@ -439,5 +461,303 @@ class _RelationshipStatsPageState extends ConsumerState<RelationshipStatsPage>
     if (health > 60) return const Color(0xFFFFC107);
     if (health > 40) return const Color(0xFFFF9800);
     return const Color(0xFFF44336);
+  }
+
+  Widget _buildSummarySection(List<CallLogModel> logs) {
+    final filteredLogs = _filterLogs(logs);
+    final totalCalls = filteredLogs.length;
+    final totalDurationSeconds = filteredLogs.fold<int>(
+        0, (previousValue, element) => previousValue + (element.duration ?? 0));
+    final durationFormatted = _formatDuration(totalDurationSeconds);
+
+    return Column(
+      children: [
+        // Filter Chips
+        Container(
+          height: 40,
+          margin: const EdgeInsets.only(bottom: 24),
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            children: ['Daily', 'Weekly', 'Monthly'].map((filter) {
+              final isSelected = _selectedFilter == filter;
+              return Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: FilterChip(
+                  selected: isSelected,
+                  label: Text(filter),
+                  onSelected: (selected) {
+                    setState(() {
+                      _selectedFilter = filter;
+                    });
+                  },
+                  backgroundColor: Theme.of(context).colorScheme.surface,
+                  selectedColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
+                  checkmarkColor: Theme.of(context).colorScheme.primary,
+                  labelStyle: TextStyle(
+                    color: isSelected
+                        ? Theme.of(context).colorScheme.primary
+                        : Colors.grey[600],
+                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    side: BorderSide(
+                      color: isSelected
+                          ? Theme.of(context).colorScheme.primary
+                          : Colors.grey[300]!,
+                    ),
+                  ),
+                  showCheckmark: false,
+                ),
+              );
+            }).toList(),
+          ),
+        ),
+
+        // Summary Cards
+        Row(
+          children: [
+            Expanded(
+              child: _buildSummaryCard(
+                'Total Calls',
+                totalCalls.toString(),
+                Icons.phone_in_talk,
+                Colors.purple,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: _buildSummaryCard(
+                'Duration',
+                durationFormatted,
+                Icons.timer,
+                Colors.teal,
+              ),
+            ),
+          ],
+        ),
+        
+        const SizedBox(height: 16),
+        _buildTopCallerInfo(
+          'Most Active (${_selectedFilter})',
+          _getTopCaller(filteredLogs),
+          isOverall: false,
+        ),
+        
+        const SizedBox(height: 16),
+        _buildTopCallerInfo(
+          'Top Connected',
+          _getTopCaller(logs),
+          isOverall: true,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSummaryCard(
+      String title, String value, IconData icon, Color color) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(icon, color: color, size: 24),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            value,
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            title,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Colors.grey[600],
+                ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<CallLogModel> _filterLogs(List<CallLogModel> logs) {
+    final now = DateTime.now();
+    final startOfDay = DateTime(now.year, now.month, now.day);
+    
+    return logs.where((log) {
+      final logDate = log.date;
+      switch (_selectedFilter) {
+        case 'Daily':
+          return logDate.isAfter(startOfDay);
+        case 'Weekly':
+          final startOfWeek = now.subtract(const Duration(days: 7));
+          return logDate.isAfter(startOfWeek);
+        case 'Monthly':
+          final startOfMonth = now.subtract(const Duration(days: 30));
+          return logDate.isAfter(startOfMonth);
+        default:
+          return false;
+      }
+    }).toList();
+  }
+
+  String _formatDuration(int seconds) {
+    if (seconds < 60) {
+      return '${seconds}s';
+    } else if (seconds < 3600) {
+      final minutes = (seconds / 60).floor();
+      return '${minutes}m';
+    } else {
+      final hours = (seconds / 3600).floor();
+      final minutes = ((seconds % 3600) / 60).floor();
+      return '${hours}h ${minutes}m';
+    }
+  }
+  MapEntry<String, int>? _getTopCaller(List<CallLogModel> logs) {
+    if (logs.isEmpty) return null;
+    final counts = <String, int>{};
+    for (var log in logs) {
+      final name = (log.name != null && log.name!.isNotEmpty) 
+          ? log.name! 
+          : (log.formattedNumber ?? 'Unknown');
+      counts[name] = (counts[name] ?? 0) + 1;
+    }
+    
+    if (counts.isEmpty) return null;
+    
+    final sortedEntries = counts.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+      
+    return sortedEntries.first;
+  }
+
+  Widget _buildTopCallerInfo(String title, MapEntry<String, int>? caller, {bool isOverall = false}) {
+    if (caller == null) return const SizedBox.shrink();
+
+    // Define content colors based on card type
+    final textColor = isOverall ? const Color(0xFF3E2723) : Theme.of(context).textTheme.titleLarge?.color;
+    final subTextColor = isOverall ? const Color(0xFF3E2723).withValues(alpha: 0.7) : Colors.grey[600];
+    final iconColor = isOverall ? const Color(0xFF3E2723) : Colors.blue;
+    final iconBgColor = isOverall ? const Color(0xFF3E2723).withValues(alpha: 0.1) : Colors.blue.withValues(alpha: 0.1);
+    
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: isOverall ? null : Theme.of(context).colorScheme.surface,
+        gradient: isOverall 
+            ? const LinearGradient(
+                colors: [Color(0xFFFFC107), Color(0xFFFF9800)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ) 
+            : null,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: isOverall 
+                ? const Color(0xFFFF9800).withValues(alpha: 0.3) 
+                : Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 50,
+            height: 50,
+            decoration: BoxDecoration(
+              color: iconBgColor,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              EvaIcons.person,
+              color: iconColor,
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      title,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: subTextColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    if (isOverall) ...[
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF3E2723).withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: const Text(
+                          'ALL TIME',
+                          style: TextStyle(
+                            fontSize: 8,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF3E2723),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  caller.key,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: textColor,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Text(
+                  '${caller.value} calls',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: isOverall ? const Color(0xFF3E2723).withValues(alpha: 0.8) : Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (isOverall)
+            const Icon(
+              EvaIcons.award,
+              color: Color(0xFF3E2723),
+              size: 32,
+            ),
+        ],
+      ),
+    );
   }
 }

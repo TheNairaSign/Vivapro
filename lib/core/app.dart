@@ -19,7 +19,7 @@ import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_b
 
 import 'package:vivapro/core/services/notification_handler.dart';
 
-import 'package:vivapro/core/services/app_lifecycle_observer.dart';
+import 'package:vivapro/core/services/lifecycle_manager.dart';
 import 'package:vivapro/features/backup/bloc/backup_bloc.dart';
 import 'package:vivapro/features/backup/data/backup_worker.dart';
 
@@ -31,7 +31,6 @@ class Vivapro extends ConsumerStatefulWidget {
 }
 
 class _VivaproState extends ConsumerState<Vivapro> {
-  late final AppLifecycleObserver _lifecycleObserver;
 
   @override
   void initState() {
@@ -42,15 +41,6 @@ class _VivaproState extends ConsumerState<Vivapro> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       NotificationHandler(ref).listenToNotifications();
     });
-
-    _lifecycleObserver = AppLifecycleObserver(context);
-    WidgetsBinding.instance.addObserver(_lifecycleObserver);
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(_lifecycleObserver);
-    super.dispose();
   }
 
   @override
@@ -58,35 +48,37 @@ class _VivaproState extends ConsumerState<Vivapro> {
     return ChangeNotifierProvider(
       create: (context) => AddFavoritesProvider(),
       child: MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (create) => CallLogBloc(
-            ref.read(callLogRepository),
-            ref.read(contactsRepository),
+        providers: [
+          BlocProvider(create: (create) => CallLogBloc(
+              ref.read(callLogRepository),
+              ref.read(contactsRepository),
+            ),
+          ),
+          BlocProvider(
+            create: (create) => ChatBloc(
+              ref.read(chatRepositoryProvider),
+              ref.read(contactsRepository),
+            ),
+          ),
+          BlocProvider(create: (create) => MessageBloc(ref.read(messageRepository))),
+          BlocProvider(create: (create) => ScheduleCallBloc(manager: ref.read(scheduleCallManagerProvider))),
+          BlocProvider(create: (create) => BackupBloc(backupWorker: ref.read(backupWorkerProvider))),
+        ],
+        child: LifecycleManager(
+          child: AnnotatedRegion<SystemUiOverlayStyle>(
+            value: SystemUiOverlayStyle(
+              systemNavigationBarColor: Theme.of(context).scaffoldBackgroundColor,
+              systemNavigationBarIconBrightness: Brightness.dark,
+            ),
+            child: MaterialApp(
+              title: 'Vivapro',
+              debugShowCheckedModeBanner: false,
+              theme: AppTheme.lightTheme,
+              darkTheme: AppTheme.darkTheme,
+              home: const NavigationPage(),
+            ),
           ),
         ),
-        BlocProvider(
-          create: (create) => ChatBloc(
-            ref.read(chatRepositoryProvider),
-            ref.read(contactsRepository),
-          ),
-        ),
-        BlocProvider(create: (create) => MessageBloc(ref.read(messageRepository))),
-        BlocProvider(create: (create) => ScheduleCallBloc(manager: ref.read(scheduleCallManagerProvider))),
-        BlocProvider(create: (create) => BackupBloc(backupWorker: ref.read(backupWorkerProvider))),
-      ],
-      child: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle(
-          systemNavigationBarColor: Theme.of(context).scaffoldBackgroundColor,
-          systemNavigationBarIconBrightness: Brightness.dark,
-        ),
-        child: MaterialApp(
-          title: 'Vivapro',
-          debugShowCheckedModeBanner: false,
-          theme: AppTheme.lightTheme,
-          darkTheme: AppTheme.darkTheme,
-          home: const NavigationPage(),
-        ),
-      ),
       ),
     );
   }
