@@ -4,24 +4,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vivapro/core/services/insight_generator.dart';
-import 'package:vivapro/features/call_log/data/call_log_model.dart';
 import 'package:vivapro/features/call_log/presentation/bloc/call_log_bloc.dart';
 import 'package:vivapro/features/call_log/presentation/bloc/call_log_state.dart';
 import 'package:vivapro/features/contacts/repositories/contact_repository.dart';
+import 'package:vivapro/pages/statistics/widgets/health_card.dart';
+import 'package:vivapro/pages/statistics/widgets/stats_card.dart';
+import 'package:vivapro/pages/statistics/widgets/summary_section.dart';
+import 'package:vivapro/pages/statistics/widgets/weekly_activity_chart.dart';
 
 class RelationshipStatsPage extends ConsumerStatefulWidget {
-  const RelationshipStatsPage({super.key});
+ const RelationshipStatsPage({super.key});
 
   @override
-  ConsumerState<RelationshipStatsPage> createState() =>
-      _RelationshipStatsPageState();
+  ConsumerState<RelationshipStatsPage> createState() => _RelationshipStatsPageState();
 }
 
-class _RelationshipStatsPageState extends ConsumerState<RelationshipStatsPage>
-    with SingleTickerProviderStateMixin {
+class _RelationshipStatsPageState extends ConsumerState<RelationshipStatsPage> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   int _totalContacts = 0;
-  String _selectedFilter = 'Weekly'; // Daily, Weekly, Monthly
 
   @override
   void initState() {
@@ -88,8 +88,7 @@ class _RelationshipStatsPageState extends ConsumerState<RelationshipStatsPage>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Main Health Card
-              _buildHealthCard(healthPercentage, healthColor),
+              HealthCard(percentage: healthPercentage, color: healthColor),
 
               const SizedBox(height: 24),
 
@@ -97,20 +96,20 @@ class _RelationshipStatsPageState extends ConsumerState<RelationshipStatsPage>
               Row(
                 children: [
                   Expanded(
-                    child: _buildStatCard(
-                      'Total Contacts',
-                      _totalContacts.toString(),
-                      EvaIcons.peopleOutline,
-                      Colors.blue,
+                    child: StatsCard(
+                      title: 'Total Contacts',
+                      value: _totalContacts.toString(),
+                      icon: EvaIcons.peopleOutline,
+                      color: Colors.blue,
                     ),
                   ),
                   const SizedBox(width: 16),
                   Expanded(
-                    child: _buildStatCard(
-                      'Highlights',
-                      insights.length.toString(),
-                      EvaIcons.starOutline,
-                      Colors.orange,
+                    child: StatsCard(
+                      title: 'Highlights',
+                      value: insights.length.toString(),
+                      icon: EvaIcons.starOutline,
+                      color: Colors.orange,
                     ),
                   ),
                 ],
@@ -120,17 +119,14 @@ class _RelationshipStatsPageState extends ConsumerState<RelationshipStatsPage>
 
               Text(
                 'Weekly Activity',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
 
-              // Charts
               BlocBuilder<CallLogBloc, CallLogState>(
                 builder: (context, state) {
                   if (state is CallLogSuccess) {
-                    return _buildWeeklyChart(state.callLogEntries);
+                    return WeeklyActivityChart(logs: state.callLogEntries);
                   } else if (state is CallLogLoading) {
                     return const Center(child: CircularProgressIndicator());
                   }
@@ -150,16 +146,14 @@ class _RelationshipStatsPageState extends ConsumerState<RelationshipStatsPage>
               
               Text(
                 'Activity Summary',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
               
               BlocBuilder<CallLogBloc, CallLogState>(
                 builder: (context, state) {
                   if (state is CallLogSuccess) {
-                    return _buildSummarySection(state.callLogEntries);
+                    return SummarySection(state.callLogEntries);
                   } else if (state is CallLogLoading) {
                     return const Center(child: CircularProgressIndicator());
                   }
@@ -175,279 +169,12 @@ class _RelationshipStatsPageState extends ConsumerState<RelationshipStatsPage>
     );
   }
 
-  Widget _buildHealthCard(int percentage, Color color) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            color.withValues(alpha: 0.8),
-            color.withValues(alpha: 0.4),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(32),
-        boxShadow: [
-          BoxShadow(
-            color: color.withValues(alpha: 0.3),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Relationship Health',
-                    style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.9),
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    '$percentage%',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 42,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-              Container(
-                width: 60,
-                height: 60,
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.2),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  EvaIcons.heart,
-                  color: Colors.white.withValues(alpha: 0.9),
-                  size: 30,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 24),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: LinearProgressIndicator(
-              borderRadius: BorderRadius.circular(999),
-              value: percentage / 100,
-              backgroundColor: Colors.white.withValues(alpha: 0.3),
-              valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
-              minHeight: 8,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            percentage > 80
-                ? 'Great job keeping in touch!'
-                : 'Time to reconnect with some friends.',
-            style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.9),
-              fontSize: 14,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStatCard(String title, String value, IconData icon, Color color) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(icon, color: color, size: 24),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            value,
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            title,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Colors.grey[600],
-                ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildWeeklyChart(List<CallLogModel> logs) {
-    // Process logs to get counts per day for the last 7 days
-    final now = DateTime.now();
-    final weekDays = List.generate(7, (index) {
-      final day = now.subtract(Duration(days: 6 - index));
-      return day;
-    });
-
-    final counts = weekDays.map((day) {
-      return logs.where((log) {
-        final logDate = log.date;
-        return logDate.year == day.year &&
-            logDate.month == day.month &&
-            logDate.day == day.day;
-      }).length;
-    }).toList();
-
-    final maxCount = counts.isEmpty ? 1 : counts.reduce((a, b) => a > b ? a : b);
-    final displayMax = maxCount == 0 ? 1 : maxCount;
-
-    return Container(
-      height: 250,
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-            BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Calls',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: Colors.green.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  '+${counts.fold(0, (a, b) => a + b)} this week',
-                  style: const TextStyle(
-                    color: Colors.green,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const Spacer(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: List.generate(7, (index) {
-              final count = counts[index];
-              final heightFactor = count / displayMax;
-              // Format day name (e.g., 'Mon')
-              final dayName = _getDayName(weekDays[index].weekday);
-
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TweenAnimationBuilder<double>(
-                    tween: Tween(begin: 0, end: heightFactor),
-                    duration: Duration(milliseconds: 500 + (index * 100)),
-                    curve: Curves.easeOutBack,
-                    builder: (context, value, child) {
-                      return Container(
-                        width: 12,
-                        height: 100 * value + 10, // Minimum height of 10
-                        decoration: BoxDecoration(
-                          color: index == 6 ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    dayName,
-                    style: TextStyle(
-                      color: Colors.grey[500],
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              );
-            }),
-          ),
-        ],
-      ),
-    );
-  }
-
-  String _getDayName(int weekday) {
-    switch (weekday) {
-      case 1:
-        return 'Mon';
-      case 2:
-        return 'Tue';
-      case 3:
-        return 'Wed';
-      case 4:
-        return 'Thu';
-      case 5:
-        return 'Fri';
-      case 6:
-        return 'Sat';
-      case 7:
-        return 'Sun';
-      default:
-        return '';
-    }
-  }
-
   // Copied from InsightsSection to maintain consistency
   int _calculateRelationshipHealth(List<ContactInsight> insights) {
     if (insights.isEmpty) return 100;
 
-    final highPriority =
-        insights.where((i) => i.priority == InsightPriority.high).length;
-    final mediumPriority =
-        insights.where((i) => i.priority == InsightPriority.medium).length;
+    final highPriority = insights.where((i) => i.priority == InsightPriority.high).length;
+    final mediumPriority = insights.where((i) => i.priority == InsightPriority.medium).length;
 
     final healthReduction = (highPriority * 20) + (mediumPriority * 10);
     final health = 100 - healthReduction;
@@ -461,303 +188,5 @@ class _RelationshipStatsPageState extends ConsumerState<RelationshipStatsPage>
     if (health > 60) return const Color(0xFFFFC107);
     if (health > 40) return const Color(0xFFFF9800);
     return const Color(0xFFF44336);
-  }
-
-  Widget _buildSummarySection(List<CallLogModel> logs) {
-    final filteredLogs = _filterLogs(logs);
-    final totalCalls = filteredLogs.length;
-    final totalDurationSeconds = filteredLogs.fold<int>(
-        0, (previousValue, element) => previousValue + (element.duration ?? 0));
-    final durationFormatted = _formatDuration(totalDurationSeconds);
-
-    return Column(
-      children: [
-        // Filter Chips
-        Container(
-          height: 40,
-          margin: const EdgeInsets.only(bottom: 24),
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            children: ['Daily', 'Weekly', 'Monthly'].map((filter) {
-              final isSelected = _selectedFilter == filter;
-              return Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: FilterChip(
-                  selected: isSelected,
-                  label: Text(filter),
-                  onSelected: (selected) {
-                    setState(() {
-                      _selectedFilter = filter;
-                    });
-                  },
-                  backgroundColor: Theme.of(context).colorScheme.surface,
-                  selectedColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
-                  checkmarkColor: Theme.of(context).colorScheme.primary,
-                  labelStyle: TextStyle(
-                    color: isSelected
-                        ? Theme.of(context).colorScheme.primary
-                        : Colors.grey[600],
-                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    side: BorderSide(
-                      color: isSelected
-                          ? Theme.of(context).colorScheme.primary
-                          : Colors.grey[300]!,
-                    ),
-                  ),
-                  showCheckmark: false,
-                ),
-              );
-            }).toList(),
-          ),
-        ),
-
-        // Summary Cards
-        Row(
-          children: [
-            Expanded(
-              child: _buildSummaryCard(
-                'Total Calls',
-                totalCalls.toString(),
-                Icons.phone_in_talk,
-                Colors.purple,
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: _buildSummaryCard(
-                'Duration',
-                durationFormatted,
-                Icons.timer,
-                Colors.teal,
-              ),
-            ),
-          ],
-        ),
-        
-        const SizedBox(height: 16),
-        _buildTopCallerInfo(
-          'Most Active (${_selectedFilter})',
-          _getTopCaller(filteredLogs),
-          isOverall: false,
-        ),
-        
-        const SizedBox(height: 16),
-        _buildTopCallerInfo(
-          'Top Connected',
-          _getTopCaller(logs),
-          isOverall: true,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSummaryCard(
-      String title, String value, IconData icon, Color color) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(icon, color: color, size: 24),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            value,
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            title,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Colors.grey[600],
-                ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  List<CallLogModel> _filterLogs(List<CallLogModel> logs) {
-    final now = DateTime.now();
-    final startOfDay = DateTime(now.year, now.month, now.day);
-    
-    return logs.where((log) {
-      final logDate = log.date;
-      switch (_selectedFilter) {
-        case 'Daily':
-          return logDate.isAfter(startOfDay);
-        case 'Weekly':
-          final startOfWeek = now.subtract(const Duration(days: 7));
-          return logDate.isAfter(startOfWeek);
-        case 'Monthly':
-          final startOfMonth = now.subtract(const Duration(days: 30));
-          return logDate.isAfter(startOfMonth);
-        default:
-          return false;
-      }
-    }).toList();
-  }
-
-  String _formatDuration(int seconds) {
-    if (seconds < 60) {
-      return '${seconds}s';
-    } else if (seconds < 3600) {
-      final minutes = (seconds / 60).floor();
-      return '${minutes}m';
-    } else {
-      final hours = (seconds / 3600).floor();
-      final minutes = ((seconds % 3600) / 60).floor();
-      return '${hours}h ${minutes}m';
-    }
-  }
-  MapEntry<String, int>? _getTopCaller(List<CallLogModel> logs) {
-    if (logs.isEmpty) return null;
-    final counts = <String, int>{};
-    for (var log in logs) {
-      final name = (log.name != null && log.name!.isNotEmpty) 
-          ? log.name! 
-          : (log.formattedNumber ?? 'Unknown');
-      counts[name] = (counts[name] ?? 0) + 1;
-    }
-    
-    if (counts.isEmpty) return null;
-    
-    final sortedEntries = counts.entries.toList()
-      ..sort((a, b) => b.value.compareTo(a.value));
-      
-    return sortedEntries.first;
-  }
-
-  Widget _buildTopCallerInfo(String title, MapEntry<String, int>? caller, {bool isOverall = false}) {
-    if (caller == null) return const SizedBox.shrink();
-
-    // Define content colors based on card type
-    final textColor = isOverall ? const Color(0xFF3E2723) : Theme.of(context).textTheme.titleLarge?.color;
-    final subTextColor = isOverall ? const Color(0xFF3E2723).withValues(alpha: 0.7) : Colors.grey[600];
-    final iconColor = isOverall ? const Color(0xFF3E2723) : Colors.blue;
-    final iconBgColor = isOverall ? const Color(0xFF3E2723).withValues(alpha: 0.1) : Colors.blue.withValues(alpha: 0.1);
-    
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: isOverall ? null : Theme.of(context).colorScheme.surface,
-        gradient: isOverall 
-            ? const LinearGradient(
-                colors: [Color(0xFFFFC107), Color(0xFFFF9800)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ) 
-            : null,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: isOverall 
-                ? const Color(0xFFFF9800).withValues(alpha: 0.3) 
-                : Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 50,
-            height: 50,
-            decoration: BoxDecoration(
-              color: iconBgColor,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              EvaIcons.person,
-              color: iconColor,
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Text(
-                      title,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: subTextColor,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    if (isOverall) ...[
-                      const SizedBox(width: 8),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF3E2723).withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: const Text(
-                          'ALL TIME',
-                          style: TextStyle(
-                            fontSize: 8,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF3E2723),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  caller.key,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: textColor,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                Text(
-                  '${caller.value} calls',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: isOverall ? const Color(0xFF3E2723).withValues(alpha: 0.8) : Theme.of(context).colorScheme.primary,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          if (isOverall)
-            const Icon(
-              EvaIcons.award,
-              color: Color(0xFF3E2723),
-              size: 32,
-            ),
-        ],
-      ),
-    );
   }
 }
