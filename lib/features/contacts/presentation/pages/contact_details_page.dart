@@ -8,6 +8,7 @@ import 'package:vivapro/features/contacts/presentation/widgets/contact_details/c
 import 'package:vivapro/features/contacts/presentation/widgets/contact_details/contact_profile_header.dart';
 import 'package:vivapro/features/contacts/presentation/widgets/contact_details/contact_relationship_health.dart';
 import 'package:vivapro/features/contacts/presentation/widgets/contact_details/contact_settings_list.dart';
+import 'package:vivapro/widgets/custom_back_button.dart';
 
 class ContactDetailsPage extends ConsumerStatefulWidget {
   final Contact contact;
@@ -40,15 +41,11 @@ class _ContactDetailsPageState extends ConsumerState<ContactDetailsPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: const Text(
+        leading: CustomBackButton(),
+        title: Text(
           'Contact',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+          style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
         ),
         actions: [
           TextButton(

@@ -1,28 +1,25 @@
-import 'package:call_log/call_log.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:vivapro/features/call_log/data/call_log_model.dart';
+import 'package:vivapro/features/activity/data/models/activity_log.dart';
 import 'package:vivapro/widgets/text_avatar.dart';
 
 class ActivityItem extends StatelessWidget {
-  final CallLogModel log;
+  final ActivityLog log;
 
   const ActivityItem({super.key, required this.log});
 
   @override
   Widget build(BuildContext context) {
-    final name = (log.name != null && log.name!.isNotEmpty)
-        ? log.name!
-        : (log.formattedNumber ?? 'Unknown');
+    final name = log.contactName;
 
-    final date = DateTime.fromMillisecondsSinceEpoch(log.timestamp ?? 0);
+    final date = log.timestamp;
     // 10:30 AM
     // Better time formatting
     final formattedTime = DateFormat('h:mm a').format(date);
 
-    final isMissed = log.callType == CallType.missed;
-    final isIncoming = log.callType == CallType.incoming;
-    final isOutgoing = log.callType == CallType.outgoing;
+    final isMissed = log.type == ActivityType.call && log.durationSeconds == 0;
+    final isIncoming = log.type == ActivityType.call && (log.durationSeconds ?? 0) > 0;
+    final isOutgoing = log.type == ActivityType.call && (log.durationSeconds ?? 0) > 0;
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
@@ -38,12 +35,12 @@ class ActivityItem extends StatelessWidget {
       statusText = 'Missed call'; // Or "Missed reminder" for similarity
       overlayIcon = Icons.priority_high;
       overlayBgColor = isDark
-          ? Colors.red.withValues(alpha: 0.2)
+          ? Colors.red.withAlpha(51)
           : const Color(0xFFFFF8E1); // Light yellow
       overlayIconColor = isDark ? Colors.red : const Color(0xFFE67E22);
-    } else if (isIncoming && log.duration! > 0) {
+    } else if (isIncoming) {
       statusColor = const Color(0xFF2D8CFF); // Blue
-      statusText = 'Incoming • ${_formatDuration(log.duration ?? 0)}';
+      statusText = 'Incoming • ${_formatDuration(log.durationSeconds ?? 0)}';
       overlayIcon = Icons.call_received;
       overlayBgColor = isDark
           ? const Color(0xFF132F4D)
@@ -51,7 +48,7 @@ class ActivityItem extends StatelessWidget {
       overlayIconColor = const Color(0xFF2D8CFF);
     } else if (isOutgoing) {
       statusColor = const Color(0xFF00C853); // Green
-      statusText = 'Outgoing • ${_formatDuration(log.duration ?? 0)}';
+      statusText = 'Outgoing • ${_formatDuration(log.durationSeconds ?? 0)}';
       overlayIcon = Icons.arrow_outward;
       overlayBgColor = isDark
           ? const Color(0xFF10361A)
@@ -60,7 +57,7 @@ class ActivityItem extends StatelessWidget {
     } else {
       // Default
       statusColor = Colors.grey;
-      statusText = log.callType.toString().split('.').last;
+      statusText = log.type.toString().split('.').last;
       overlayIcon = Icons.phone;
       overlayBgColor = isDark ? Colors.grey[800]! : Colors.grey[200]!;
       overlayIconColor = Colors.grey;
@@ -78,7 +75,7 @@ class ActivityItem extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.02),
+            color: Colors.black.withAlpha(5),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -166,7 +163,7 @@ class ActivityItem extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
                 color: isDark
-                    ? Colors.red.withValues(alpha: 0.2)
+                    ? Colors.red.withAlpha(51)
                     : const Color(0xFFFFF9E6),
                 borderRadius: BorderRadius.circular(20),
               ),

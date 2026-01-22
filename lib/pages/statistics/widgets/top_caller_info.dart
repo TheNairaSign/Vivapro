@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:vivapro/features/call_log/data/call_log_model.dart';
-
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 
 class TopCallerInfo extends StatelessWidget {
@@ -24,12 +22,12 @@ class TopCallerInfo extends StatelessWidget {
         ? const Color(0xFF3E2723)
         : Theme.of(context).textTheme.titleLarge?.color;
     final subTextColor = isOverall
-        ? const Color(0xFF3E2723).withValues(alpha: 0.7)
+        ? const Color(0xFF3E2723).withAlpha(178)
         : Colors.grey[600];
     final iconColor = isOverall ? const Color(0xFF3E2723) : Colors.blue;
     final iconBgColor = isOverall
-        ? const Color(0xFF3E2723).withValues(alpha: 0.1)
-        : Colors.blue.withValues(alpha: 0.1);
+        ? const Color(0xFF3E2723).withAlpha(25)
+        : Colors.blue.withAlpha(25);
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
@@ -46,8 +44,8 @@ class TopCallerInfo extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: isOverall
-                ? const Color(0xFFFF9800).withValues(alpha: 0.3)
-                : Colors.black.withValues(alpha: 0.05),
+                ? const Color(0xFFFF9800).withAlpha(76)
+                : Colors.black.withAlpha(12),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -83,7 +81,7 @@ class TopCallerInfo extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF3E2723).withValues(alpha: 0.1),
+                          color: const Color(0xFF3E2723).withAlpha(25),
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: Text(
@@ -112,7 +110,7 @@ class TopCallerInfo extends StatelessWidget {
                   '${caller!.value} calls',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: isOverall
-                        ? const Color(0xFF3E2723).withValues(alpha: 0.8)
+                        ? const Color(0xFF3E2723).withAlpha(204)
                         : Theme.of(context).colorScheme.primary,
                   ),
                 ),
@@ -125,6 +123,4 @@ class TopCallerInfo extends StatelessWidget {
       ),
     );
   }
-
-
 }

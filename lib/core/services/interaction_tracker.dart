@@ -1,4 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vivapro/features/activity/data/models/activity_log.dart';
+import 'package:vivapro/features/activity/data/repositories/activity_repository_impl.dart';
+import 'package:vivapro/features/activity/domain/repositories/activity_repository.dart';
 import 'package:vivapro/features/contacts/data/favorite_cache_service.dart';
 import 'package:vivapro/features/contacts/data/favorite_contact.dart';
 
@@ -6,14 +9,16 @@ import 'package:vivapro/features/contacts/data/favorite_contact.dart';
 /// This is the primary method for updating lastInteractionAt timestamps
 class InteractionTracker {
   final FavoriteCacheService _favoriteCache;
+  final ActivityRepository _activityRepository;
 
   InteractionTracker(
     this._favoriteCache,
+    this._activityRepository,
   );
 
   Future<void> recordInteraction(String contactId) async {
     final now = DateTime.now();
-    
+
     try {
       // Get the favorite and update it
       final favorite = await _favoriteCache.getFavoriteById(contactId);
@@ -30,6 +35,15 @@ class InteractionTracker {
           contactDetailsJson: favorite.contactDetailsJson,
         );
         await _favoriteCache.addFavorite(updatedFavorite);
+
+        // Log the activity
+        final activity = ActivityLog(
+          contactId: contactId,
+          contactName: favorite.contactDetails.displayName,
+          type: ActivityType.call,
+          timestamp: now,
+        );
+        await _activityRepository.logActivity(activity);
       }
     } catch (e) {
       print('Error recording interaction: $e');
@@ -47,7 +61,7 @@ class InteractionTracker {
     DateTime interactionTime,
   ) async {
     try {
-       final favorite = await _favoriteCache.getFavoriteById(contactId);
+      final favorite = await _favoriteCache.getFavoriteById(contactId);
       if (favorite != null) {
         final updatedFavorite = FavoriteContact(
           isarId: favorite.isarId,
@@ -81,7 +95,7 @@ class InteractionTracker {
 
 /// Provider for the interaction tracker
 final interactionTrackerProvider = Provider<InteractionTracker>((ref) {
-  return InteractionTracker(
-    ref.watch(favoriteCacheServiceProvider),
-  );
+  final favoriteCache = ref.watch(favoriteCacheServiceProvider);
+  final activityRepository = ref.watch(activityRepositoryProvider);
+  return InteractionTracker(favoriteCache, activityRepository);
 });

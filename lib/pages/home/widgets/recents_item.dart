@@ -1,20 +1,35 @@
-import 'package:call_log/call_log.dart';
 import 'package:flutter/material.dart';
-import 'package:vivapro/features/call_log/data/call_log_model.dart';
-import 'package:vivapro/core/utils/get_call_icon_data.dart';
+import 'package:ionicons/ionicons.dart';
+import 'package:vivapro/features/activity/data/models/activity_log.dart';
 import 'package:vivapro/core/utils/get_time_ago.dart';
 
 class RecentsItem extends StatelessWidget {
   const RecentsItem({super.key, required this.log});
-  final CallLogModel log;
+  final ActivityLog log;
 
   @override
   Widget build(BuildContext context) {
-    final name = (log.name != null && log.name!.isNotEmpty)
-        ? log.name!
-        : (log.formattedNumber ?? 'Unknown');
-    final date = DateTime.fromMillisecondsSinceEpoch(log.timestamp ?? 0);
+    final name = log.contactName;
+    final date = log.timestamp;
     final timeAgo = formatTimeAgo(date);
+
+    IconData activityIcon;
+    Color activityColor;
+    String durationText = '';
+
+    if (log.type == ActivityType.call) {
+      if (log.durationSeconds == 0) {
+        activityIcon = Icons.call_missed;
+        activityColor = Colors.redAccent;
+      } else {
+        activityIcon = Ionicons.call_outline;
+        activityColor = Colors.greenAccent;
+        durationText = ' • ${_formatDuration(log.durationSeconds ?? 0)}';
+      }
+    } else {
+      activityIcon = Ionicons.information_circle_outline;
+      activityColor = Colors.grey;
+    }
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -28,16 +43,12 @@ class RecentsItem extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: log.callType == CallType.missed
-                  ? Colors.redAccent.withValues(alpha: .25)
-                  : Colors.greenAccent.withValues(alpha: .25),
+              color: activityColor.withOpacity(.25),
               shape: BoxShape.circle,
             ),
             child: Icon(
-              getCallIconData(log.callType),
-              color: log.callType == CallType.missed
-                  ? Colors.redAccent
-                  : Colors.greenAccent,
+              activityIcon,
+              color: activityColor,
               size: 20,
             ),
           ),
@@ -55,13 +66,13 @@ class RecentsItem extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  '$timeAgo • 12m 30s', // Duration is mocked for now
+                  '$timeAgo$durationText',
                   style: TextStyle(color: Colors.grey[500], fontSize: 13),
                 ),
               ],
             ),
           ),
-          if (log.callType == CallType.missed)
+          if (log.type == ActivityType.call && log.durationSeconds == 0)
             Padding(
               padding: const EdgeInsets.only(left: 8.0),
               child: Container(
@@ -86,5 +97,14 @@ class RecentsItem extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _formatDuration(int seconds) {
+    if (seconds < 60) {
+      return '${seconds}s';
+    }
+    final minutes = seconds ~/ 60;
+    final remainingSeconds = seconds % 60;
+    return '${minutes}m ${remainingSeconds}s';
   }
 }

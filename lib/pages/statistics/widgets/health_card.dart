@@ -1,6 +1,5 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:vivapro/core/services/insight_generator.dart';
 
 class HealthCard extends StatelessWidget {
   final int percentage;
@@ -102,6 +101,7 @@ class HealthCard extends StatelessWidget {
   }
 }
 
+/*
 int _calculateRelationshipHealth(List<ContactInsight> insights) {
   if (insights.isEmpty) return 100;
 
@@ -117,3 +117,4 @@ int _calculateRelationshipHealth(List<ContactInsight> insights) {
 
   return health.clamp(0, 100);
 }
+  */

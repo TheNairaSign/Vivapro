@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:vivapro/features/call_log/data/call_log_model.dart';
+import 'package:vivapro/features/activity/data/models/activity_log.dart';
 
 class WeeklyActivityChart extends StatelessWidget {
-  final List<CallLogModel> logs;
+  final List<ActivityLog> logs;
 
   const WeeklyActivityChart({super.key, required this.logs});
 
@@ -17,10 +17,11 @@ class WeeklyActivityChart extends StatelessWidget {
 
     final counts = weekDays.map((day) {
       return logs.where((log) {
-        final logDate = log.date;
+        final logDate = log.timestamp;
         return logDate.year == day.year &&
             logDate.month == day.month &&
-            logDate.day == day.day;
+            logDate.day == day.day &&
+            log.type == ActivityType.call; // Only count calls
       }).length;
     }).toList();
 
@@ -35,7 +36,7 @@ class WeeklyActivityChart extends StatelessWidget {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
             BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: Colors.black.withAlpha(12),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -56,7 +57,7 @@ class WeeklyActivityChart extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Colors.green.withValues(alpha: 0.1),
+                  color: Colors.green.withAlpha(25),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
@@ -92,7 +93,7 @@ class WeeklyActivityChart extends StatelessWidget {
                         width: 12,
                         height: 100 * value + 10, // Minimum height of 10
                         decoration: BoxDecoration(
-                          color: index == 6 ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
+                          color: index == 6 ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.primary.withAlpha(76),
                           borderRadius: BorderRadius.circular(6),
                         ),
                       );

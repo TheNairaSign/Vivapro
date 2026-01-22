@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:vivapro/features/call_log/presentation/bloc/call_log_bloc.dart';
-import 'package:vivapro/features/call_log/presentation/bloc/call_log_event.dart';
+import 'package:vivapro/features/activity/presentation/bloc/activity_bloc.dart';
 import 'package:vivapro/pages/home/widgets/favorites_section.dart';
 import 'package:vivapro/pages/home/widgets/insights/insights_section.dart';
 import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_bloc.dart';
@@ -24,8 +23,15 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   void initState() {
     super.initState();
-    context.read<CallLogBloc>().add(GetCallLogs());
+    context.read<ActivityBloc>().add(LoadActivities());
     context.read<ScheduleCallBloc>().add(ScheduleCallFetch());
+  }
+
+  String _getGreeting() {
+    final hour = DateTime.now().hour;
+    if (hour < 12) return 'Good morning';
+    if (hour < 16) return 'Good afternoon';
+    return 'Good evening';
   }
 
   @override
@@ -49,7 +55,7 @@ class _HomePageState extends ConsumerState<HomePage> {
             ),
             const SizedBox(height: 4),
             Text(
-              'Good evening!',
+              _getGreeting(),
               style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
           ],

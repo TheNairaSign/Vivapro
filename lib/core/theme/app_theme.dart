@@ -10,6 +10,7 @@ class AppTheme {
   static const accentDark2 = Color(0xFF5EEAD4); // Teal 300
 
   // Private color classes
+  /*
   static const _lightColors = (
     primary: Color(0xffEA1E64),
     onPrimary: Colors.white,
@@ -23,6 +24,7 @@ class AppTheme {
     onError: Colors.white,
     tertiary: accentLight,
   );
+  */
 
   static const _darkColors = (
     primary: Color(0xFF8B5CF6),

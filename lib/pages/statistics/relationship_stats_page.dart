@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vivapro/core/services/insight_generator.dart';
-import 'package:vivapro/features/call_log/presentation/bloc/call_log_bloc.dart';
-import 'package:vivapro/features/call_log/presentation/bloc/call_log_state.dart';
+import 'package:vivapro/features/activity/presentation/bloc/activity_bloc.dart';
 import 'package:vivapro/features/contacts/repositories/contact_repository.dart';
 import 'package:vivapro/pages/statistics/widgets/health_card.dart';
 import 'package:vivapro/pages/statistics/widgets/stats_card.dart';
@@ -123,11 +122,11 @@ class _RelationshipStatsPageState extends ConsumerState<RelationshipStatsPage> w
               ),
               const SizedBox(height: 16),
 
-              BlocBuilder<CallLogBloc, CallLogState>(
+              BlocBuilder<ActivityBloc, ActivityState>(
                 builder: (context, state) {
-                  if (state is CallLogSuccess) {
-                    return WeeklyActivityChart(logs: state.callLogEntries);
-                  } else if (state is CallLogLoading) {
+                  if (state is ActivityLoaded) {
+                    return WeeklyActivityChart(logs: state.activities);
+                  } else if (state is ActivityLoading) {
                     return const Center(child: CircularProgressIndicator());
                   }
                   return Container(
@@ -150,11 +149,11 @@ class _RelationshipStatsPageState extends ConsumerState<RelationshipStatsPage> w
               ),
               const SizedBox(height: 16),
               
-              BlocBuilder<CallLogBloc, CallLogState>(
+              BlocBuilder<ActivityBloc, ActivityState>(
                 builder: (context, state) {
-                  if (state is CallLogSuccess) {
-                    return SummarySection(state.callLogEntries);
-                  } else if (state is CallLogLoading) {
+                  if (state is ActivityLoaded) {
+                    return SummarySection(state.activities);
+                  } else if (state is ActivityLoading) {
                     return const Center(child: CircularProgressIndicator());
                   }
                   return const SizedBox.shrink();

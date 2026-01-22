@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:vivapro/features/call_log/data/call_log_model.dart';
+import 'package:vivapro/features/activity/data/models/activity_log.dart';
 import 'package:vivapro/pages/statistics/widgets/summary_card.dart';
 import 'package:vivapro/pages/statistics/widgets/top_caller_info.dart';
 
 // ignore: must_be_immutable
 class SummarySection extends StatefulWidget {
   const SummarySection(this.logs, {super.key});
-  final List<CallLogModel> logs;
+  final List<ActivityLog> logs;
 
   @override
   State<SummarySection> createState() => _SummarySectionState();
@@ -21,7 +21,7 @@ class _SummarySectionState extends State<SummarySection> {
     final totalCalls = filteredLogs.length;
     final totalDurationSeconds = filteredLogs.fold<int>(
       0,
-      (previousValue, element) => previousValue + (element.duration ?? 0),
+      (previousValue, element) => previousValue + (element.durationSeconds ?? 0),
     );
     final durationFormatted = _formatDuration(totalDurationSeconds);
 
@@ -48,7 +48,7 @@ class _SummarySectionState extends State<SummarySection> {
                   backgroundColor: Theme.of(context).colorScheme.surface,
                   selectedColor: Theme.of(
                     context,
-                  ).colorScheme.primary.withValues(alpha: 0.2),
+                  ).colorScheme.primary.withAlpha(51),
                   checkmarkColor: Theme.of(context).colorScheme.primary,
                   labelStyle: TextStyle(
                     color: isSelected
@@ -113,48 +113,50 @@ class _SummarySectionState extends State<SummarySection> {
     );
   }
 
-   List<CallLogModel> _filterLogs(List<CallLogModel> logs) {
+  List<ActivityLog> _filterLogs(List<ActivityLog> logs) {
     final now = DateTime.now();
     final startOfDay = DateTime(now.year, now.month, now.day);
 
     return logs.where((log) {
-      final logDate = log.date;
+      final logDate = log.timestamp;
+      bool isCall = log.type == ActivityType.call;
       switch (_selectedFilter) {
         case 'Daily':
-          return logDate.isAfter(startOfDay);
+          return isCall && logDate.isAfter(startOfDay);
         case 'Weekly':
           final startOfWeek = now.subtract(const Duration(days: 7));
-          return logDate.isAfter(startOfWeek);
+          return isCall && logDate.isAfter(startOfWeek);
         case 'Monthly':
           final startOfMonth = now.subtract(const Duration(days: 30));
-          return logDate.isAfter(startOfMonth);
+          return isCall && logDate.isAfter(startOfMonth);
         default:
           return false;
       }
     }).toList();
   }
 
-   String _formatDuration(int seconds) {
+  String _formatDuration(int seconds) {
     if (seconds < 60) {
       return '${seconds}s';
     } else if (seconds < 3600) {
       final minutes = (seconds / 60).floor();
       return '${minutes}m';
-    } else {
+    }
+    else {
       final hours = (seconds / 3600).floor();
       final minutes = ((seconds % 3600) / 60).floor();
       return '${hours}h ${minutes}m';
     }
   }
 
-    MapEntry<String, int>? _getTopCaller(List<CallLogModel> logs) {
+  MapEntry<String, int>? _getTopCaller(List<ActivityLog> logs) {
     if (logs.isEmpty) return null;
     final counts = <String, int>{};
     for (var log in logs) {
-      final name = (log.name != null && log.name!.isNotEmpty)
-          ? log.name!
-          : (log.formattedNumber ?? 'Unknown');
-      counts[name] = (counts[name] ?? 0) + 1;
+      if (log.type == ActivityType.call) { // Only count calls for top caller
+        final name = log.contactName;
+        counts[name] = (counts[name] ?? 0) + 1;
+      }
     }
 
     if (counts.isEmpty) return null;

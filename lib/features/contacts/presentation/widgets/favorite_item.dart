@@ -12,8 +12,7 @@ class FavoriteItem extends StatelessWidget {
     return InkWell(
       onTap: () => Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) =>
-              ContactDetailsPage(favoriteContact.contactDetails),
+          builder: (context) => ContactDetailsPage(favoriteContact.contactDetails),
         ),
       ),
       borderRadius: BorderRadius.circular(12),
@@ -73,9 +72,7 @@ class FavoriteItem extends StatelessWidget {
                 textAlign: TextAlign.center,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: Theme.of(
-                  context,
-                ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600),
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600),
               ),
             ),
           ],

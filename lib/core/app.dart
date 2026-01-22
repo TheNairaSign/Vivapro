@@ -5,9 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart' hide ChangeNotifierProvi
 import 'package:provider/provider.dart';
 import 'package:vivapro/core/bootstrap.dart';
 import 'package:vivapro/core/theme/app_theme.dart';
+import 'package:vivapro/features/activity/data/repositories/activity_repository_impl.dart';
+import 'package:vivapro/features/activity/presentation/bloc/activity_bloc.dart';
 import 'package:vivapro/pages/navigation/navigation_page.dart';
-import 'package:vivapro/features/call_log/presentation/bloc/call_log_bloc.dart';
-import 'package:vivapro/features/call_log/repositories/call_log_repository.dart';
 import 'package:vivapro/features/contacts/presentation/widgets/favorites/frequency_container.dart';
 import 'package:vivapro/features/contacts/repositories/contact_repository.dart';
 import 'package:vivapro/features/messaging/presentation/bloc/chat/chat_bloc.dart';
@@ -49,11 +49,7 @@ class _VivaproState extends ConsumerState<Vivapro> {
       create: (context) => AddFavoritesProvider(),
       child: MultiBlocProvider(
         providers: [
-          BlocProvider(create: (create) => CallLogBloc(
-              ref.read(callLogRepository),
-              ref.read(contactsRepository),
-            ),
-          ),
+          BlocProvider(create: (create) => ActivityBloc(ref.read(activityRepositoryProvider))),
           BlocProvider(
             create: (create) => ChatBloc(
               ref.read(chatRepositoryProvider),
