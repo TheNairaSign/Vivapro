@@ -1,3 +1,4 @@
+import 'package:vivapro/core/services/navigator_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -67,6 +68,7 @@ class _VivaproState extends ConsumerState<Vivapro> {
               systemNavigationBarIconBrightness: Brightness.dark,
             ),
             child: MaterialApp(
+              navigatorKey: navigatorKey,
               title: 'Vivapro',
               debugShowCheckedModeBanner: false,
               theme: AppTheme.lightTheme,

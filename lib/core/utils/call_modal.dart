@@ -1,3 +1,4 @@
+import 'package:vivapro/core/services/pending_call_service.dart';
 import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:vivapro/core/utils/initiate_call.dart';
@@ -38,6 +39,7 @@ void showCallOptionsModal({
               title: const Text('Phone'),
               onTap: () async {
                 Navigator.pop(context);
+                await PendingCallService().setPendingCall(contactId);
                 final call = await callWithPhone(phoneNumber);
                 if (call) {
                   await interactionTracker.recordInteraction(contactId);
