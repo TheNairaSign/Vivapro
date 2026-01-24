@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:vivapro/core/navigation/swipe_back_navigator.dart';
 import 'package:vivapro/features/activity/presentation/bloc/activity_bloc.dart';
+import 'package:vivapro/pages/demo/swipe_back_demo_page.dart';
 import 'package:vivapro/pages/home/widgets/favorites_section.dart';
 import 'package:vivapro/pages/home/widgets/insights/insights_section.dart';
 import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_bloc.dart';
@@ -70,17 +72,22 @@ class _HomePageState extends ConsumerState<HomePage> {
             }, 
             icon: const Icon(EvaIcons.calendarOutline, size: 20,)
           ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              borderRadius: BorderRadius.circular(20),
+          GestureDetector(
+            onTap: () => Navigator.of(context).pushSwipeBack(
+              builder: (builder) => SwipeBackDemoPage(),
             ),
-            child: Text(
-              'SOS',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Colors.red,
-                fontWeight: FontWeight.bold,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                'SOS',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
