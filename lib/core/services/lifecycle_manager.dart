@@ -6,7 +6,7 @@ import 'package:vivapro/core/services/navigator_service.dart';
 import 'package:vivapro/core/services/pending_call_service.dart';
 import 'package:vivapro/features/backup/bloc/backup_bloc.dart';
 import 'package:vivapro/features/backup/bloc/backup_event.dart';
-import 'package:vivapro/pages/navigation/recents_page.dart';
+import 'package:vivapro/pages/navigation/widgets/manual_log_bottom_sheet.dart';
 
 class LifecycleManager extends StatefulWidget {
   final Widget child;

@@ -4,6 +4,8 @@ import 'package:vivapro/core/failures/failure.dart';
 import 'package:vivapro/core/services/google_drive_service.dart';
 import 'package:vivapro/features/contacts/data/favorite_cache_service.dart';
 
+import 'dart:developer' as developer;
+
 class BackupWorker {
   final GoogleDriveBackupService _googleDriveService;
 
@@ -12,8 +14,10 @@ class BackupWorker {
   Future<Either<Failure, String>> backupAll() async {
     try {
       await _googleDriveService.backup();
+      developer.log('Backup successful');
       return right('Backup successful');
     } catch (e) {
+      developer.log('Backup failed: $e');
       return left(Failure(e.toString()));
     }
   }

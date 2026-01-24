@@ -7,6 +7,8 @@ import 'package:vivapro/features/backup/bloc/backup_event.dart';
 import 'package:vivapro/features/backup/bloc/backup_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vivapro/components/show_flushbar.dart';
+import 'package:vivapro/features/backup/data/backup_service.dart';
+import 'package:vivapro/features/profile/logic/profile_controller.dart';
 
 class BackupSettingsSection extends ConsumerStatefulWidget {
   const BackupSettingsSection({super.key});
@@ -16,7 +18,6 @@ class BackupSettingsSection extends ConsumerStatefulWidget {
 }
 
 class _BackupSettingsSectionState extends ConsumerState<BackupSettingsSection> {
-  bool _isBackupEnabled = false;
   DateTime? _lastBackupTime;
 
   @override
@@ -29,7 +30,6 @@ class _BackupSettingsSectionState extends ConsumerState<BackupSettingsSection> {
     final prefs = await SharedPreferences.getInstance();
     if (mounted) {
       setState(() {
-        _isBackupEnabled = prefs.getBool('backupEnabled') ?? false;
         final timeStr = prefs.getString('lastBackupTime');
         _lastBackupTime = timeStr != null ? DateTime.parse(timeStr) : null;
       });
@@ -37,16 +37,21 @@ class _BackupSettingsSectionState extends ConsumerState<BackupSettingsSection> {
   }
 
   Future<void> _toggleBackup(bool value) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('backupEnabled', value);
-    setState(() {
-      _isBackupEnabled = value;
-    });
+    if (value) {
+      await ref.read(profileControllerProvider.notifier).enableBackup();
+    } else {
+      await ref.read(profileControllerProvider.notifier).disableBackup();
+    }
+    // No need to manually refresh backupStatusProvider if it was a StateProvider,
+    // but since it's a StreamProvider on Prefs, we might need to trigger a refresh
+    // or change it to a StateProvider.
+    ref.invalidate(backupStatusProvider);
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isBackupEnabled = ref.watch(backupStatusProvider).value ?? false;
 
     return BlocListener<BackupBloc, BackupState>(
       listener: (context, state) {
@@ -62,7 +67,7 @@ class _BackupSettingsSectionState extends ConsumerState<BackupSettingsSection> {
           showFlushbar(context, 'Restore Failed', state.error, color: theme.colorScheme.error);
         }
       },
-      child: _buildBody(context),
+      child: _buildBody(context, isBackupEnabled),
     );
   }
 
@@ -75,7 +80,7 @@ class _BackupSettingsSectionState extends ConsumerState<BackupSettingsSection> {
     });
   }
 
-  Widget _buildBody(BuildContext context) {
+  Widget _buildBody(BuildContext context, bool isBackupEnabled) {
     final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,10 +106,10 @@ class _BackupSettingsSectionState extends ConsumerState<BackupSettingsSection> {
                 icon: EvaIcons.google,
                 title: "Enable Drive Backup",
                 subtitle: "Mirror your local data to Google Drive App Data",
-                value: _isBackupEnabled,
+                value: isBackupEnabled,
                 onChanged: _toggleBackup,
               ),
-              if (_isBackupEnabled) ...[
+              if (isBackupEnabled) ...[
                 const Divider(height: 1),
                 _buildActionTile(
                   context,

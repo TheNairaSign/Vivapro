@@ -1,13 +1,18 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vivapro/features/backup/presentation/widgets/backup_settings_section.dart';
+import 'package:vivapro/features/profile/data/user_profile.dart';
+import 'package:vivapro/features/profile/repositories/profile_repository.dart';
+import 'package:vivapro/features/profile/logic/profile_controller.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends ConsumerWidget {
   const ProfilePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final profileAsync = ref.watch(userProfileProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -19,96 +24,108 @@ class ProfilePage extends StatelessWidget {
           ),
         ),
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(EvaIcons.moreHorizontalOutline),
-            onPressed: () {},
-          ),
-        ],
       ),
       body: Padding(
         padding: const EdgeInsets.only(right: 16, left: 16, bottom: 35),
-        child: ListView(
+        child: profileAsync.when(
+          data: (profile) => ListView(
+            children: [
+              const SizedBox(height: 20),
+              
+              _buildProfileHeader(context, ref, profile),
+              const SizedBox(height: 32),
+              
+              if (profile != null) ...[
+                _buildCategoryContainer(
+                  context,
+                  title: "PERSONAL INFO",
+                  children: [
+                    _buildSettingTile(
+                      context,
+                      icon: EvaIcons.personOutline,
+                      title: "Full Name",
+                      subtitle: profile.name,
+                      onTap: () => _showEditProfileDialog(context, ref, profile),
+                    ),
+                    _buildSettingTile(
+                      context,
+                      icon: EvaIcons.emailOutline,
+                      title: "Email Address",
+                      subtitle: profile.email,
+                      onTap: () => _showEditProfileDialog(context, ref, profile),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+              ],
+
+              // Call Preferences Container
+              _buildCategoryContainer(
+                context,
+                title: "CALL PREFERENCES",
+                children: [
+                  _buildSwitchTile(
+                    context,
+                    icon: EvaIcons.bellOutline,
+                    title: "Call Reminders",
+                    subtitle: "Notify me when it's time to reach out",
+                    value: true,
+                    onChanged: (v) {},
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+          
+              // Cloud Backup Section
+              // const BackupSettingsSection(),
+              // const SizedBox(height: 20),
+            ],
+          ),
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (e, _) => Center(child: Text("Error loading profile: $e")),
+        ),
+      ),
+    );
+  }
+
+  void _showEditProfileDialog(BuildContext context, WidgetRef ref, UserProfile profile) {
+    final nameController = TextEditingController(text: profile.name);
+    final emailController = TextEditingController(text: profile.email);
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Edit Profile"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            const SizedBox(height: 20),
-            // Profile Header
-            _buildProfileHeader(context),
-            const SizedBox(height: 32),
-        
-            // Personal Info Container
-            _buildCategoryContainer(
-              context,
-              title: "PERSONAL INFO",
-              children: [
-                _buildSettingTile(
-                  context,
-                  icon: EvaIcons.phoneOutline,
-                  title: "Phone Number",
-                  subtitle: "+1 (555) 000-1234",
-                  onTap: () {},
-                ),
-                _buildSettingTile(
-                  context,
-                  icon: EvaIcons.emailOutline,
-                  title: "Email Address",
-                  subtitle: 'alex.j@connectionapp.com',
-                  onTap: () {},
-                ),
-              ],
+            TextField(
+              controller: nameController,
+              decoration: const InputDecoration(labelText: "Full Name"),
             ),
-            const SizedBox(height: 20),
-        
-            // Call Preferences Container
-            _buildCategoryContainer(
-              context,
-              title: "CALL PREFERENCES",
-              children: [
-                _buildSwitchTile(
-                  context,
-                  icon: EvaIcons.bellOutline,
-                  title: "Call Reminders",
-                  subtitle: "Notify me when it's time to reach out",
-                  value: true,
-                  onChanged: (v) {},
-                ),
-                _buildSwitchTile(
-                  context,
-                  icon: EvaIcons.refreshOutline,
-                  title: "Auto-Call Suggestion",
-                  subtitle: "Smart triggers for busy days",
-                  value: false,
-                  onChanged: (v) {},
-                ),
-              ],
+            const SizedBox(height: 16),
+            TextField(
+              controller: emailController,
+              decoration: const InputDecoration(labelText: "Email Address"),
             ),
-            const SizedBox(height: 20),
-        
-            // Privacy & Security Container
-            _buildCategoryContainer(
-              context,
-              title: "PRIVACY & SECURITY",
-              children: [
-                _buildSettingTile(
-                  context,
-                  icon: EvaIcons.navigationOutline,
-                  title: "Location Sharing",
-                  onTap: () {},
-                ),
-                _buildSettingTile(
-                  context,
-                  icon: EvaIcons.slashOutline,
-                  title: "Blocked Contacts",
-                  onTap: () {},
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-        
-            // Cloud Backup Section
-            const BackupSettingsSection(),
-            const SizedBox(height: 20),
           ],
         ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Cancel"),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              ref.read(profileControllerProvider.notifier).updateProfile(
+                name: nameController.text,
+                email: emailController.text,
+              );
+              Navigator.pop(context);
+            },
+            child: const Text("Save"),
+          ),
+        ],
       ),
     );
   }
@@ -144,7 +161,8 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileHeader(BuildContext context) {
+  Widget _buildProfileHeader(BuildContext context, WidgetRef ref, UserProfile? profile) {
+    if (profile == null) return const SizedBox.shrink();
     final theme = Theme.of(context);
     return Column(
       children: [
@@ -152,25 +170,30 @@ class ProfilePage extends StatelessWidget {
           alignment: Alignment.bottomRight,
           children: [
             CircleAvatar(
-              backgroundColor: Colors.grey.withOpacity(.2),
+              backgroundColor: Colors.grey.withValues(alpha: .2),
               radius: 50,
-              backgroundImage: const AssetImage('assets/avatars/braid-girl.jpg'),
+              backgroundImage: (profile.photoUrl != null && profile.photoUrl!.startsWith('http'))
+                  ? NetworkImage(profile.photoUrl!) 
+                  : const AssetImage('assets/avatars/braid-girl.jpg') as ImageProvider,
             ),
-            Container(
-              height: 36,
-              width: 36,
-              decoration: BoxDecoration(
-                color: theme.colorScheme.primary,
-                shape: BoxShape.circle,
-                border: Border.all(color: theme.scaffoldBackgroundColor, width: 3),
+            GestureDetector(
+              onTap: () => _showEditProfileDialog(context, ref, profile),
+              child: Container(
+                height: 36,
+                width: 36,
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.primary,
+                  shape: BoxShape.circle,
+                  border: Border.all(color: theme.scaffoldBackgroundColor, width: 3),
+                ),
+                child: const Icon(EvaIcons.editOutline, color: Colors.white, size: 16),
               ),
-              child: const Icon(EvaIcons.edit, color: Colors.white, size: 16),
             ),
           ],
         ),
         const SizedBox(height: 16),
         Text(
-          'Alex Johnson',
+          profile.name,
           style: theme.textTheme.headlineSmall?.copyWith(
             fontWeight: FontWeight.w800,
             letterSpacing: -0.5,
@@ -178,9 +201,9 @@ class ProfilePage extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         Text(
-          "Member since July 2023",
+          profile.email,
           style: theme.textTheme.bodyMedium?.copyWith(
-            color: theme.colorScheme.onSurface.withOpacity(0.5),
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -194,7 +217,7 @@ class ProfilePage extends StatelessWidget {
       style: Theme.of(context).textTheme.bodySmall?.copyWith(
         fontWeight: FontWeight.w800,
         letterSpacing: 1.2,
-        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
       ),
     );
   }
@@ -211,7 +234,7 @@ class ProfilePage extends StatelessWidget {
       contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
       leading: Icon(
         icon,
-        color: theme.colorScheme.onSurface.withOpacity(0.8),
+        color: theme.colorScheme.onSurface.withValues(alpha: 0.8),
       ),
       title: Text(
         title,
@@ -223,11 +246,11 @@ class ProfilePage extends StatelessWidget {
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey),
             )
           : null,
-      trailing: Icon(
+      trailing: onTap != null ? Icon(
         Icons.arrow_forward_ios,
         size: 14,
-        color: theme.colorScheme.onSurface.withOpacity(0.3),
-      ),
+        color: theme.colorScheme.onSurface.withValues(alpha: 0.3),
+      ) : null,
       onTap: onTap,
     );
   }
@@ -245,7 +268,7 @@ class ProfilePage extends StatelessWidget {
       contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
       secondary: Icon(
         icon,
-        color: theme.colorScheme.onSurface.withOpacity(0.8),
+        color: theme.colorScheme.onSurface.withValues(alpha: 0.8),
       ),
       title: Text(
         title,
@@ -254,13 +277,13 @@ class ProfilePage extends StatelessWidget {
       subtitle: Text(
         subtitle,
         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-          color: theme.colorScheme.onSurface.withOpacity(0.5),
+          color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
         ),
       ),
       value: value,
       onChanged: onChanged,
       activeThumbColor: theme.colorScheme.primary,
-      inactiveThumbColor: theme.colorScheme.onSurface.withOpacity(0.8),
+      inactiveThumbColor: theme.colorScheme.onSurface.withValues(alpha: 0.8),
     );
   }
 }
