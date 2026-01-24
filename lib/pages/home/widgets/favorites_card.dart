@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:vivapro/core/services/interaction_tracker.dart';
 import 'package:vivapro/features/contacts/data/favorite_contact.dart';
 import 'package:vivapro/features/contacts/presentation/pages/contact_details_page.dart';
 import 'package:vivapro/core/extensions/first_name_extension.dart';
 import 'package:vivapro/widgets/text_avatar.dart';
+import 'package:vivapro/core/utils/call_modal.dart';
 
 class FavoritesCard extends ConsumerWidget {
   const FavoritesCard({super.key, required this.contact});
@@ -13,7 +12,6 @@ class FavoritesCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final interactionTracker = ref.read(interactionTrackerProvider);
     
     return GestureDetector(
       onTap: () => Navigator.of(context).push(
@@ -100,16 +98,13 @@ class FavoritesCard extends ConsumerWidget {
                         : null;
                     
                     if (phoneNumber != null) {
-                      // Record the interaction
-                      if (contact.id != null) {
-                        await interactionTracker.recordInteraction(contact.id!);
-                      }
+                      showCallOptionsModal(
+                        context: context,
+                        ref: ref,
+                        phoneNumber: phoneNumber,
+                        contactId: contact.id,
+                      );
                       
-                      // Open phone dialer
-                      final uri = Uri(scheme: 'tel', path: phoneNumber);
-                      if (await canLaunchUrl(uri)) {
-                        await launchUrl(uri);
-                      }
                     }
                   },
                   style: ElevatedButton.styleFrom(

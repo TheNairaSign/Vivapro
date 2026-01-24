@@ -18,9 +18,6 @@ class ChatItem extends ConsumerWidget {
     final name = participants.isNotEmpty
         ? participants.join(',').capitalize()
         : 'Unknown';
-    final initial = participants.isNotEmpty
-        ? participants.join(',').characters.first.toUpperCase()
-        : '?';
 
     final textColor = isDark ? Colors.white : const Color(0xFF1A1A1A);
     final subtextColor = isDark ? Colors.grey[400] : Colors.grey[600];

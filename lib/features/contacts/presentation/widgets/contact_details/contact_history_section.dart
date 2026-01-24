@@ -1,10 +1,10 @@
-import 'package:call_log/call_log.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_contacts/contact.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:vivapro/features/call_log/presentation/bloc/call_log_bloc.dart';
-import 'package:vivapro/features/call_log/presentation/bloc/call_log_state.dart';
+import 'package:vivapro/core/extensions/capitalization.dart';
+import 'package:vivapro/features/activity/data/models/activity_log.dart';
+import 'package:vivapro/features/activity/presentation/bloc/activity_bloc.dart';
 import 'package:vivapro/core/utils/get_time_ago.dart';
 
 import 'package:vivapro/features/contacts/data/favorite_contact.dart';
@@ -43,27 +43,18 @@ class ContactHistorySection extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 12),
-        BlocBuilder<CallLogBloc, CallLogState>(
+        BlocBuilder<ActivityBloc, ActivityState>(
           builder: (context, state) {
-            if (state is CallLogSuccess) {
-              // Filter call logs for this contact
-              final contactLogs = state.callLogEntries
+            if (state is ActivityLoaded) {
+              // Filter activities for this contact
+              final contactActivities = state.activities
                   .where((log) {
-                    final contactPhones = contact.phones
-                        .map((p) => p.number)
-                        .toList();
-                    return contactPhones.any(
-                      (phone) =>
-                          log.number?.contains(
-                            phone.replaceAll(RegExp(r'[^\d]'), ''),
-                          ) ??
-                          false,
-                    );
+                    return log.contactId == contact.id;
                   })
                   .take(2)
                   .toList();
 
-              if (contactLogs.isEmpty) {
+              if (contactActivities.isEmpty) {
                 return _buildEmptyHistory(context);
               }
 
@@ -73,13 +64,13 @@ class ContactHistorySection extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Column(
-                  children: contactLogs.asMap().entries.map((entry) {
+                  children: contactActivities.asMap().entries.map((entry) {
                     final index = entry.key;
                     final log = entry.value;
                     return Column(
                       children: [
                         _buildHistoryItem(log),
-                        if (index < contactLogs.length - 1)
+                        if (index < contactActivities.length - 1)
                           Divider(
                             height: 1,
                             indent: 60,
@@ -111,7 +102,7 @@ class ContactHistorySection extends StatelessWidget {
             Icon(Ionicons.call_outline, size: 40, color: Colors.grey[400]),
             const SizedBox(height: 12),
             Text(
-              'No recent calls',
+              'No recent activity',
               style: TextStyle(color: Colors.grey[500], fontSize: 14),
             ),
           ],
@@ -120,12 +111,39 @@ class ContactHistorySection extends StatelessWidget {
     );
   }
 
-  Widget _buildHistoryItem(dynamic log) {
-    final isOutgoing = log.callType == CallType.outgoing;
-    final isMissed = log.callType == CallType.missed;
-    final date = DateTime.fromMillisecondsSinceEpoch(log.timestamp ?? 0);
+  Widget _buildHistoryItem(ActivityLog log) {
+    final isCall = log.type == ActivityType.call;
+    final isMissedCall = isCall && log.durationSeconds == 0;
+    final isOutgoingCall = isCall && log.durationSeconds! > 0;
+    final date = log.timestamp;
     final timeAgo = formatTimeAgo(date);
-    final duration = log.duration != null ? _formatDuration(log.duration!) : '';
+    final duration = log.durationSeconds != null && log.durationSeconds! > 0
+        ? _formatDuration(log.durationSeconds!)
+        : '';
+
+    String activityText;
+    IconData activityIcon;
+    Color activityColor;
+
+    if (isCall) {
+      if (isMissedCall) {
+        activityText = 'Missed Call';
+        activityIcon = Icons.call_missed;
+        activityColor = Colors.red;
+      } else if (isOutgoingCall) {
+        activityText = 'Outgoing Call';
+        activityIcon = Ionicons.arrow_up;
+        activityColor = Colors.green;
+      } else {
+        activityText = 'Incoming Call';
+        activityIcon = Ionicons.arrow_down;
+        activityColor = Colors.green;
+      }
+    } else {
+      activityText = log.type.name.capitalizeFirstofEach;
+      activityIcon = Ionicons.information_circle_outline; // Default icon for other activities
+      activityColor = Colors.grey;
+    }
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -135,14 +153,12 @@ class ContactHistorySection extends StatelessWidget {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: isMissed
-                  ? Colors.red.withValues(alpha: 0.15)
-                  : Colors.green.withValues(alpha: 0.15),
+              color: activityColor.withOpacity(0.15),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(
-              isOutgoing ? Ionicons.arrow_up : Ionicons.arrow_down,
-              color: isMissed ? Colors.red : Colors.green,
+              activityIcon,
+              color: activityColor,
               size: 20,
             ),
           ),
@@ -152,11 +168,7 @@ class ContactHistorySection extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  isOutgoing
-                      ? 'Outgoing Call'
-                      : isMissed
-                      ? 'Missed Call'
-                      : 'Incoming Call',
+                  activityText,
                   style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 2),

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/contact.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vivapro/features/contacts/data/favorite_cache_service.dart';
 import 'package:vivapro/features/contacts/data/favorite_contact.dart';
-import 'package:vivapro/features/contacts/repositories/favorite_repository.dart';
 import 'package:vivapro/features/contacts/presentation/widgets/contact_details/contact_action_buttons.dart';
 import 'package:vivapro/features/contacts/presentation/widgets/contact_details/contact_history_section.dart';
 import 'package:vivapro/features/contacts/presentation/widgets/contact_details/contact_profile_header.dart';
 import 'package:vivapro/features/contacts/presentation/widgets/contact_details/contact_relationship_health.dart';
 import 'package:vivapro/features/contacts/presentation/widgets/contact_details/contact_settings_list.dart';
+import 'package:vivapro/widgets/custom_back_button.dart';
 
 class ContactDetailsPage extends ConsumerStatefulWidget {
   final Contact contact;
@@ -40,15 +41,11 @@ class _ContactDetailsPageState extends ConsumerState<ContactDetailsPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: const Text(
+        leading: CustomBackButton(),
+        title: Text(
           'Contact',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+          style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
         ),
         actions: [
           TextButton(
@@ -89,5 +86,5 @@ class _ContactDetailsPageState extends ConsumerState<ContactDetailsPage> {
 
 // Stream provider for favorites if not already defined
 final favoritesStreamProvider = StreamProvider<List<FavoriteContact>>((ref) {
-  return ref.watch(favoritesRepository).watchFavorites();
+  return ref.watch(favoriteCacheServiceProvider).watchFavorites();
 });

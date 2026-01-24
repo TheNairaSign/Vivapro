@@ -1,16 +1,18 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:vivapro/features/auth/data/auth_user.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vivapro/features/backup/presentation/widgets/backup_settings_section.dart';
+import 'package:vivapro/features/profile/data/user_profile.dart';
+import 'package:vivapro/features/profile/repositories/profile_repository.dart';
+import 'package:vivapro/features/profile/logic/profile_controller.dart';
 
-class ProfilePage extends StatelessWidget {
-  final AuthUser user;
-
-  const ProfilePage(this.user, {super.key});
+class ProfilePage extends ConsumerWidget {
+  const ProfilePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final profileAsync = ref.watch(userProfileProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -22,117 +24,108 @@ class ProfilePage extends StatelessWidget {
           ),
         ),
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(EvaIcons.moreHorizontalOutline),
-            onPressed: () {},
-          ),
-        ],
       ),
       body: Padding(
         padding: const EdgeInsets.only(right: 16, left: 16, bottom: 35),
-        child: ListView(
+        child: profileAsync.when(
+          data: (profile) => ListView(
+            children: [
+              const SizedBox(height: 20),
+              
+              _buildProfileHeader(context, ref, profile),
+              const SizedBox(height: 32),
+              
+              if (profile != null) ...[
+                _buildCategoryContainer(
+                  context,
+                  title: "PERSONAL INFO",
+                  children: [
+                    _buildSettingTile(
+                      context,
+                      icon: EvaIcons.personOutline,
+                      title: "Full Name",
+                      subtitle: profile.name,
+                      onTap: () => _showEditProfileDialog(context, ref, profile),
+                    ),
+                    _buildSettingTile(
+                      context,
+                      icon: EvaIcons.emailOutline,
+                      title: "Email Address",
+                      subtitle: profile.email,
+                      onTap: () => _showEditProfileDialog(context, ref, profile),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+              ],
+
+              // Call Preferences Container
+              _buildCategoryContainer(
+                context,
+                title: "CALL PREFERENCES",
+                children: [
+                  _buildSwitchTile(
+                    context,
+                    icon: EvaIcons.bellOutline,
+                    title: "Call Reminders",
+                    subtitle: "Notify me when it's time to reach out",
+                    value: true,
+                    onChanged: (v) {},
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+          
+              // Cloud Backup Section
+              // const BackupSettingsSection(),
+              // const SizedBox(height: 20),
+            ],
+          ),
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (e, _) => Center(child: Text("Error loading profile: $e")),
+        ),
+      ),
+    );
+  }
+
+  void _showEditProfileDialog(BuildContext context, WidgetRef ref, UserProfile profile) {
+    final nameController = TextEditingController(text: profile.name);
+    final emailController = TextEditingController(text: profile.email);
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Edit Profile"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            const SizedBox(height: 20),
-            // Profile Header
-            _buildProfileHeader(context),
-            const SizedBox(height: 32),
-        
-            // Relationship Health Card
-            // _buildHealthCard(context),
-            // const SizedBox(height: 32),
-        
-            // Personal Info Container
-            _buildCategoryContainer(
-              context,
-              title: "PERSONAL INFO",
-              children: [
-                _buildSettingTile(
-                  context,
-                  icon: EvaIcons.phoneOutline,
-                  title: "Phone Number",
-                  subtitle: "+1 (555) 000-1234",
-                  onTap: () {},
-                ),
-                _buildSettingTile(
-                  context,
-                  icon: EvaIcons.emailOutline,
-                  title: "Email Address",
-                  subtitle: user.email ?? 'alex.j@connectionapp.com',
-                  onTap: () {},
-                ),
-              ],
+            TextField(
+              controller: nameController,
+              decoration: const InputDecoration(labelText: "Full Name"),
             ),
-            const SizedBox(height: 20),
-        
-            // Call Preferences Container
-            _buildCategoryContainer(
-              context,
-              title: "CALL PREFERENCES",
-              children: [
-                _buildSwitchTile(
-                  context,
-                  icon: EvaIcons.bellOutline,
-                  title: "Call Reminders",
-                  subtitle: "Notify me when it's time to reach out",
-                  value: true,
-                  onChanged: (v) {},
-                ),
-                _buildSwitchTile(
-                  context,
-                  icon: EvaIcons.refreshOutline,
-                  title: "Auto-Call Suggestion",
-                  subtitle: "Smart triggers for busy days",
-                  value: false,
-                  onChanged: (v) {},
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-        
-            // Privacy & Security Container
-            _buildCategoryContainer(
-              context,
-              title: "PRIVACY & SECURITY",
-              children: [
-                _buildSettingTile(
-                  context,
-                  icon: EvaIcons.navigationOutline,
-                  title: "Location Sharing",
-                  onTap: () {},
-                ),
-                _buildSettingTile(
-                  context,
-                  icon: EvaIcons.slashOutline,
-                  title: "Blocked Contacts",
-                  onTap: () {},
-                ),
-              ],
-            ),
-        
-            const SizedBox(height: 20),
-            ElevatedButton.icon(
-              onPressed: () {},
-              icon: Icon(EvaIcons.logOutOutline, color: theme.colorScheme.error),
-              label: Text(
-                'Sign Out',
-                style: GoogleFonts.inter(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: theme.colorScheme.error,
-                ),
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: theme.colorScheme.error.withValues(alpha: 0.1),
-                minimumSize: const Size(double.infinity, 56),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                elevation: 0,
-              ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: emailController,
+              decoration: const InputDecoration(labelText: "Email Address"),
             ),
           ],
         ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Cancel"),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              ref.read(profileControllerProvider.notifier).updateProfile(
+                name: nameController.text,
+                email: emailController.text,
+              );
+              Navigator.pop(context);
+            },
+            child: const Text("Save"),
+          ),
+        ],
       ),
     );
   }
@@ -154,7 +147,7 @@ class ProfilePage extends StatelessWidget {
             borderRadius: BorderRadius.circular(24),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.03),
+                color: Colors.black.withOpacity(0.03),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -168,7 +161,8 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileHeader(BuildContext context) {
+  Widget _buildProfileHeader(BuildContext context, WidgetRef ref, UserProfile? profile) {
+    if (profile == null) return const SizedBox.shrink();
     final theme = Theme.of(context);
     return Column(
       children: [
@@ -178,23 +172,28 @@ class ProfilePage extends StatelessWidget {
             CircleAvatar(
               backgroundColor: Colors.grey.withValues(alpha: .2),
               radius: 50,
-              backgroundImage: AssetImage('assets/avatars/braid-girl.jpg'),
+              backgroundImage: (profile.photoUrl != null && profile.photoUrl!.startsWith('http'))
+                  ? NetworkImage(profile.photoUrl!) 
+                  : const AssetImage('assets/avatars/braid-girl.jpg') as ImageProvider,
             ),
-            Container(
-              height: 36,
-              width: 36,
-              decoration: BoxDecoration(
-                color: theme.colorScheme.primary,
-                shape: BoxShape.circle,
-                border: Border.all(color: theme.scaffoldBackgroundColor, width: 3),
+            GestureDetector(
+              onTap: () => _showEditProfileDialog(context, ref, profile),
+              child: Container(
+                height: 36,
+                width: 36,
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.primary,
+                  shape: BoxShape.circle,
+                  border: Border.all(color: theme.scaffoldBackgroundColor, width: 3),
+                ),
+                child: const Icon(EvaIcons.editOutline, color: Colors.white, size: 16),
               ),
-              child: const Icon(EvaIcons.edit, color: Colors.white, size: 16),
             ),
           ],
         ),
         const SizedBox(height: 16),
         Text(
-          user.displayName ?? 'User Name',
+          profile.name,
           style: theme.textTheme.headlineSmall?.copyWith(
             fontWeight: FontWeight.w800,
             letterSpacing: -0.5,
@@ -202,92 +201,13 @@ class ProfilePage extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         Text(
-          "Member since July 2023",
+          profile.email,
           style: theme.textTheme.bodyMedium?.copyWith(
             color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
             fontWeight: FontWeight.w500,
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildHealthCard(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            colorScheme.primary,
-            colorScheme.primary.withValues(alpha: 0.8),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: colorScheme.primary.withValues(alpha: 0.3),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "Relationship Health",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: const Text(
-                  "75%",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: LinearProgressIndicator(
-              value: 0.75,
-              minHeight: 8,
-              backgroundColor: Colors.white.withValues(alpha: 0.2),
-              valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
-            ),
-          ),
-          const SizedBox(height: 16),
-          const Text(
-            "Great job! You've reached out to 4 people this week. Keep the momentum going!",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 13,
-              height: 1.4,
-            ),
-          ),
-        ],
-      ),
     );
   }
 
@@ -326,11 +246,11 @@ class ProfilePage extends StatelessWidget {
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey),
             )
           : null,
-      trailing: Icon(
+      trailing: onTap != null ? Icon(
         Icons.arrow_forward_ios,
         size: 14,
         color: theme.colorScheme.onSurface.withValues(alpha: 0.3),
-      ),
+      ) : null,
       onTap: onTap,
     );
   }
@@ -364,7 +284,6 @@ class ProfilePage extends StatelessWidget {
       onChanged: onChanged,
       activeThumbColor: theme.colorScheme.primary,
       inactiveThumbColor: theme.colorScheme.onSurface.withValues(alpha: 0.8),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(20), side: BorderSide.none),
     );
   }
 }

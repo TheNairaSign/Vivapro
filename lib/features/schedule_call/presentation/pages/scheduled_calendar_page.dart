@@ -71,7 +71,8 @@ class _ScheduledCalendarPageState extends State<ScheduledCalendarPage> {
                   MaterialPageRoute(
                     builder: (ctx) => ScheduleCallPage(
                       contact: contact,
-                      scheduleCall: ScheduleCall(
+                      scheduleCall: ScheduleCall.create(
+                        id: '',
                         contact: contact,
                         date: date,
                         time: TimeOfDay.now(),

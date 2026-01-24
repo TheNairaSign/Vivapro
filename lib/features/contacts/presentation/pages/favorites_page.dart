@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/contact.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vivapro/features/contacts/data/favorite_cache_service.dart';
 import 'package:vivapro/features/contacts/data/favorite_contact.dart';
 import 'package:vivapro/features/contacts/presentation/pages/add_favorite_page.dart';
 import 'package:vivapro/features/contacts/presentation/widgets/favorite_filter_chips.dart';
 import 'package:vivapro/features/contacts/presentation/widgets/favorite_tile.dart';
-import 'package:vivapro/features/contacts/repositories/favorite_repository.dart';
 import 'package:vivapro/features/contacts/presentation/providers/favorite_filter_provider.dart';
 import 'package:vivapro/pages/contact_picker_page.dart';
 import 'package:vivapro/widgets/custom_back_button.dart';
@@ -23,7 +23,7 @@ class _FavoritesPageState extends ConsumerState<FavoritesPage> {
   @override
   void initState() {
     super.initState();
-    _favoritesStream = ref.read(favoritesRepository).watchFavorites();
+    _favoritesStream = ref.read(favoriteCacheServiceProvider).watchFavorites();
   }
 
   @override

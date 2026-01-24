@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' hide Provider;
 import 'package:provider/provider.dart';
+import 'package:vivapro/features/contacts/data/favorite_cache_service.dart';
 import 'package:vivapro/features/contacts/data/favorite_contact.dart';
 import 'package:vivapro/features/contacts/presentation/widgets/favorites/frequency_container.dart';
-import 'package:vivapro/features/contacts/repositories/favorite_repository.dart';
 import 'package:vivapro/widgets/custom_text_field.dart';
+import 'package:vivapro/components/show_flushbar.dart';
 
 class AddFavoritePage extends ConsumerStatefulWidget {
   const AddFavoritePage({super.key, required this.contact});
@@ -35,9 +36,7 @@ class _AddFavoritePageState extends ConsumerState<AddFavoritePage> {
     if (isLoading) return;
 
     if (_nameController.text.isEmpty || _phoneController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill in all fields')),
-      );
+      showFlushbar(context, 'Missing Info', 'Please fill in all fields');
       return;
     }
 
@@ -46,26 +45,23 @@ class _AddFavoritePageState extends ConsumerState<AddFavoritePage> {
     final favoritesProvider = context.read<AddFavoritesProvider>();
 
     try {
-      await ref.read(favoritesRepository).addFavorite(
-        FavoriteContact(
+      await ref.read(favoriteCacheServiceProvider).addFavorite(
+        FavoriteContact.create(
           id: widget.contact.id,
           callFrequency: favoritesProvider.callFrequency,
           contactDetails: widget.contact,
           priority: favoritesProvider.callPriority,
+          updatedAt: DateTime.now(),
         ),
       );
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Contact saved successfully')),
-        );
         Navigator.pop(context);
+        showFlushbar(context, 'Success', 'Contact saved successfully');
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to save contact: $e')),
-        );
+        showFlushbar(context, 'Error', 'Failed to save contact: $e');
       }
     } finally {
       if (mounted) {
@@ -345,5 +341,3 @@ class _AddFavoritePageState extends ConsumerState<AddFavoritePage> {
     );
   }
 }
-
-

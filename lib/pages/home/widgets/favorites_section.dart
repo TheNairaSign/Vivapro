@@ -2,10 +2,10 @@ import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vivapro/features/contacts/data/favorite_cache_service.dart';
 import 'package:vivapro/features/contacts/data/favorite_contact.dart';
 import 'package:vivapro/features/contacts/presentation/pages/add_favorite_page.dart';
 import 'package:vivapro/features/contacts/presentation/pages/favorites_page.dart';
-import 'package:vivapro/features/contacts/repositories/favorite_repository.dart';
 import 'package:vivapro/pages/contact_picker_page.dart';
 import 'package:vivapro/pages/home/widgets/favorites_card.dart';
 
@@ -22,7 +22,7 @@ class _FavoritesSectionState extends ConsumerState<FavoritesSection> {
   @override
   void initState() {
     super.initState();
-    _favoritesStream = ref.read(favoritesRepository).watchFavorites();
+    _favoritesStream = ref.read(favoriteCacheServiceProvider).watchFavorites();
   }
 
   @override

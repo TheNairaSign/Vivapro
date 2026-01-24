@@ -209,6 +209,10 @@ class NotificationService {
     await flutterLocalNotificationsPlugin.cancel(id);
   }
 
+  Future<void> cancelAllNotifications() async {
+    await flutterLocalNotificationsPlugin.cancelAll();
+  }
+
   Future<void> showTestNotification() async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(

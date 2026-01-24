@@ -5,7 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:vivapro/core/services/notification_service.dart';
 import 'package:vivapro/core/services/interaction_tracker.dart';
 import 'package:vivapro/features/schedule_call/data/schedule_call.dart';
-import 'package:vivapro/features/schedule_call/repositories/schedule_call_repository.dart';
+import 'package:vivapro/features/schedule_call/dom/schedule_call_manager.dart';
 
 class NotificationHandler {
   final WidgetRef ref;
@@ -56,7 +56,8 @@ class NotificationHandler {
   }
 
   Future<void> _handleRemindLater(ScheduleCall call) async {
-    final repository = ref.read(scheduleCallRepositoryProvider);
+
+    final manager = ref.read(scheduleCallManagerProvider);
     
     // Reschedule for 30 minutes later
     final now = DateTime.now();
@@ -67,10 +68,7 @@ class NotificationHandler {
       time: TimeOfDay(hour: newScheduledTime.hour, minute: newScheduledTime.minute),
     );
 
-    await repository.rescheduleCall(updatedCall);
+    await manager.rescheduleCall(updatedCall);
   }
 }
 
-final notificationHandlerProvider = Provider.family<NotificationHandler, WidgetRef>((ref, widgetRef) {
-  return NotificationHandler(widgetRef);
-});

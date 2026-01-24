@@ -1,48 +1,53 @@
 import 'package:flutter/material.dart';
+import 'package:vivapro/features/activity/data/models/activity_log.dart';
 
 class FilterPills extends StatelessWidget {
-  const FilterPills({super.key});
+  final ActivityType? selectedFilter;
+  final ValueChanged<ActivityType?> onFilterChanged;
+
+  const FilterPills({
+    super.key,
+    required this.selectedFilter,
+    required this.onFilterChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final List<ActivityType?> filterOptions = [null, ...ActivityType.values];
+
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
-      padding: const EdgeInsets.symmetric(horizontal: 0),
       child: Row(
-        children: [
-          _buildPill(context, 'All', true),
-          const SizedBox(width: 12),
-          _buildPill(context, 'Calls', false),
-          const SizedBox(width: 12),
-          _buildPill(context, 'Reminders', false),
-        ],
-      ),
-    );
-  }
+        children: filterOptions.map((filterType) {
+          String label;
+          if (filterType == null) {
+            label = 'All';
+          } else {
+            label = filterType.toString().split('.').last;
+          }
 
-  Widget _buildPill(BuildContext context, String label, bool isSelected) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final containerColor = isSelected
-        ? Theme.of(context).colorScheme.primary
-        : Theme.of(context).colorScheme.surface;
-
-    final textColor = isSelected
-        ? Colors.white
-        : (isDark ? Colors.grey[300] : Colors.grey[600]);
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-      decoration: BoxDecoration(
-        color: containerColor,
-        borderRadius: BorderRadius.circular(30),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(
-          color: textColor,
-          fontWeight: FontWeight.w600,
-          fontSize: 14,
-        ),
+          return Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: ChoiceChip(
+              label: Text(label),
+              selected: selectedFilter == filterType,
+              onSelected: (selected) {
+                if (selected) {
+                  onFilterChanged(filterType);
+                }
+              },
+              selectedColor: Theme.of(context).colorScheme.primary,
+              backgroundColor: isDark ? const Color(0xFF2C2C3E) : const Color(0xFFF2F4F7),
+              labelStyle: TextStyle(
+                color: selectedFilter == filterType
+                    ? Colors.white
+                    : (isDark ? Colors.white70 : Colors.black87),
+              ),
+            ),
+          );
+        }).toList(),
       ),
     );
   }

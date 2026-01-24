@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:vivapro/features/auth/data/auth_user.dart';
-import 'package:vivapro/features/messaging/presentation/pages/chat_screen.dart';
-import 'package:vivapro/pages/home/home_page.dart.dart';
+import 'package:vivapro/pages/statistics/relationship_stats_page.dart';
+import 'package:vivapro/pages/home/home_page.dart';
 import 'package:vivapro/pages/navigation/profile_page.dart';
 import 'package:vivapro/pages/navigation/recents_page.dart';
 import 'package:vivapro/pages/contact_picker_page.dart';
@@ -9,8 +8,7 @@ import 'package:vivapro/pages/navigation/widgets/bottom_nav_bar.dart';
 import 'package:vivapro/features/schedule_call/presentation/pages/schedule_call_page.dart';
 
 class NavigationPage extends StatefulWidget {
-  const NavigationPage({super.key, required this.user});
-  final AuthUser user;
+  const NavigationPage({super.key});
 
   @override
   State<NavigationPage> createState() => _NavigationPageState();
@@ -26,16 +24,14 @@ class _NavigationPageState extends State<NavigationPage> {
     pageController = PageController(initialPage: selectedIndex);
   }
 
-  
-
   @override
   Widget build(BuildContext context) {
 
     List<Widget> pages = [
-      HomePage(widget.user),
+      HomePage(),
       const RecentsPage(),
-      ChatScreen(user: widget.user),
-      ProfilePage(widget.user),
+const RelationshipStatsPage(),
+      ProfilePage(),
     ];
 
     return Scaffold(

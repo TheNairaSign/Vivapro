@@ -3,7 +3,7 @@ import 'package:flutter_contacts/contact.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vivapro/core/services/interaction_tracker.dart';
-import 'package:vivapro/features/contacts/repositories/favorite_repository.dart';
+import 'package:vivapro/features/contacts/data/favorite_cache_service.dart';
 import 'package:vivapro/core/enums/call_frequency.dart';
 import 'package:vivapro/core/extensions/capitalization.dart';
 
@@ -86,6 +86,9 @@ class FavoriteTile extends ConsumerWidget {
                   decoration: BoxDecoration(
                     color: freqencyColor?.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: freqencyColor?.withValues(alpha: 0.1) ?? Colors.transparent,
+                    ),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -112,7 +115,7 @@ class FavoriteTile extends ConsumerWidget {
           ),
           IconButton(
             onPressed: () {
-              ref.read(favoritesRepository).toggleFavorite(isStarred, contact);
+              ref.read(favoriteCacheServiceProvider).toggleFavorite(isStarred, contact);
             },
             style: IconButton.styleFrom(
               backgroundColor: Colors.amber.withValues(alpha: 0.1),

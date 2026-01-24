@@ -4,15 +4,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vivapro/features/schedule_call/data/schedule_call.dart';
+import 'package:vivapro/features/schedule_call/dom/schedule_call_manager.dart';
 import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_bloc.dart';
 import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_event.dart';
 import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_state.dart';
 import 'package:vivapro/features/schedule_call/presentation/pages/schedule_details_page.dart';
-import 'package:vivapro/features/schedule_call/repositories/schedule_call_repository.dart';
 import 'package:vivapro/pages/navigation/widgets/schedule_call/call_note_card.dart';
 import 'package:vivapro/pages/navigation/widgets/schedule_call/date_selection_card.dart';
 import 'package:vivapro/pages/navigation/widgets/schedule_call/profile_card.dart';
 import 'package:vivapro/pages/navigation/widgets/schedule_call/time_selection_card.dart';
+import 'package:vivapro/components/show_flushbar.dart';
 
 class ScheduleCallPage extends ConsumerStatefulWidget {
   final Contact contact;
@@ -47,14 +48,13 @@ class _ScheduleCallPageState extends ConsumerState<ScheduleCallPage> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => ScheduleCallBloc(
-        repository: ref.read(scheduleCallRepositoryProvider),
+        manager: ref.read(scheduleCallManagerProvider),
       ),
       child: BlocListener<ScheduleCallBloc, ScheduleCallState>(
         listener: (context, state) {
           if (state is ScheduleCallError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message)),
-            );
+            showFlushbar(context, 'Error', state.message, color: Colors.red);
+            debugPrint("Error adding schedule: ${state.message}");
           }
         },
         child: Scaffold(
@@ -106,7 +106,7 @@ class _ScheduleCallPageState extends ConsumerState<ScheduleCallPage> {
                       height: 56,
                       child: ElevatedButton(
                         onPressed: () {
-                          final scheduleCall = ScheduleCall(
+                          final scheduleCall = ScheduleCall.create(
                             id: widget.scheduleCall?.id ?? '',
                             contact: widget.contact,
                             date: _selectedDate,
@@ -121,18 +121,16 @@ class _ScheduleCallPageState extends ConsumerState<ScheduleCallPage> {
                           }
                           
                           final navigator = Navigator.of(context);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(widget.scheduleCall == null ? "Call Scheduled" : "Call Updated"),
-                              duration: const Duration(seconds: 3),
-                              action: SnackBarAction(
-                                label: 'View', 
-                                onPressed: () => navigator.push(MaterialPageRoute(builder: (ctx) => ScheduleDetailsPage(scheduleCall: scheduleCall))),
-                                textColor: Theme.of(context).colorScheme.primary,
-                              )
+                          navigator.pop();
+                          showFlushbar(
+                            context,
+                            'Schedule',
+                            widget.scheduleCall == null ? "Call Scheduled" : "Call Updated",
+                            mainButton: TextButton(
+                              onPressed: () => navigator.push(MaterialPageRoute(builder: (ctx) => ScheduleDetailsPage(scheduleCall: scheduleCall))),
+                              child: const Text('View', style: TextStyle(color: Colors.amber)),
                             ),
                           );
-                          navigator.pop();
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Theme.of(context).colorScheme.primary,
