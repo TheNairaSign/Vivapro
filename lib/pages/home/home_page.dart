@@ -10,6 +10,7 @@ import 'package:vivapro/pages/home/widgets/favorites_section.dart';
 import 'package:vivapro/pages/home/widgets/insights/insights_section.dart';
 import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_bloc.dart';
 import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_event.dart';
+import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_state.dart';
 import 'package:vivapro/pages/home/widgets/people_to_call_section.dart';
 import 'package:vivapro/pages/home/widgets/upcoming_reminders_section.dart';
 import 'package:vivapro/features/schedule_call/presentation/pages/scheduled_calendar_page.dart';
@@ -22,6 +23,14 @@ class HomePage extends ConsumerStatefulWidget {
 }
 
 class _HomePageState extends ConsumerState<HomePage> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -38,13 +47,14 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final now = DateTime.now();
     final dateString = DateFormat('EEEE, MMM d').format(now) + now.daySuffix;
 
     return Scaffold(
       extendBody: true,
       appBar: AppBar(
-        actionsPadding: const EdgeInsets.only(right: 15),
+        actionsPadding: const EdgeInsets.only(right: 5),
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -63,6 +73,70 @@ class _HomePageState extends ConsumerState<HomePage> {
           ],
         ),
         actions: [
+          BlocBuilder<ScheduleCallBloc, ScheduleCallState>(
+            builder: (context, state) {
+              if (state is ScheduleCallLoaded) {
+                final now = DateTime.now();
+                final upcomingCount = state.scheduleCalls.where((call) {
+                  final callDateTime = DateTime(
+                    call.date.year,
+                    call.date.month,
+                    call.date.day,
+                    call.time.hour,
+                    call.time.minute,
+                  );
+                  return callDateTime.isAfter(now) || 
+                         callDateTime.isAfter(now.subtract(const Duration(hours: 24)));
+                }).length;
+
+                if (upcomingCount > 0) {
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: Center(
+                      child: InkWell(
+                        onTap: () {
+                          _scrollController.animateTo(
+                            _scrollController.position.maxScrollExtent,
+                            duration: const Duration(milliseconds: 800),
+                            curve: Curves.easeOutCubic,
+                          );
+                        },
+                        borderRadius: BorderRadius.circular(12),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: Colors.orange.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: Colors.orange.withValues(alpha: 0.2)),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                isDark ? EvaIcons.bellOutline : EvaIcons.bell,
+                                size: 16,
+                                color: Colors.orange,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                '$upcomingCount',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.orange,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                }
+              }
+              return const SizedBox.shrink();
+            },
+          ),
           IconButton(
             onPressed: () {
               Navigator.push(
@@ -72,32 +146,17 @@ class _HomePageState extends ConsumerState<HomePage> {
             }, 
             icon: const Icon(EvaIcons.calendarOutline, size: 20,)
           ),
-          /*
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Text(
-              'SOS',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Colors.red,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          */
         ],
       ),
-      body: const SafeArea(
+      body: SafeArea(
         child: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
+          controller: _scrollController,
+          physics: const BouncingScrollPhysics(),
           padding: AppConstants.padding,
           child: Column(
             spacing: 32,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: const [
               PeopleToCallSection(),
               InsightsSection(),
               FavoritesSection(),

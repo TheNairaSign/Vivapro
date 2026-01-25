@@ -2,7 +2,7 @@ import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
-import 'package:vivapro/core/app_constants.dart';
+
 import 'package:vivapro/features/activity/data/models/activity_log.dart';
 import 'package:vivapro/features/activity/presentation/bloc/activity_bloc.dart';
 import 'package:vivapro/pages/navigation/widgets/activity_list_view.dart';
@@ -56,7 +56,7 @@ class _RecentsPageState extends State<RecentsPage> {
             ),
             floating: true,
             pinned: true,
-            actionsPadding: const EdgeInsets.only(right: 15),
+            actionsPadding: const EdgeInsets.only(right: 20),
             actions: [
               Center(
                 child: Container(
@@ -83,22 +83,19 @@ class _RecentsPageState extends State<RecentsPage> {
             ],
           ),
 
-           const SliverToBoxAdapter(
-            child: Padding(padding: AppConstants.padding,),
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 16),
           ),
 
           // Filter Pills
           SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 0),
-              child: FilterPills(
-                selectedFilter: _selectedFilter,
-                onFilterChanged: (filter) {
-                  setState(() {
-                    _selectedFilter = filter;
-                  });
-                },
-              ),
+            child: FilterPills(
+              selectedFilter: _selectedFilter,
+              onFilterChanged: (filter) {
+                setState(() {
+                  _selectedFilter = filter;
+                });
+              },
             ),
           ),
 

@@ -5,6 +5,7 @@ import 'package:vivapro/features/activity/data/models/activity_log.dart';
 import 'package:vivapro/features/activity/presentation/bloc/activity_bloc.dart';
 import 'package:vivapro/pages/navigation/widgets/activity_item.dart';
 import 'package:intl/intl.dart';
+import 'package:vivapro/core/app_constants.dart';
 
 class ActivityListView extends StatelessWidget {
   final ActivityType? selectedFilter;
@@ -78,9 +79,9 @@ class ActivityListView extends StatelessWidget {
           final keys = groupedLogs.keys.toList();
 
           if (groupedLogs.isEmpty) {
-            return const SliverToBoxAdapter(
+            return SliverToBoxAdapter(
               child: Padding(
-                padding: EdgeInsets.all(20),
+                padding: EdgeInsets.all(AppConstants.padding.left),
                 child: Center(child: Text("No recent activity.")),
               ),
             );
@@ -92,7 +93,7 @@ class ActivityListView extends StatelessWidget {
               final logs = groupedLogs[key]!;
 
               return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
+                padding: EdgeInsets.symmetric(horizontal: AppConstants.padding.left),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

@@ -1,6 +1,7 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:vivapro/features/activity/data/models/activity_log.dart';
+import 'package:vivapro/core/app_constants.dart';
 
 class FilterPills extends StatelessWidget {
   final ActivityType? selectedFilter;
@@ -42,7 +43,7 @@ class FilterPills extends StatelessWidget {
       height: 40,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: EdgeInsets.symmetric(horizontal: AppConstants.padding.left),
         itemCount: filterOptions.length,
         separatorBuilder: (context, index) => const SizedBox(width: 8),
         itemBuilder: (context, index) {
