@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:vivapro/components/show_flushbar.dart';
+import 'package:vivapro/components/show_flushbar_custom.dart';
 import 'package:vivapro/core/utils/call_modal.dart';
 import 'package:vivapro/features/contacts/data/favorite_contact.dart';
 import 'package:vivapro/features/schedule_call/dom/schedule_call_use_case.dart';

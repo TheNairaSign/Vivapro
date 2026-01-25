@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:vivapro/core/app_constants.dart';
 import 'package:vivapro/core/utils/format_date.dart';
 import 'package:vivapro/features/activity/presentation/bloc/activity_bloc.dart';
 import 'package:vivapro/pages/home/widgets/favorites_section.dart';
@@ -92,7 +93,7 @@ class _HomePageState extends ConsumerState<HomePage> {
       body: const SafeArea(
         child: SingleChildScrollView(
           physics: BouncingScrollPhysics(),
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          padding: AppConstants.padding,
           child: Column(
             spacing: 32,
             crossAxisAlignment: CrossAxisAlignment.start,

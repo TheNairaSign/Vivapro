@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
-import 'package:vivapro/components/show_flushbar.dart';
+import 'package:vivapro/components/show_flushbar_custom.dart';
 import 'package:vivapro/core/services/navigator_service.dart';
 import 'package:vivapro/core/services/pending_call_service.dart';
 import 'package:vivapro/features/backup/bloc/backup_bloc.dart';
@@ -71,7 +71,10 @@ class _LifecycleManagerState extends State<LifecycleManager> with WidgetsBinding
                       context: navContext,
                       isScrollControlled: true,
                       backgroundColor: Colors.transparent,
-                      builder: (context) => ManualLogBottomSheet(contact: contact),
+                      builder: (context) => ManualLogBottomSheet(
+                        contact: contact,
+                        existingActivityId: pendingCall['activityId'],
+                      ),
                     );
                   },
                   child: const Text('Yes'),

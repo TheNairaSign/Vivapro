@@ -9,7 +9,7 @@ import 'package:vivapro/features/schedule_call/presentation/pages/schedule_call_
 import 'package:vivapro/pages/contact_picker_page.dart';
 import 'package:vivapro/pages/home/widgets/upcoming_reminder_card.dart';
 import 'package:vivapro/widgets/custom_back_button.dart';
-import 'package:vivapro/components/show_flushbar.dart';
+import 'package:vivapro/components/show_flushbar_custom.dart';
 
 class ScheduledCallsPage extends StatefulWidget {
   const ScheduledCallsPage({super.key});

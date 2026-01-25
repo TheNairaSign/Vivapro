@@ -39,11 +39,9 @@ void showCallOptionsModal({
               title: const Text('Phone'),
               onTap: () async {
                 Navigator.pop(context);
-                await PendingCallService().setPendingCall(contactId);
-                final call = await callWithPhone(phoneNumber);
-                if (call) {
-                  await interactionTracker.recordInteraction(contactId);
-                }
+                final activityId = await interactionTracker.recordInteraction(contactId);
+                await PendingCallService().setPendingCall(contactId, activityId: activityId);
+                await callWithPhone(phoneNumber);
               },
             ),
 
@@ -56,7 +54,8 @@ void showCallOptionsModal({
                 if (exists) {
                   final whatsapp = await callWithWhatsApp(phoneNumber);
                   if (whatsapp) {
-                    await interactionTracker.recordInteraction(contactId);
+                    final activityId = await interactionTracker.recordInteraction(contactId);
+                    await PendingCallService().setPendingCall(contactId, activityId: activityId);
                   }
                 }
               },

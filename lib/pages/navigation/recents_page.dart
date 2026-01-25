@@ -2,6 +2,7 @@ import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
+import 'package:vivapro/core/app_constants.dart';
 import 'package:vivapro/features/activity/data/models/activity_log.dart';
 import 'package:vivapro/features/activity/presentation/bloc/activity_bloc.dart';
 import 'package:vivapro/pages/navigation/widgets/activity_list_view.dart';
@@ -55,43 +56,35 @@ class _RecentsPageState extends State<RecentsPage> {
             ),
             floating: true,
             pinned: true,
+            actionsPadding: const EdgeInsets.only(right: 15),
             actions: [
-              Padding(
-                padding: const EdgeInsets.only(right: 16.0),
-                child: Center(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
-                          blurRadius: 12,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: FilledButton.icon(
-                      style: FilledButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              Center(
+                child: Container(
+                  decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
                       ),
-                      onPressed: () => _showManualLogDialog(context),
-                      icon: const Icon(EvaIcons.plus, size: 15, color: Colors.white,),
-                      label: const Text("Log", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),),
+                    ],
+                  ),
+                  child: FilledButton.icon(
+                    style: FilledButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     ),
+                    onPressed: () => _showManualLogDialog(context),
+                    icon: const Icon(EvaIcons.plus, size: 15, color: Colors.white,),
+                    label: const Text("Log", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),),
                   ),
                 ),
               ),
             ],
           ),
-          // Header
-          const SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.only(
-                left: 20,
-                right: 20,
-                bottom: 20,
-              ),
-            ),
+
+           const SliverToBoxAdapter(
+            child: Padding(padding: AppConstants.padding),
           ),
 
           // Filter Pills

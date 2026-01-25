@@ -1,14 +1,16 @@
+import 'package:isar/isar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
-import 'package:vivapro/components/show_flushbar.dart';
+import 'package:vivapro/components/show_flushbar_custom.dart';
 import 'package:vivapro/features/activity/data/models/activity_log.dart';
 import 'package:vivapro/features/activity/presentation/bloc/activity_bloc.dart';
 import 'package:vivapro/pages/contact_picker_page.dart';
 
 class ManualLogBottomSheet extends StatefulWidget {
   final Contact? contact;
-  const ManualLogBottomSheet({super.key, this.contact});
+  final int? existingActivityId;
+  const ManualLogBottomSheet({super.key, this.contact, this.existingActivityId});
 
   @override
   State<ManualLogBottomSheet> createState() => _ManualLogBottomSheetState();
@@ -68,7 +70,7 @@ class _ManualLogBottomSheetState extends State<ManualLogBottomSheet> {
       type: response['type'] as ActivityType,
       timestamp: DateTime.now(),
       notes: response['label'] as String,
-    );
+    )..id = widget.existingActivityId ?? Isar.autoIncrement;
 
     context.read<ActivityBloc>().add(AddActivity(activity));
     Navigator.of(context).pop();
@@ -98,7 +100,7 @@ class _ManualLogBottomSheetState extends State<ManualLogBottomSheet> {
         type: _selectedType,
         timestamp: DateTime.now(),
         notes: _notes,
-      );
+      )..id = widget.existingActivityId ?? Isar.autoIncrement;
 
       context.read<ActivityBloc>().add(AddActivity(activity));
       Navigator.of(context).pop();

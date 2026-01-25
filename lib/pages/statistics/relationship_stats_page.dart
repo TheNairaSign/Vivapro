@@ -2,6 +2,7 @@ import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vivapro/core/app_constants.dart';
 import 'package:vivapro/core/services/insight_generator.dart';
 import 'package:vivapro/features/activity/presentation/bloc/activity_bloc.dart';
 import 'package:vivapro/features/contacts/repositories/contact_repository.dart';
@@ -80,8 +81,8 @@ class _RelationshipStatsPageState extends ConsumerState<RelationshipStatsPage> w
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
           physics: const BouncingScrollPhysics(),
+          padding: AppConstants.padding,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

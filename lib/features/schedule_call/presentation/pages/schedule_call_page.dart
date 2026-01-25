@@ -13,7 +13,7 @@ import 'package:vivapro/pages/navigation/widgets/schedule_call/call_note_card.da
 import 'package:vivapro/pages/navigation/widgets/schedule_call/date_selection_card.dart';
 import 'package:vivapro/pages/navigation/widgets/schedule_call/profile_card.dart';
 import 'package:vivapro/pages/navigation/widgets/schedule_call/time_selection_card.dart';
-import 'package:vivapro/components/show_flushbar.dart';
+import 'package:vivapro/components/show_flushbar_custom.dart';
 
 class ScheduleCallPage extends ConsumerStatefulWidget {
   final Contact contact;

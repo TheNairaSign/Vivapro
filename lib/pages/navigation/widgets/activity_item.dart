@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:vivapro/core/extensions/first_name_extension.dart';
 import 'package:vivapro/features/activity/data/models/activity_log.dart';
 import 'package:vivapro/widgets/text_avatar.dart';
 
@@ -141,9 +142,8 @@ class ActivityItem extends StatelessWidget {
                     ),
                     const SizedBox(width: 6),
                     Text(
-                      statusText,
-                      style: TextStyle(
-                        fontSize: 13,
+                      statusText.capitalizeFirst,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: isDark ? Colors.grey[400] : Colors.grey[600],
                         fontWeight: FontWeight.w500,
                       ),
@@ -200,12 +200,12 @@ class ActivityItem extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(width: 12),
-                Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  size: 16,
-                  color: isDark ? Colors.grey[600] : Colors.grey[400],
-                ),
+                // const SizedBox(width: 12),
+                // Icon(
+                //   Icons.arrow_forward_ios_rounded,
+                //   size: 16,
+                //   color: isDark ? Colors.grey[600] : Colors.grey[400],
+                // ),
               ],
             ),
         ],

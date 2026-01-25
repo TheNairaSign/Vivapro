@@ -4,6 +4,7 @@ import 'package:flutter_contacts/contact.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vivapro/core/services/interaction_tracker.dart';
+import 'package:vivapro/core/services/pending_call_service.dart';
 
 class ContactActionButtons extends ConsumerWidget {
   final Contact contact;
@@ -24,7 +25,8 @@ class ContactActionButtons extends ConsumerWidget {
               
               if (phoneNumber != null) {
                 // Record the interaction if it's a favorite
-                await interactionTracker.recordInteraction(contact.id);
+                final activityId = await interactionTracker.recordInteraction(contact.id);
+                await PendingCallService().setPendingCall(contact.id, activityId: activityId);
                 
                 // Open phone dialer
                 final uri = Uri(scheme: 'tel', path: phoneNumber);

@@ -70,7 +70,7 @@ class FavoritesCard extends ConsumerWidget {
               ),
               const SizedBox(height: 12),
               Text(
-                contact.contactDetails.displayName.firstName,
+                contact.contactDetails.displayName.capitalizeFirst,
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   // color: Colors.white,
                   fontSize: 18,

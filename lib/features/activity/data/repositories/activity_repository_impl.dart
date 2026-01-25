@@ -22,12 +22,12 @@ class ActivityRepositoryImpl implements ActivityRepository {
   }
 
   @override
-  Future<Either<Failure, void>> logActivity(ActivityLog activity) async {
+  Future<Either<Failure, int>> logActivity(ActivityLog activity) async {
     try {
-      await _isar.writeTxn(() async {
-        await _isar.activityLogs.put(activity);
+      final id = await _isar.writeTxn(() async {
+        return await _isar.activityLogs.put(activity);
       });
-      return const Right(null);
+      return Right(id);
     } catch (e) {
       return Left(Failure(e.toString()));
     }

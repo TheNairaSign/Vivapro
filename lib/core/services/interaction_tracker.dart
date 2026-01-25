@@ -16,8 +16,9 @@ class InteractionTracker {
     this._activityRepository,
   );
 
-  Future<void> recordInteraction(String contactId) async {
+  Future<int?> recordInteraction(String contactId) async {
     final now = DateTime.now();
+    int? activityId;
 
     try {
       // Get the favorite and update it
@@ -43,16 +44,19 @@ class InteractionTracker {
           type: ActivityType.call,
           timestamp: now,
         );
-        await _activityRepository.logActivity(activity);
+        final result = await _activityRepository.logActivity(activity);
+        activityId = result.fold((_) => null, (id) => id);
       }
+      return activityId;
     } catch (e) {
       print('Error recording interaction: $e');
+      return null;
     }
   }
 
   /// Record an interaction for a specific favorite contact object
-  Future<void> recordInteractionForContact(FavoriteContact contact) async {
-    await recordInteraction(contact.id);
+  Future<int?> recordInteractionForContact(FavoriteContact contact) async {
+    return await recordInteraction(contact.id);
   }
 
   /// Manually set the last interaction time (useful for importing call history)

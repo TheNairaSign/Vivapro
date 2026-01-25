@@ -3,6 +3,7 @@ import 'package:flutter_contacts/contact.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vivapro/core/services/interaction_tracker.dart';
+import 'package:vivapro/core/services/pending_call_service.dart';
 import 'package:vivapro/features/contacts/data/favorite_cache_service.dart';
 import 'package:vivapro/core/enums/call_frequency.dart';
 import 'package:vivapro/core/extensions/capitalization.dart';
@@ -136,7 +137,9 @@ class FavoriteTile extends ConsumerWidget {
                 final phoneNumber = contact.phones.isNotEmpty ? contact.phones.first.number : null;
                 
                 if (phoneNumber != null) {
-                  await interactionTracker.recordInteraction(contact.id);
+                  final activityId = await interactionTracker.recordInteraction(contact.id);
+                  await PendingCallService().setPendingCall(contact.id, activityId: activityId);
+                  
                   final uri = Uri(scheme: 'tel', path: phoneNumber);
                   if (await canLaunchUrl(uri)) {
                     await launchUrl(uri);

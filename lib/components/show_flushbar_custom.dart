@@ -16,7 +16,7 @@ void showFlushbarCustom(
     flushbarPosition: FlushbarPosition.TOP,
     margin: const EdgeInsets.all(8),
     borderRadius: BorderRadius.circular(8),
-    backgroundColor: Theme.of(context).colorScheme.surface,
+    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
     mainButton: mainButton,
     boxShadows: [
       BoxShadow(

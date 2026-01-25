@@ -78,12 +78,7 @@ class ActivityListView extends StatelessWidget {
           final keys = groupedLogs.keys.toList();
 
           if (groupedLogs.isEmpty) {
-            return const SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.all(20),
-                child: Center(child: Text("No recent activity.")),
-              ),
-            );
+            return const SliverToBoxAdapter( child: Center(child: Text("No recent activity.")));
           }
 
           return SliverList(
@@ -104,14 +99,14 @@ class ActivityListView extends StatelessWidget {
                       child: Text(
                         key,
                         style: Theme.of(context)
-                            .textTheme
-                            .bodySmall
-                            ?.copyWith(
-                              fontSize: 13,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.grey[500],
-                              letterSpacing: 1.2,
-                            ),
+                        .textTheme
+                        .bodySmall
+                        ?.copyWith(
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey[500],
+                          letterSpacing: 1.2,
+                        ),
                       ),
                     ),
                     ...logs.map((log) => ActivityItem(log: log)),

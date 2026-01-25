@@ -1,5 +1,5 @@
 extension FirstNameExtension on String {
-  String get firstName {
+  String get capitalizeFirst {
     final [first, ..._] = trim().split(RegExp(r'\s+'));
     return first;
   }
