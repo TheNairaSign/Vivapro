@@ -36,7 +36,7 @@ class _AddFavoritePageState extends ConsumerState<AddFavoritePage> {
     if (isLoading) return;
 
     if (_nameController.text.isEmpty || _phoneController.text.isEmpty) {
-      showFlushbar(context, 'Missing Info', 'Please fill in all fields');
+      showFlushbarCustom(context, 'Missing Info', 'Please fill in all fields');
       return;
     }
 
@@ -57,11 +57,11 @@ class _AddFavoritePageState extends ConsumerState<AddFavoritePage> {
 
       if (mounted) {
         Navigator.pop(context);
-        showFlushbar(context, 'Success', 'Contact saved successfully');
+        showFlushbarCustom(context, 'Success', 'Contact saved successfully');
       }
     } catch (e) {
       if (mounted) {
-        showFlushbar(context, 'Error', 'Failed to save contact: $e');
+        showFlushbarCustom(context, 'Error', 'Failed to save contact: $e');
       }
     } finally {
       if (mounted) {

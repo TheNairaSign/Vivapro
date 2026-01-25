@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
+import 'package:vivapro/components/show_flushbar.dart';
 import 'package:vivapro/features/activity/data/models/activity_log.dart';
 import 'package:vivapro/features/activity/presentation/bloc/activity_bloc.dart';
 import 'package:vivapro/pages/contact_picker_page.dart';
@@ -49,8 +50,11 @@ class _ManualLogBottomSheetState extends State<ManualLogBottomSheet> {
 
   void _logQuickResponse(Map<String, dynamic> response) {
     if (_selectedContact == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select a contact first')),
+      showFlushbarCustom(
+        context,
+        'Error',
+        'Please select a contact first',
+        color: Colors.red,
       );
       return;
     }
@@ -69,12 +73,6 @@ class _ManualLogBottomSheetState extends State<ManualLogBottomSheet> {
     context.read<ActivityBloc>().add(AddActivity(activity));
     Navigator.of(context).pop();
     
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Logged: ${response['label']} with ${_selectedContact!.displayName}'),
-        backgroundColor: Colors.green,
-      ),
-    );
   }
 
   void _logCustomInteraction() {
@@ -82,8 +80,11 @@ class _ManualLogBottomSheetState extends State<ManualLogBottomSheet> {
       _formKey.currentState?.save();
       
       if (_selectedContact == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please select a contact first')),
+        showFlushbarCustom(
+          context,
+          'Error',
+          'Please select a contact first',
+          color: Colors.red,
         );
         return;
       }
@@ -102,11 +103,11 @@ class _ManualLogBottomSheetState extends State<ManualLogBottomSheet> {
       context.read<ActivityBloc>().add(AddActivity(activity));
       Navigator.of(context).pop();
       
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Logged interaction with ${_selectedContact!.displayName}'),
-          backgroundColor: Colors.green,
-        ),
+      showFlushbarCustom(
+        context,
+        'Success',
+        'Logged interaction with ${_selectedContact!.displayName}',
+        color: Colors.green,
       );
     }
   }
@@ -117,7 +118,7 @@ class _ManualLogBottomSheetState extends State<ManualLogBottomSheet> {
     
     return Container(
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1C1C1E) : Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
       ),
       padding: EdgeInsets.only(

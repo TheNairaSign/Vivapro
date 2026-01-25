@@ -53,7 +53,7 @@ class _ScheduleCallPageState extends ConsumerState<ScheduleCallPage> {
       child: BlocListener<ScheduleCallBloc, ScheduleCallState>(
         listener: (context, state) {
           if (state is ScheduleCallError) {
-            showFlushbar(context, 'Error', state.message, color: Colors.red);
+            showFlushbarCustom(context, 'Error', state.message, color: Colors.red);
             debugPrint("Error adding schedule: ${state.message}");
           }
         },
@@ -122,7 +122,7 @@ class _ScheduleCallPageState extends ConsumerState<ScheduleCallPage> {
                           
                           final navigator = Navigator.of(context);
                           navigator.pop();
-                          showFlushbar(
+                          showFlushbarCustom(
                             context,
                             'Schedule',
                             widget.scheduleCall == null ? "Call Scheduled" : "Call Updated",

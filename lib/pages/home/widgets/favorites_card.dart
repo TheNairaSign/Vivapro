@@ -104,7 +104,6 @@ class FavoritesCard extends ConsumerWidget {
                         phoneNumber: phoneNumber,
                         contactId: contact.id,
                       );
-                      
                     }
                   },
                   style: ElevatedButton.styleFrom(

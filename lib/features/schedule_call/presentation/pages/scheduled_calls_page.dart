@@ -55,7 +55,7 @@ class _ScheduledCallsPageState extends State<ScheduledCallsPage> {
       body: BlocConsumer<ScheduleCallBloc, ScheduleCallState>(
         listener: (context, state) {
           if (state is ScheduleCallError) {
-            showFlushbar(context, 'Error', state.message, color: Colors.red);
+            showFlushbarCustom(context, 'Error', state.message, color: Colors.red);
           }
         },
         builder: (context, state) {

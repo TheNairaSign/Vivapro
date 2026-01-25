@@ -1,4 +1,3 @@
-
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,7 +7,6 @@ import 'package:vivapro/features/activity/presentation/bloc/activity_bloc.dart';
 import 'package:vivapro/features/contacts/repositories/contact_repository.dart';
 import 'package:vivapro/pages/statistics/widgets/health_card.dart';
 import 'package:vivapro/pages/statistics/widgets/stats_card.dart';
-import 'package:vivapro/pages/statistics/widgets/summary_section.dart';
 import 'package:vivapro/pages/statistics/widgets/weekly_activity_chart.dart';
 
 class RelationshipStatsPage extends ConsumerStatefulWidget {
@@ -141,6 +139,7 @@ class _RelationshipStatsPageState extends ConsumerState<RelationshipStatsPage> w
                 },
               ),
               
+              /*
               const SizedBox(height: 32),
               
               Text(
@@ -159,6 +158,7 @@ class _RelationshipStatsPageState extends ConsumerState<RelationshipStatsPage> w
                   return const SizedBox.shrink();
                 },
               ),
+              */
 
               const SizedBox(height: 100), // Bottom padding for nav bar
             ],

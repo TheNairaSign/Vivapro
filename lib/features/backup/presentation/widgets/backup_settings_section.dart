@@ -56,15 +56,15 @@ class _BackupSettingsSectionState extends ConsumerState<BackupSettingsSection> {
     return BlocListener<BackupBloc, BackupState>(
       listener: (context, state) {
         if (state is BackupSuccess) {
-          showFlushbar(context, 'Backup Success', state.message, color: Colors.green);
+          showFlushbarCustom(context, 'Backup Success', state.message, color: Colors.green);
           _updateLastBackupTime();
         } else if (state is BackupFailure) {
-          showFlushbar(context, 'Backup Failed', state.error, color: theme.colorScheme.error);
+          showFlushbarCustom(context, 'Backup Failed', state.error, color: theme.colorScheme.error);
         } else if (state is RestoreBackupSuccess) {
-          showFlushbar(context, 'Restore Success', state.message, color: Colors.blue);
+          showFlushbarCustom(context, 'Restore Success', state.message, color: Colors.blue);
           _updateLastBackupTime();
         } else if (state is RestoreBackupFailure) {
-          showFlushbar(context, 'Restore Failed', state.error, color: theme.colorScheme.error);
+          showFlushbarCustom(context, 'Restore Failed', state.error, color: theme.colorScheme.error);
         }
       },
       child: _buildBody(context, isBackupEnabled),

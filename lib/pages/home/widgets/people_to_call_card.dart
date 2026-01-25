@@ -81,7 +81,7 @@ class PeopleToCallCard extends ConsumerWidget {
             scheduledTime,
           );
           if (success && context.mounted) {
-            showFlushbar(
+            showFlushbarCustom(
               context,
               'Reminder Set',
               'Reminder set for ${contact.contactDetails.displayName} at ${scheduledTime.hour}:00',

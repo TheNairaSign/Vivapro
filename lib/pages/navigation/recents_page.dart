@@ -1,3 +1,4 @@
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
@@ -38,10 +39,9 @@ class _RecentsPageState extends State<RecentsPage> {
                 Text(
                   'Activity',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: isDark ? Colors.white : const Color(0xFF1A1D1E),
-                        letterSpacing: -0.5,
-                      ),
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: -0.5,
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Text(
@@ -56,14 +56,30 @@ class _RecentsPageState extends State<RecentsPage> {
             floating: true,
             pinned: true,
             actions: [
-              TextButton.icon(
-                style: TextButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))
+              Padding(
+                padding: const EdgeInsets.only(right: 16.0),
+                child: Center(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
+                          blurRadius: 12,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: FilledButton.icon(
+                      style: FilledButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                      onPressed: () => _showManualLogDialog(context),
+                      icon: const Icon(EvaIcons.plus, size: 15, color: Colors.white,),
+                      label: const Text("Log", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),),
+                    ),
+                  ),
                 ),
-                onPressed: () => _showManualLogDialog(context),
-                icon: const Icon(Icons.add, color: Colors.white,),
-                label: Text("Log", style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white),),
               ),
             ],
           ),
@@ -81,7 +97,7 @@ class _RecentsPageState extends State<RecentsPage> {
           // Filter Pills
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+              padding: const EdgeInsets.symmetric(vertical: 0),
               child: FilterPills(
                 selectedFilter: _selectedFilter,
                 onFilterChanged: (filter) {

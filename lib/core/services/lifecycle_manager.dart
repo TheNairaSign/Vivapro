@@ -57,7 +57,7 @@ class _LifecycleManagerState extends State<LifecycleManager> with WidgetsBinding
           if (navigatorState == null) return;
           final navContext = navigatorState.context;
 
-          showFlushbar(
+          showFlushbarCustom(
             navContext,
             'Log Call?',
             'Log your recent call with ${contact.displayName}?',

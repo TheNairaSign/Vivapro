@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:vivapro/core/utils/format_date.dart';
 import 'package:vivapro/features/activity/presentation/bloc/activity_bloc.dart';
 import 'package:vivapro/pages/home/widgets/favorites_section.dart';
 import 'package:vivapro/pages/home/widgets/insights/insights_section.dart';
@@ -37,7 +38,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
-    final dateString = DateFormat('EEEE, MMM d').format(now);
+    final dateString = DateFormat('EEEE, MMM d').format(now) + now.daySuffix;
 
     return Scaffold(
       extendBody: true,
@@ -70,6 +71,7 @@ class _HomePageState extends ConsumerState<HomePage> {
             }, 
             icon: const Icon(EvaIcons.calendarOutline, size: 20,)
           ),
+          /*
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
@@ -84,6 +86,7 @@ class _HomePageState extends ConsumerState<HomePage> {
               ),
             ),
           ),
+          */
         ],
       ),
       body: const SafeArea(
