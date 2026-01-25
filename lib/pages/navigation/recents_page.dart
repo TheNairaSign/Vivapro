@@ -74,7 +74,7 @@ class _RecentsPageState extends State<RecentsPage> {
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     ),
-                    onPressed: () => _showManualLogDialog(context),
+                    onPressed: () => showManualLogDialog(context),
                     icon: const Icon(EvaIcons.plus, size: 15, color: Colors.white,),
                     label: const Text("Log", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),),
                   ),
@@ -83,11 +83,8 @@ class _RecentsPageState extends State<RecentsPage> {
             ],
           ),
 
-          const SliverToBoxAdapter(
-            child: SizedBox(height: 16),
-          ),
+          const SliverToBoxAdapter(child: SizedBox(height: 16)),
 
-          // Filter Pills
           SliverToBoxAdapter(
             child: FilterPills(
               selectedFilter: _selectedFilter,
@@ -106,12 +103,14 @@ class _RecentsPageState extends State<RecentsPage> {
     );
   }
 
-  void _showManualLogDialog(BuildContext context, {Contact? contact}) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => ManualLogBottomSheet(contact: contact),
-    );
-  }
+}
+
+void showManualLogDialog(BuildContext context, {Contact? contact}) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Theme.of(context).colorScheme.surface,
+    showDragHandle: true,
+    builder: (context) => ManualLogBottomSheet(contact: contact),
+  );
 }
