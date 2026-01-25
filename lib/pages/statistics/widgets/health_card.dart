@@ -13,7 +13,8 @@ class HealthCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  Container(
+    return  AnimatedContainer(
+      duration: const Duration(milliseconds: 500),
       width: double.infinity,
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -49,13 +50,20 @@ class HealthCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  Text(
-                    '$percentage%',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 42,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  TweenAnimationBuilder<double>(
+                    tween: Tween<double>(begin: 0, end: percentage.toDouble()),
+                    duration: const Duration(milliseconds: 1000),
+                    curve: Curves.easeOutCubic,
+                    builder: (context, value, child) {
+                      return Text(
+                        '${value.toInt()}%',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 42,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
@@ -77,12 +85,19 @@ class HealthCard extends StatelessWidget {
           const SizedBox(height: 24),
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
-            child: LinearProgressIndicator(
-              borderRadius: BorderRadius.circular(999),
-              value: percentage / 100,
-              backgroundColor: Colors.white.withValues(alpha: 0.3),
-              valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
-              minHeight: 8,
+            child: TweenAnimationBuilder<double>(
+              tween: Tween<double>(begin: 0, end: percentage / 100),
+              duration: const Duration(milliseconds: 1500),
+              curve: Curves.easeOutCubic,
+              builder: (context, value, child) {
+                return LinearProgressIndicator(
+                  borderRadius: BorderRadius.circular(999),
+                  value: value,
+                  backgroundColor: Colors.white.withValues(alpha: 0.3),
+                  valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+                  minHeight: 8,
+                );
+              },
             ),
           ),
           const SizedBox(height: 8),

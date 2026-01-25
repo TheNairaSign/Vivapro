@@ -5,15 +5,29 @@ import 'package:vivapro/pages/statistics/widgets/top_caller_info.dart';
 
 // ignore: must_be_immutable
 class SummarySection extends StatefulWidget {
-  const SummarySection(this.logs, {super.key});
+  const SummarySection(this.logs, {super.key, this.initialFilter = 'Weekly'});
   final List<ActivityLog> logs;
+  final String initialFilter;
 
   @override
   State<SummarySection> createState() => _SummarySectionState();
 }
 
 class _SummarySectionState extends State<SummarySection> {
-  String _selectedFilter = 'Weekly'; 
+  late String _selectedFilter; 
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedFilter = widget.initialFilter;
+  }
+  @override
+  void didUpdateWidget(SummarySection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.initialFilter != widget.initialFilter) {
+      _selectedFilter = widget.initialFilter;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,51 +41,7 @@ class _SummarySectionState extends State<SummarySection> {
 
     return Column(
       children: [
-        // Filter Chips
-        Container(
-          height: 40,
-          margin: const EdgeInsets.only(bottom: 24),
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            children: ['Daily', 'Weekly', 'Monthly'].map((filter) {
-              final isSelected = _selectedFilter == filter;
-              return Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: FilterChip(
-                  selected: isSelected,
-                  label: Text(filter),
-                  onSelected: (selected) {
-                    setState(() {
-                      _selectedFilter = filter;
-                    });
-                  },
-                  backgroundColor: Theme.of(context).colorScheme.surface,
-                  selectedColor: Theme.of(
-                    context,
-                  ).colorScheme.primary.withAlpha(51),
-                  checkmarkColor: Theme.of(context).colorScheme.primary,
-                  labelStyle: TextStyle(
-                    color: isSelected
-                        ? Theme.of(context).colorScheme.primary
-                        : Colors.grey[600],
-                    fontWeight: isSelected
-                        ? FontWeight.bold
-                        : FontWeight.normal,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    side: BorderSide(
-                      color: isSelected
-                          ? Theme.of(context).colorScheme.primary
-                          : Colors.grey[300]!,
-                    ),
-                  ),
-                  showCheckmark: false,
-                ),
-              );
-            }).toList(),
-          ),
-        ),
+        const SizedBox(height: 0),
 
         // Summary Cards
         Row(

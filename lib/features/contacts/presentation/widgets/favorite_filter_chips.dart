@@ -13,39 +13,30 @@ class FilterChips extends ConsumerWidget {
       scrollDirection: Axis.horizontal,
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
-        children: ['All', 'Daily', 'Weekly', 'Monthly', 'Custom']
-            .map(
-              (e) => Padding(
-                padding: const EdgeInsets.only(right: 10),
-                child: FilterChip(
-                  label: Text(e),
-                  selected: e == selectedFilter,
-                  onSelected: (selected) {
-                    if (selected) {
-                      ref.read(favoriteFilterProvider.notifier).setFilter(e);
-                    }
-                  },
-                  backgroundColor: Theme.of(context).colorScheme.surface,
-                  selectedColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
-                  checkmarkColor: Theme.of(context).colorScheme.primary,
-                  labelStyle: TextStyle(
-                    color: e == selectedFilter 
-                        ? Theme.of(context).colorScheme.primary 
-                        : Colors.grey[600],
-                    fontWeight: e == selectedFilter ? FontWeight.w900 : FontWeight.w500,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    side: BorderSide(
-                      color: e == selectedFilter 
-                          ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.2)
-                          : Colors.grey.withValues(alpha: 0.1),
-                    ),
-                  ),
-                ),
+        children: ['All', 'Daily', 'Weekly', 'Monthly', 'Custom'].map((e) => Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: FilterChip(
+              label: Text(e),
+              selected: e == selectedFilter,
+              onSelected: (selected) {
+                if (selected) {
+                  ref.read(favoriteFilterProvider.notifier).setFilter(e);
+                }
+              },
+              backgroundColor: Theme.of(context).colorScheme.surface,
+              selectedColor: Theme.of(context).colorScheme.primary,
+              showCheckmark: false,
+              labelStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: e == selectedFilter 
+                    ? Colors.white 
+                    : Colors.grey[600],
+                fontWeight: e == selectedFilter ? FontWeight.w900 : FontWeight.w500,
               ),
-            )
-            .toList(),
+              side: BorderSide.none,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            ),
+          ),
+        ).toList(),
       ),
     );
   }

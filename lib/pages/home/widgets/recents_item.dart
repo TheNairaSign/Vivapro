@@ -43,7 +43,7 @@ class RecentsItem extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: activityColor.withOpacity(.25),
+              color: activityColor.withValues(alpha: .25),
               shape: BoxShape.circle,
             ),
             child: Icon(

@@ -84,7 +84,7 @@ class _RecentsPageState extends State<RecentsPage> {
           ),
 
            const SliverToBoxAdapter(
-            child: Padding(padding: AppConstants.padding),
+            child: Padding(padding: AppConstants.padding,),
           ),
 
           // Filter Pills
