@@ -1,6 +1,7 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:vivapro/features/events/data/calendar_event.dart';
 import 'package:vivapro/features/schedule_call/data/schedule_call.dart';
 
 class ScheduleCalendar extends StatelessWidget {
@@ -16,7 +17,7 @@ class ScheduleCalendar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TableCalendar<ScheduleCall>(
+    return TableCalendar<dynamic>(
       firstDay: DateTime.now().subtract(const Duration(days: 365)),
       lastDay: DateTime.now().add(const Duration(days: 365)),
       focusedDay: calendarState.focusedDay,
@@ -24,7 +25,7 @@ class ScheduleCalendar extends StatelessWidget {
       rowHeight: 52,
       daysOfWeekHeight: 30,
       selectedDayPredicate: (day) => isSameDay(calendarState.selectedDay, day),
-      eventLoader: calendarState.eventsForDay,
+      eventLoader: (day) => calendarState.eventsForDay(day),
       onDaySelected: (selectedDay, focusedDay) => calendarState.onDaySelected(selectedDay, focusedDay),
       onFormatChanged: (format) => onFormatChanged(format),
       onPageChanged: (focusedDay) => calendarState.focusedDay = focusedDay,
@@ -34,7 +35,7 @@ class ScheduleCalendar extends StatelessWidget {
           shape: BoxShape.circle,
         ),
         markerSize: 5,
-        markersMaxCount: 1,
+        markersMaxCount: 3,
         markerMargin: const EdgeInsets.only(top: 6),
         todayDecoration: BoxDecoration(
           color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
@@ -103,15 +104,28 @@ class ScheduleCalendar extends StatelessWidget {
           if (events.isEmpty) return null;
           return Positioned(
             bottom: 8,
-            child: Container(
-              width: 4,
-              height: 4,
-              decoration: BoxDecoration(
-                color: isSameDay(date, calendarState.selectedDay)
-                    ? Colors.white
-                    : Theme.of(context).colorScheme.primary,
-                shape: BoxShape.circle,
-              ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: events.take(3).map((event) {
+                Color dotColor;
+                if (event is CalendarEvent) {
+                  dotColor = event.color;
+                } else {
+                  dotColor = Theme.of(context).colorScheme.primary;
+                }
+                
+                return Container(
+                  width: 5,
+                  height: 5,
+                  margin: const EdgeInsets.symmetric(horizontal: 1),
+                  decoration: BoxDecoration(
+                    color: isSameDay(date, calendarState.selectedDay)
+                        ? Colors.white
+                        : dotColor,
+                    shape: BoxShape.circle,
+                  ),
+                );
+              }).toList(),
             ),
           );
         },
@@ -124,7 +138,7 @@ class CalendarState {
   DateTime focusedDay;
   DateTime? selectedDay;
   CalendarFormat calendarFormat;
-  final List<ScheduleCall> Function(DateTime day) eventsForDay;
+  final List<dynamic> Function(DateTime day) eventsForDay;
   final Function(DateTime selectedDay, DateTime focusedDay) onDaySelected;
 
   CalendarState({

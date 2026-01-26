@@ -23,6 +23,9 @@ import 'package:vivapro/core/services/notification_handler.dart';
 import 'package:vivapro/core/services/lifecycle_manager.dart';
 import 'package:vivapro/features/backup/bloc/backup_bloc.dart';
 import 'package:vivapro/features/backup/data/backup_worker.dart';
+import 'package:vivapro/features/events/dom/calendar_event_manager.dart';
+import 'package:vivapro/features/events/presentation/bloc/calendar_event_bloc.dart';
+
 
 class Vivapro extends ConsumerStatefulWidget {
   const Vivapro({super.key});
@@ -59,8 +62,10 @@ class _VivaproState extends ConsumerState<Vivapro> {
           ),
           BlocProvider(create: (create) => MessageBloc(ref.read(messageRepository))),
           BlocProvider(create: (create) => ScheduleCallBloc(manager: ref.read(scheduleCallManagerProvider))),
+          BlocProvider(create: (create) => CalendarEventBloc(manager: ref.read(calendarEventManagerProvider))),
           BlocProvider(create: (create) => BackupBloc(backupWorker: ref.read(backupWorkerProvider))),
         ],
+
         child: LifecycleManager(
           child: AnnotatedRegion<SystemUiOverlayStyle>(
             value: SystemUiOverlayStyle(

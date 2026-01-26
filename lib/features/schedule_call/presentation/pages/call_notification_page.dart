@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_contacts/contact.dart';
 import 'package:vivapro/features/schedule_call/presentation/widgets/reschedule_modal.dart';
 
 class CallNotificationPage extends StatelessWidget {
@@ -77,6 +76,7 @@ class CallNotificationPage extends StatelessWidget {
                   onPressed: () {
                     showModalBottomSheet(
                       context: context,
+                      isDismissible: true,
                       isScrollControlled: true,
                       backgroundColor: Colors.transparent,
                       builder: (context) => const RescheduleModal(),

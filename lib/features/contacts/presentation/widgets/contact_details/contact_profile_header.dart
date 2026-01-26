@@ -1,7 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/contact.dart';
-import 'package:vivapro/core/app_constants.dart';
+import 'package:vivapro/widgets/text_avatar.dart';
 
 class ContactProfileHeader extends StatelessWidget {
   final Contact contact;
@@ -20,18 +19,14 @@ class ContactProfileHeader extends StatelessWidget {
                 shape: BoxShape.circle,
                 border: Border.all(color: Theme.of(context).colorScheme.primary, width: 3),
               ),
-              child: CircleAvatar(
+              child: contact.photo != null ? CircleAvatar(
                 radius: 60,
-                backgroundImage: contact.photo != null
-                    ? MemoryImage(contact.photo!)
-                    : const CachedNetworkImageProvider(
-                        AppConstants.placeHolderProfileImage,
-                      ),
-              ),
+                backgroundImage: MemoryImage(contact.photo!),
+              ) : TextAvatar(name: contact.displayName, radius: 60, textSize: 40),
             ),
             Positioned(
               bottom: 0,
-              right: 0,
+              right: 12,
               child: Container(
                 width: 24,
                 height: 24,

@@ -47,6 +47,8 @@ class _ContactDetailsPageState extends ConsumerState<ContactDetailsPage> {
           'Contact',
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
         ),
+        centerTitle: true,
+        /*
         actions: [
           TextButton(
             onPressed: () {
@@ -61,6 +63,7 @@ class _ContactDetailsPageState extends ConsumerState<ContactDetailsPage> {
             ),
           ),
         ],
+        */
       ),
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 20),

@@ -1,8 +1,15 @@
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:vivapro/core/utils/format_date.dart';
+import 'package:vivapro/features/events/data/calendar_event.dart';
+import 'package:vivapro/features/events/presentation/bloc/calendar_event_bloc.dart';
+import 'package:vivapro/features/events/presentation/bloc/calendar_event_event.dart';
+import 'package:vivapro/features/events/presentation/bloc/calendar_event_state.dart';
+import 'package:vivapro/features/events/presentation/pages/add_event_page.dart';
+import 'package:vivapro/features/events/presentation/widgets/event_card.dart';
 import 'package:vivapro/features/schedule_call/data/schedule_call.dart';
 import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_bloc.dart';
 import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_event.dart';
@@ -31,6 +38,7 @@ class _ScheduledCalendarPageState extends State<ScheduledCalendarPage> {
     super.initState();
     _selectedDay = _focusedDay;
     context.read<ScheduleCallBloc>().add(ScheduleCallFetch());
+    context.read<CalendarEventBloc>().add(CalendarEventFetch());
   }
 
   void onFormatChanged (CalendarFormat format) {
@@ -47,71 +55,107 @@ class _ScheduledCalendarPageState extends State<ScheduledCalendarPage> {
     });
   }
 
-  List<ScheduleCall> _getEventsForDay(DateTime day, List<ScheduleCall> allCalls) {
-    return allCalls.where((call) => isSameDay(call.date, day)).toList();
+  List<dynamic> _getEventsForDay(DateTime day, List<ScheduleCall> allCalls, List<CalendarEvent> allEvents) {
+    final calls = allCalls.where((call) => isSameDay(call.date, day)).toList();
+    final events = allEvents.where((event) => isSameDay(event.date, day)).toList();
+    return [...calls, ...events];
   }
 
-  void _onDaySelected(DateTime selectedDay, DateTime focusedDay, List<ScheduleCall> allCalls) {
-    if (!isSameDay(_selectedDay, selectedDay)) {
-      setState(() {
-        _selectedDay = selectedDay;
-        _focusedDay = focusedDay;
-      });
+  void _onDaySelected(DateTime selectedDay, DateTime focusedDay, List<ScheduleCall> allCalls, List<CalendarEvent> allEvents) {
+    setState(() {
+      _selectedDay = selectedDay;
+      _focusedDay = focusedDay;
+    });
 
-      final events = _getEventsForDay(selectedDay, allCalls);
-      if (events.isEmpty) {
-        _showNoScheduleDialog(selectedDay, isFromCalendar: true);
-      }
+    final events = _getEventsForDay(selectedDay, allCalls, allEvents);
+    if (events.isEmpty) {
+      _showAddOptionDialog(selectedDay);
     }
   }
 
-  String title(DateTime date, {required bool isFromCalendar}) {
-    return isFromCalendar ? "No Scheduled Call for ${DateFunctions.formatDay(date, DateTime.now())}" : "Scheduled Call for ${DateFunctions.formatDay(date, DateTime.now())}?";
-  }
-
-  String content(DateTime date, {required bool isFromCalendar}) {
-    return isFromCalendar 
-    ? "Would you like to schedule a call for ${DateFunctions.formatDay(date, DateTime.now())}?" 
-    : "No calls scheduled for this day";
-  }
-
-  void _showNoScheduleDialog(DateTime date, {required bool isFromCalendar}) {
-    showDialog(
+  void _showAddOptionDialog(DateTime date) {
+    showModalBottomSheet(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(title(date, isFromCalendar: isFromCalendar), style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
-        content: Text(content(date, isFromCalendar: isFromCalendar), style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text("Cancel"),
-          ),
-          TextButton(
-            onPressed: () async {
-              Navigator.pop(context);
-              final contact = await Navigator.of(context).push<Contact?>(
-                MaterialPageRoute(builder: (ctx) => const ContactPickerPage()),
-              );
-              if (contact != null && context.mounted) {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (ctx) => ScheduleCallPage(
-                      contact: contact,
-                      scheduleCall: ScheduleCall.create(
-                        id: '',
-                        contact: contact,
-                        date: date,
-                        time: TimeOfDay.now(),
-                        note: '',
-                      ),
-                    ),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (context) => Container(
+        padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const SizedBox(height: 24),
+            Text(
+              "Add to Calendar",
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              "Choose what you want to schedule for ${DateFunctions.formatDay(date, DateTime.now())}",
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
+            ),
+            const SizedBox(height: 32),
+            Row(
+              children: [
+                Expanded(
+                  child: _OptionCard(
+                    icon: EvaIcons.phoneOutline,
+                    label: "Schedule Call",
+                    color: Theme.of(context).colorScheme.primary,
+                    onTap: () async {
+                      Navigator.pop(context);
+                      final contact = await Navigator.of(context).push<Contact?>(
+                        MaterialPageRoute(builder: (ctx) => const ContactPickerPage()),
+                      );
+                      if (contact != null && context.mounted) {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (ctx) => ScheduleCallPage(
+                              contact: contact,
+                              scheduleCall: ScheduleCall.create(
+                                id: '',
+                                contact: contact,
+                                date: date,
+                                time: TimeOfDay.now(),
+                                note: '',
+                              ),
+                            ),
+                          ),
+                        );
+                      }
+                    },
                   ),
-                );
-              }
-            },
-            child: const Text("Schedule"),
-          ),
-        ],
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: _OptionCard(
+                    icon: EvaIcons.calendarOutline,
+                    label: "Add Event",
+                    color: Colors.orange,
+                    onTap: () {
+                      Navigator.pop(context);
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (ctx) => AddEventPage(initialDate: date),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+          ],
+        ),
       ),
     );
   }
@@ -121,99 +165,170 @@ class _ScheduledCalendarPageState extends State<ScheduledCalendarPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Call Calendar",
+          "Calendar",
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
         ),
         centerTitle: false,
         leading: const CustomBackButton(),
       ),
       body: BlocBuilder<ScheduleCallBloc, ScheduleCallState>(
-        builder: (context, state) {
-          List<ScheduleCall> allCalls = [];
-          if (state is ScheduleCallLoaded) {
-            allCalls = state.scheduleCalls;
-          }
+        builder: (context, callState) {
+          return BlocBuilder<CalendarEventBloc, CalendarEventState>(
+            builder: (context, eventState) {
+              List<ScheduleCall> allCalls = [];
+              if (callState is ScheduleCallLoaded) {
+                allCalls = callState.scheduleCalls;
+              }
 
-          final selectedEvents = _selectedDay != null ? _getEventsForDay(_selectedDay!, allCalls) : [];
+              List<CalendarEvent> allEvents = [];
+              if (eventState is CalendarEventLoaded) {
+                allEvents = eventState.events;
+              }
 
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-            child: Column(
-              crossAxisAlignment: .start,
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surface,
-                    borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.03),
-                          blurRadius: 20,
-                          offset: const Offset(0, 10),
+              final selectedEvents = _selectedDay != null 
+                  ? _getEventsForDay(_selectedDay!, allCalls, allEvents) 
+                  : [];
+
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.surface,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.03),
+                            blurRadius: 20,
+                            offset: const Offset(0, 10),
+                          ),
+                        ],
+                      ),
+                      child: ScheduleCalendar(
+                        calendarState: CalendarState(
+                          focusedDay: _focusedDay,
+                          selectedDay: _selectedDay,
+                          calendarFormat: _calendarFormat,
+                          eventsForDay: (day) => _getEventsForDay(day, allCalls, allEvents),
+                          onDaySelected: (selectedDay, focusedDay) => 
+                              _onDaySelected(selectedDay, focusedDay, allCalls, allEvents),
+                        ),
+                        onFormatChanged: onFormatChanged,
+                        onPageChanged: onPageChanged,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Planned for ${DateFunctions.formatDay(_selectedDay ?? DateTime.now(), DateTime.now())}",
+                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                            color: Colors.grey[500],
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.2,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () => _showAddOptionDialog(_selectedDay ?? DateTime.now()),
+                          icon: Icon(EvaIcons.plus, color: Theme.of(context).colorScheme.primary),
                         ),
                       ],
                     ),
-                    child: ScheduleCalendar(
-                      calendarState: CalendarState(
-                        focusedDay: _focusedDay,
-                        selectedDay: _selectedDay,
-                        calendarFormat: _calendarFormat,
-                        eventsForDay: (day) => _getEventsForDay(day, allCalls),
-                        onDaySelected: (selectedDay, focusedDay) => _onDaySelected(selectedDay, focusedDay, allCalls),
-                      ),
-                      onFormatChanged: onFormatChanged,
-                      onPageChanged: onPageChanged,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Text(
-                    "Planned for ${_selectedDay?.day}",
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      color: Colors.grey[500],
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.2,
-                    ),
-                  ),
-                  Expanded(
-                    child: AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 400),
-                      transitionBuilder: (child, animation) {
-                        return FadeTransition(
-                          opacity: animation,
-                          child: SlideTransition(
-                            position: Tween<Offset>(
-                              begin: const Offset(0, 0.05),
-                              end: Offset.zero,
-                            ).animate(animation),
-                            child: child,
-                          ),
-                        );
-                      },
-                      child: selectedEvents.isEmpty
-                        ? Center(
-                            key: const ValueKey('no_events'),
-                            child: NoEventsCard(
-                              onPressed: () {
-                              _selectedDay != null ? _showNoScheduleDialog(_selectedDay!, isFromCalendar: false) : null;
-                            }),
-                          )
-                          : ListView.separated(
-                              key: ValueKey('events_${_selectedDay?.millisecondsSinceEpoch}'),
-                              itemCount: selectedEvents.length,
-                              physics: const BouncingScrollPhysics(),
-                              separatorBuilder: (context, index) => const SizedBox(height: 12),
-                              itemBuilder: (context, index) {
-                                final call = selectedEvents[index];
-                                return UpcomingReminderCard(call: call, callDateTime: call.date);
-                              },
+                    Expanded(
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 400),
+                        transitionBuilder: (child, animation) {
+                          return FadeTransition(
+                            opacity: animation,
+                            child: SlideTransition(
+                              position: Tween<Offset>(
+                                begin: const Offset(0, 0.05),
+                                end: Offset.zero,
+                              ).animate(animation),
+                              child: child,
                             ),
-                        ),
-                  ),
-              ],
-            ),
+                          );
+                        },
+                        child: selectedEvents.isEmpty
+                            ? Center(
+                                key: const ValueKey('no_events'),
+                                child: NoEventsCard(
+                                  onPressed: () {
+                                    _selectedDay != null ? _showAddOptionDialog(_selectedDay!) : null;
+                                  },
+                                ),
+                              )
+                            : ListView.separated(
+                                key: ValueKey('events_${_selectedDay?.millisecondsSinceEpoch}'),
+                                itemCount: selectedEvents.length,
+                                physics: const BouncingScrollPhysics(),
+                                separatorBuilder: (context, index) => const SizedBox(height: 12),
+                                itemBuilder: (context, index) {
+                                  final item = selectedEvents[index];
+                                  if (item is ScheduleCall) {
+                                    return UpcomingReminderCard(call: item, callDateTime: item.date);
+                                  } else {
+                                    return EventCard(event: item as CalendarEvent);
+                                  }
+                                },
+                              ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
           );
         },
       ),
     );
   }
 }
+
+class _OptionCard extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color color;
+  final VoidCallback onTap;
+
+  const _OptionCard({
+    required this.icon,
+    required this.label,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: color.withValues(alpha: 0.2), width: 1),
+        ),
+        child: Column(
+          children: [
+            Icon(icon, color: color, size: 32),
+            const SizedBox(height: 12),
+            Text(
+              label,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: color,
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
