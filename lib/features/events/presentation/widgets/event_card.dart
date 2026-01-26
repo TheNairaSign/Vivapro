@@ -38,6 +38,7 @@ class EventCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
         ),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
               width: 50,
@@ -56,32 +57,44 @@ class EventCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    event.title,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
+                  Row(
+                    children: [
+                      Text(
+                        event.title,
+                        style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      const Spacer(),
+                      Icon(
+                        EvaIcons.clockOutline,
+                        size: 14,
+                        color: event.color,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        timeStr,
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(color: event.color),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 4),
                   Row(
                     children: [
-                      Icon(EvaIcons.clockOutline, size: 14, color: Colors.grey[500]),
-                      const SizedBox(width: 4),
-                      Text(
-                        timeStr,
-                        style: TextStyle(color: Colors.grey[500], fontSize: 13),
-                      ),
                       if (event.description.isNotEmpty) ...[
-                         const SizedBox(width: 12),
-                         Icon(EvaIcons.textOutline, size: 14, color: Colors.grey[500]),
+                         Container(
+                          width: 4,
+                          height: 4,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[500],
+                            shape: BoxShape.circle,
+                          ),
+                        ),
                          const SizedBox(width: 4),
                          Expanded(
                            child: Text(
                              event.description,
-                             maxLines: 1,
-                             overflow: TextOverflow.ellipsis,
-                             style: TextStyle(color: Colors.grey[500], fontSize: 13),
+                             maxLines: 2,
+                             overflow: TextOverflow.ellipsis,   
+                             style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.grey[500], ),
                            ),
                          ),
                       ],
