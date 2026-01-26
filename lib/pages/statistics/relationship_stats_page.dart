@@ -3,7 +3,6 @@ import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vivapro/core/app_constants.dart';
-import 'package:vivapro/core/enums/call_frequency.dart';
 import 'package:vivapro/core/services/insight_generator.dart';
 import 'package:vivapro/core/utils/relationship_health_utils.dart';
 import 'package:vivapro/features/activity/data/models/activity_log.dart';

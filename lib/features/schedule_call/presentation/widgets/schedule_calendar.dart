@@ -2,7 +2,6 @@ import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:vivapro/features/events/data/calendar_event.dart';
-import 'package:vivapro/features/schedule_call/data/schedule_call.dart';
 
 class ScheduleCalendar extends StatelessWidget {
   const ScheduleCalendar({

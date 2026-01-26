@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vivapro/core/providers/navigation_provider.dart';
 import 'package:vivapro/pages/statistics/relationship_stats_page.dart';
 import 'package:vivapro/pages/home/home_page.dart';
 import 'package:vivapro/pages/navigation/profile_page.dart';
@@ -7,43 +9,71 @@ import 'package:vivapro/pages/contact_picker_page.dart';
 import 'package:vivapro/pages/navigation/widgets/bottom_nav_bar.dart';
 import 'package:vivapro/features/schedule_call/presentation/pages/schedule_call_page.dart';
 
-class NavigationPage extends StatefulWidget {
+class NavigationPage extends ConsumerStatefulWidget {
   const NavigationPage({super.key});
 
   @override
-  State<NavigationPage> createState() => _NavigationPageState();
+  ConsumerState<NavigationPage> createState() => _NavigationPageState();
 }
 
-class _NavigationPageState extends State<NavigationPage> {
-  int selectedIndex = 0;
+class _NavigationPageState extends ConsumerState<NavigationPage> {
   late PageController pageController;
 
   @override
   void initState() {
     super.initState();
-    pageController = PageController(initialPage: selectedIndex);
+    final initialIndex = ref.read(navigationIndexProvider);
+    pageController = PageController(initialPage: initialIndex);
+  }
+
+  @override
+  void dispose() {
+    pageController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final selectedIndex = ref.watch(navigationIndexProvider);
+
+    // Listen to index changes to animate the PageView
+    ref.listen<int>(navigationIndexProvider, (previous, next) {
+      if (pageController.hasClients && pageController.page?.round() != next) {
+        pageController.animateToPage(
+          next,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+
 
     List<Widget> pages = [
       HomePage(),
       const RecentsPage(),
-const RelationshipStatsPage(),
+      const RelationshipStatsPage(),
       ProfilePage(),
     ];
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
       extendBody: true,
-      body: pages.elementAt(selectedIndex),
-      bottomNavigationBar:  BottomNavBar(
+      body: PageView(
+        controller: pageController,
+        onPageChanged: (index) {
+          ref.read(navigationIndexProvider.notifier).state = index;
+        },
+        physics: const NeverScrollableScrollPhysics(),
+        children: pages,
+      ),
+      bottomNavigationBar: BottomNavBar(
         selectedIndex: selectedIndex,
-        onItemTapped: (int index) async {
-          setState(() {
-            selectedIndex = index;
-          });
+        onItemTapped: (int index) {
+          pageController.animateToPage(
+            index,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          );
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -65,44 +95,9 @@ const RelationshipStatsPage(),
           }
         },
         backgroundColor: Theme.of(context).colorScheme.primary,
-        // shape: const CircleBorder(),
         child: const Icon(Icons.add, color: Colors.white, size: 30),
       ),
     );
   }
-
-/*
-  void _handlePlusButtonAction() async {
-    switch (selectedIndex) {
-      case 0:
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text("Home Action")));
-        break;
-      case 1:
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const AddFavoritePage()),
-        );
-        break;
-      case 3:
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => NewChatScreen()),
-        );
-        break;
-      case 4:
-        try {
-          await FlutterContacts.openExternalInsert();
-        } catch (e) {
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Failed to open contacts: $e")),
-            );
-          }
-        }
-        break;
-    }
-  }
-  */
 }
+

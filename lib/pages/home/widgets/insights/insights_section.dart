@@ -8,7 +8,8 @@ import 'package:vivapro/pages/home/widgets/relationship_health_container.dart';
 
 class InsightsSection extends ConsumerWidget {
   const InsightsSection({super.key});
-
+  
+  /*
   Color getHealthColor(int health, BuildContext context) {
     if (health == 100) return Theme.of(context).colorScheme.primary;
     if (health > 80) return const Color(0xFF4CAF50);
@@ -16,6 +17,7 @@ class InsightsSection extends ConsumerWidget {
     if (health > 40) return const Color(0xFFFF9800);
     return const Color(0xFFF44336);
   }
+  */
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -70,6 +72,8 @@ class InsightsSection extends ConsumerWidget {
     );
   }
 
+  /*
+
   int _calculateRelationshipHealth(List<ContactInsight> insights) {
     if (insights.isEmpty) return 100;
     
@@ -83,5 +87,6 @@ class InsightsSection extends ConsumerWidget {
     
     return health.clamp(0, 100);
   }
+  */
 }
 

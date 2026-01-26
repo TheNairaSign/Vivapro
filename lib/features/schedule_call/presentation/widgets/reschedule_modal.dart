@@ -140,7 +140,7 @@ class RescheduleModal extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: .min,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, color: Theme.of(context).colorScheme.onSurface, size: 32),
           const Spacer(),
