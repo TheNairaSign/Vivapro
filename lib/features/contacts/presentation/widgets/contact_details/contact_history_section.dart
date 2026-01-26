@@ -20,14 +20,14 @@ class ContactHistorySection extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: .start,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
+            Text(
               'Recent History',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
             ),
             TextButton(
               onPressed: () {},
@@ -35,7 +35,6 @@ class ContactHistorySection extends StatelessWidget {
                 'View All',
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: Theme.of(context).colorScheme.primary,
-                  fontSize: 14,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -114,7 +113,7 @@ class ContactHistorySection extends StatelessWidget {
   Widget _buildHistoryItem(ActivityLog log) {
     final isCall = log.type == ActivityType.call;
     final isMissedCall = isCall && log.durationSeconds == 0;
-    final isOutgoingCall = isCall && log.durationSeconds! > 0;
+    final isOutgoingCall = isCall && log.durationSeconds != null && log.durationSeconds! > 0;
     final date = log.timestamp;
     final timeAgo = formatTimeAgo(date);
     final duration = log.durationSeconds != null && log.durationSeconds! > 0
@@ -141,7 +140,7 @@ class ContactHistorySection extends StatelessWidget {
       }
     } else {
       activityText = log.type.name.capitalizeFirstofEach;
-      activityIcon = Ionicons.information_circle_outline; // Default icon for other activities
+      activityIcon = Ionicons.information_circle_outline;
       activityColor = Colors.grey;
     }
 
@@ -153,7 +152,7 @@ class ContactHistorySection extends StatelessWidget {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: activityColor.withOpacity(0.15),
+              color: activityColor.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(

@@ -37,26 +37,26 @@ class UpcomingReminderCard extends ConsumerWidget {
       key: Key('home_reminder_${call.id}'),
       direction: (isNearby || isMissed) ? DismissDirection.horizontal : DismissDirection.endToStart,
       background: (isNearby || isMissed)
-          ? Container(
-              alignment: Alignment.centerLeft,
-              margin: const EdgeInsets.only(bottom: 12),
-              padding: const EdgeInsets.only(left: 20),
-              decoration: BoxDecoration(
-                color: isNearby ? Colors.green.shade400 : Colors.blue.shade400,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Row(
-                children: [
-                  Icon(isNearby ? EvaIcons.phoneOutline : EvaIcons.calendarOutline, color: Colors.white),
-                  const SizedBox(width: 8),
-                  Text(
-                    isNearby ? "Call Now" : "Reschedule",
-                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-            )
-          : const SizedBox.shrink(),
+        ? Container(
+            alignment: Alignment.centerLeft,
+            margin: const EdgeInsets.only(bottom: 12),
+            padding: const EdgeInsets.only(left: 20),
+            decoration: BoxDecoration(
+              color: isNearby ? Colors.green.shade400 : Colors.blue.shade400,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Row(
+              children: [
+                Icon(isNearby ? EvaIcons.phoneOutline : EvaIcons.calendarOutline, color: Colors.white),
+                const SizedBox(width: 8),
+                Text(
+                  isNearby ? "Call Now" : "Reschedule",
+                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+          )
+        : const SizedBox.shrink(),
       secondaryBackground: Container(
         alignment: Alignment.centerRight,
         margin: const EdgeInsets.only(bottom: 12),

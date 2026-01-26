@@ -1,5 +1,5 @@
-import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vivapro/core/app_constants.dart';
@@ -13,7 +13,6 @@ import 'package:vivapro/features/contacts/repositories/contact_repository.dart';
 import 'package:vivapro/pages/statistics/widgets/health_card.dart';
 import 'package:vivapro/pages/statistics/widgets/period_selector_chips.dart';
 import 'package:vivapro/pages/statistics/widgets/stats_card.dart';
-import 'package:vivapro/pages/statistics/widgets/summary_section.dart';
 import 'package:vivapro/pages/statistics/widgets/weekly_activity_chart.dart';
 
 class RelationshipStatsPage extends ConsumerStatefulWidget {
