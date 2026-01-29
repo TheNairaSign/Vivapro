@@ -22,7 +22,7 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage>
 
   final List<Map<String, String>> _onboardingData = [
     {
-      'title': 'Welcome to Vivapro',
+      'title': 'Welcome to Loop',
       'description':
           'Maintain meaningful connections with your favorite people through consistent interaction.',
       'image': 'assets/images/onboarding_welcome.png',
@@ -129,38 +129,58 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage>
                   ),
                 ),
                 
-                ElevatedButton(
-                  onPressed: () {
-                    if (_currentPage == _onboardingData.length - 1) {
-                      ref.read(onboardingProvider.notifier).completeOnboarding();
-                    } else {
-                      _pageController.nextPage(
-                        duration: const Duration(milliseconds: 500),
-                        curve: Curves.easeInOut,
-                      );
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: theme.colorScheme.primary,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 32,
-                      vertical: 16,
+                Row(
+                  children: [
+                    if (_currentPage < _onboardingData.length - 1)
+                      TextButton(
+                        onPressed: () {
+                          ref.read(onboardingProvider.notifier).completeOnboarding();
+                          Navigator.pop(context);
+                        },
+                        child: Text(
+                          'Skip',
+                          style: TextStyle(
+                            color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    const SizedBox(width: 10),
+                    ElevatedButton(
+                      onPressed: () {
+                        if (_currentPage == _onboardingData.length - 1) {
+                          ref.read(onboardingProvider.notifier).completeOnboarding();
+                          Navigator.pop(context);
+                        } else {
+                          _pageController.nextPage(
+                            duration: const Duration(milliseconds: 500),
+                            curve: Curves.easeInOut,
+                          );
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: theme.colorScheme.primary,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 32,
+                          vertical: 16,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        elevation: 5,
+                      ),
+                      child: Text(
+                        _currentPage == _onboardingData.length - 1
+                            ? 'Get Started'
+                            : 'Next',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    elevation: 5,
-                  ),
-                  child: Text(
-                    _currentPage == _onboardingData.length - 1
-                        ? 'Get Started'
-                        : 'Next',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  ],
                 ),
               ],
             ),

@@ -27,17 +27,17 @@ import 'package:vivapro/features/backup/bloc/backup_bloc.dart';
 import 'package:vivapro/features/backup/data/backup_worker.dart';
 import 'package:vivapro/features/events/dom/calendar_event_manager.dart';
 import 'package:vivapro/features/events/presentation/bloc/calendar_event_bloc.dart';
-import 'package:vivapro/pages/onboarding/onboarding_page.dart';
+import 'package:vivapro/pages/onboarding/start_page.dart';
 
 
-class Vivapro extends ConsumerStatefulWidget {
-  const Vivapro({super.key});
+class Loop extends ConsumerStatefulWidget {
+  const Loop({super.key});
 
   @override
-  ConsumerState<Vivapro> createState() => _VivaproState();
+  ConsumerState<Loop> createState() => _LoopState();
 }
 
-class _VivaproState extends ConsumerState<Vivapro> {
+class _LoopState extends ConsumerState<Loop> {
 
   @override
   void initState() {
@@ -80,7 +80,7 @@ class _VivaproState extends ConsumerState<Vivapro> {
                 ),
                 child: MaterialApp(
                   navigatorKey: navigatorKey,
-                  title: 'Vivapro',
+                  title: 'Loop',
                   debugShowCheckedModeBanner: false,
                   theme: AppTheme.lightTheme,
                   darkTheme: AppTheme.darkTheme,
@@ -93,7 +93,7 @@ class _VivaproState extends ConsumerState<Vivapro> {
                             ),
                           ),
                         )
-                      : (hasCompletedOnboarding ? const NavigationPage() : const OnboardingPage()),
+                      : (hasCompletedOnboarding ? const NavigationPage() : const StartPage()),
                 ),
               );
             },

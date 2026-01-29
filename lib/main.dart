@@ -11,7 +11,6 @@ import 'package:isar/isar.dart';
 import 'package:vivapro/features/events/data/calendar_event.dart';
 import 'package:vivapro/features/schedule_call/data/schedule_call.dart';
 import 'package:vivapro/features/profile/data/user_profile.dart';
-import 'package:vivapro/pages/onboarding/onboarding_page.dart';
 
 void main(List<String> args) async {
   await bootstrap();
@@ -32,6 +31,6 @@ void main(List<String> args) async {
     overrides: [
       isarProvider.overrideWith((ref) => isar),
     ],
-    child: const Vivapro()),
+    child: const Loop()),
   );
 }
