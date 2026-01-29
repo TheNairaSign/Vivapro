@@ -6,9 +6,7 @@ import 'package:vivapro/features/events/presentation/bloc/calendar_event_state.d
 class CalendarEventBloc extends Bloc<CalendarEventEvent, CalendarEventState> {
   final CalendarEventManager _manager;
 
-  CalendarEventBloc({required CalendarEventManager manager})
-      : _manager = manager,
-        super(CalendarEventInitial()) {
+  CalendarEventBloc({required CalendarEventManager manager}) : _manager = manager, super(CalendarEventInitial()) {
     on<CalendarEventFetch>(_onFetch);
     on<CalendarEventAdd>(_onAdd);
     on<CalendarEventDelete>(_onDelete);

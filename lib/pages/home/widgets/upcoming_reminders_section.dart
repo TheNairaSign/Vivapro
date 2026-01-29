@@ -1,16 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vivapro/features/events/presentation/bloc/calendar_event_bloc.dart';
+import 'package:vivapro/features/events/presentation/bloc/calendar_event_state.dart';
+import 'package:vivapro/features/events/presentation/widgets/event_card.dart';
 import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_bloc.dart';
+import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_event.dart';
 import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_state.dart';
 import 'package:vivapro/features/schedule_call/presentation/pages/scheduled_calls_page.dart';
 import 'package:vivapro/pages/home/widgets/upcoming_reminder_card.dart';
 
-class UpcomingRemindersSection extends ConsumerWidget {
+class UpcomingRemindersSection extends ConsumerStatefulWidget {
   const UpcomingRemindersSection({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<UpcomingRemindersSection> createState() => _UpcomingRemindersSectionState();
+}
+
+class _UpcomingRemindersSectionState extends ConsumerState<UpcomingRemindersSection> {
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<ScheduleCallBloc>().add(ScheduleCallFetch());
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return BlocBuilder<ScheduleCallBloc, ScheduleCallState>(
       builder: (context, state) {
         if (state is ScheduleCallLoaded) {
@@ -40,7 +56,7 @@ class UpcomingRemindersSection extends ConsumerWidget {
           // Sort by date/time (closest to now first)
           displayedCalls.sort((a, b) => a.dateTime.compareTo(b.dateTime));
 
-          final limitedCalls = displayedCalls.take(3).toList();
+          final limitedCalls = displayedCalls.take(1).toList(); 
 
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -74,6 +90,43 @@ class UpcomingRemindersSection extends ConsumerWidget {
                 padding: const EdgeInsetsGeometry.only(bottom: 10),
                 child: UpcomingReminderCard(call: item.call, callDateTime: item.dateTime),
               )),
+
+              BlocBuilder<CalendarEventBloc, CalendarEventState>(
+                builder: (context, eventState) {
+                  if (eventState is CalendarEventLoaded) {
+                    final now = DateTime.now();
+                    final allEvents = eventState.events.map((event) {
+                      final eventDateTime = DateTime(
+                        event.date.year,
+                        event.date.month,
+                        event.date.day,
+                        event.time.hour,
+                        event.time.minute,
+                      );
+                      return (event: event, dateTime: eventDateTime);
+                    }).toList();
+
+                    // // Filter for upcoming events OR missed events from the last 24 hours
+                    // final displayedEvents = allEvents.where((item) {
+                    //   if (item.dateTime.isAfter(now)) return true;
+                    //   // Include missed events from the last 24 hours
+                    //   return item.dateTime.isAfter(now.subtract(const Duration(hours: 24)));
+                    // }).toList();
+
+                    // if (displayedEvents.isEmpty) {
+                    //   return const SizedBox.shrink();
+                    // }
+
+                    // // Sort by date/time (closest to now first)
+                    allEvents.sort((a, b) => a.dateTime.compareTo(b.dateTime));
+
+                    final limitedEvents = allEvents.take(1).toList();
+
+                    return EventCard(event: limitedEvents.first.event);
+                  }
+                  return const SizedBox.shrink();
+                },
+              ),
             ],
           );
         }

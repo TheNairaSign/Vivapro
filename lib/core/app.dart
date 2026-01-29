@@ -1,9 +1,11 @@
 import 'package:vivapro/core/services/navigator_service.dart';
+import 'package:vivapro/core/providers/onboarding_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' hide ChangeNotifierProvider;
 import 'package:provider/provider.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:vivapro/core/bootstrap.dart';
 import 'package:vivapro/core/theme/app_theme.dart';
 import 'package:vivapro/features/activity/data/repositories/activity_repository_impl.dart';
@@ -25,6 +27,7 @@ import 'package:vivapro/features/backup/bloc/backup_bloc.dart';
 import 'package:vivapro/features/backup/data/backup_worker.dart';
 import 'package:vivapro/features/events/dom/calendar_event_manager.dart';
 import 'package:vivapro/features/events/presentation/bloc/calendar_event_bloc.dart';
+import 'package:vivapro/pages/onboarding/onboarding_page.dart';
 
 
 class Vivapro extends ConsumerStatefulWidget {
@@ -67,19 +70,33 @@ class _VivaproState extends ConsumerState<Vivapro> {
         ],
 
         child: LifecycleManager(
-          child: AnnotatedRegion<SystemUiOverlayStyle>(
-            value: SystemUiOverlayStyle(
-              systemNavigationBarColor: Theme.of(context).scaffoldBackgroundColor,
-              systemNavigationBarIconBrightness: Brightness.dark,
-            ),
-            child: MaterialApp(
-              navigatorKey: navigatorKey,
-              title: 'Vivapro',
-              debugShowCheckedModeBanner: false,
-              theme: AppTheme.lightTheme,
-              darkTheme: AppTheme.darkTheme,
-              home: const NavigationPage(),
-            ),
+          child: Builder(
+            builder: (context) {
+              final hasCompletedOnboarding = ref.watch(onboardingProvider);
+              return AnnotatedRegion<SystemUiOverlayStyle>(
+                value: SystemUiOverlayStyle(
+                  systemNavigationBarColor: Theme.of(context).scaffoldBackgroundColor,
+                  systemNavigationBarIconBrightness: Brightness.dark,
+                ),
+                child: MaterialApp(
+                  navigatorKey: navigatorKey,
+                  title: 'Vivapro',
+                  debugShowCheckedModeBanner: false,
+                  theme: AppTheme.lightTheme,
+                  darkTheme: AppTheme.darkTheme,
+                  home: hasCompletedOnboarding == null
+                      ? Scaffold(
+                          body: Center(
+                            child: LoadingAnimationWidget.staggeredDotsWave(
+                              color: Theme.of(context).colorScheme.primary,
+                              size: 50,
+                            ),
+                          ),
+                        )
+                      : (hasCompletedOnboarding ? const NavigationPage() : const OnboardingPage()),
+                ),
+              );
+            },
           ),
         ),
       ),
