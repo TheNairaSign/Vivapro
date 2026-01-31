@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:universal_back_gesture/back_gesture_config.dart';
+import 'package:universal_back_gesture/back_gesture_page_transitions_builder.dart';
 
 
 class AppTheme {
 
-  static const accentLight = Color(0xFFF59E0B); // Amber 500
-  static const accentDark = Color(0xFFFBBF24); // Amber 400
+  static const accentLight = Color(0xFFF59E0B);
+  static const accentDark = Color(0xFFFBBF24);
 
-  static const accentLight2 = Color(0xFF14B8A6); // Teal 500
-  static const accentDark2 = Color(0xFF5EEAD4); // Teal 300
+  static const accentLight2 = Color(0xFF14B8A6);
+  static const accentDark2 = Color(0xFF5EEAD4);
 
   // Private color classes
   /*
@@ -49,9 +51,20 @@ class AppTheme {
     colorScheme: ColorScheme.dark(
       primary: _darkColors.primary,
       secondary: _darkColors.primary,
-      background: Color(0xFF121212),
+      // background: Color(0xFF121212),
       surface: Color(0xFF1E1E1E),
       tertiary: _darkColors.tertiary,
+    ),
+    pageTransitionsTheme: PageTransitionsTheme(
+      builders: {
+        for (final platform in TargetPlatform.values)
+          platform: BackGesturePageTransitionsBuilder(
+            parentTransitionBuilder: const CupertinoPageTransitionsBuilder(),
+            config: BackGestureConfig(
+              animationProgressCompleteThreshold: 0.4,
+            ),
+          ),
+      },
     ),
   );
 
@@ -64,10 +77,19 @@ class AppTheme {
     colorScheme: ColorScheme.light(
       primary: _darkColors.primary,
       secondary: _darkColors.secondary,
-      background: Colors.white,
       // surface: Color(0xFFF0F0F0),
       surface: Colors.white,
       tertiary: _darkColors.tertiary,
+    ),
+    pageTransitionsTheme: PageTransitionsTheme(
+      builders: {
+        for (final platform in TargetPlatform.values)
+          platform: BackGesturePageTransitionsBuilder(
+            // Any transitionBuilder you want to use
+            parentTransitionBuilder: const FadeForwardsPageTransitionsBuilder(),
+            config: BackGestureConfig(),
+          ),
+      },
     ),
   );
 }

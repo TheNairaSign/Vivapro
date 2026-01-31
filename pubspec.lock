@@ -1429,6 +1429,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.4.0"
+  universal_back_gesture:
+    dependency: "direct main"
+    description:
+      name: universal_back_gesture
+      sha256: "7dc1adec4e500bcd99f91908661e3c91053e84412f7c28aff1a41638577b92c9"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.0"
   url_launcher:
     dependency: "direct main"
     description:
