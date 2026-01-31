@@ -19,7 +19,7 @@ class CalendarEventManager {
     return result.fold(
       (failure) => left(failure),
       (id) async {
-        // We can add notification for events later if needed
+        await notifications.scheduleCalendarEventNotification(event);
         return right(id);
       },
     );
@@ -28,6 +28,7 @@ class CalendarEventManager {
   Stream<List<CalendarEvent>> watchEvents() => local.watchEvents();
 
   Future<Either<Failure, Unit>> deleteEvent(String id) async {
+    await notifications.cancelNotification(id.hashCode);
     return await local.deleteEvent(id);
   }
 }

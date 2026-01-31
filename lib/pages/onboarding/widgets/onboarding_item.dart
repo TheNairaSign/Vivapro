@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 class OnboardingItem extends StatelessWidget {
   final String title;
@@ -41,7 +42,7 @@ class OnboardingItem extends StatelessWidget {
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(30),
-                child: Image.asset(
+                child: SvgPicture.asset(
                   imagePath,
                   fit: BoxFit.cover,
                 ),

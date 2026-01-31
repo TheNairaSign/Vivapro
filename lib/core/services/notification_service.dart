@@ -6,6 +6,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
+import 'package:vivapro/features/events/data/calendar_event.dart';
 import 'package:vivapro/features/schedule_call/data/schedule_call.dart';
 import 'package:flutter/foundation.dart';
 
@@ -24,11 +25,9 @@ class NotificationService {
 
   NotificationService._internal();
 
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
-  final StreamController<NotificationResponse> _notificationStreamController =
-      StreamController<NotificationResponse>.broadcast();
+  final StreamController<NotificationResponse> _notificationStreamController = StreamController<NotificationResponse>.broadcast();
   
   Stream<NotificationResponse> get onNotificationResponse => _notificationStreamController.stream;
 
@@ -102,11 +101,18 @@ class NotificationService {
       enableVibration: true,
     );
 
-    await flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
-        ?.createNotificationChannel(channel);
-    debugPrint('Android Notification Channel Created');
+    const AndroidNotificationChannel eventChannel = AndroidNotificationChannel(
+      'scheduled_events_channel',
+      'Scheduled Events',
+      description: 'Notifications for scheduled events',
+      importance: Importance.max,
+      playSound: true,
+      enableVibration: true,
+    );
+
+    await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.createNotificationChannel(channel);
+    await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.createNotificationChannel(eventChannel);
+    debugPrint('Android Notification Channels Created');
   }
 
   Future<void> requestPermissions() async {
@@ -126,16 +132,12 @@ class NotificationService {
             sound: true,
           );
     } else if (Platform.isAndroid) {
-      final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
-          flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin>();
+      final AndroidFlutterLocalNotificationsPlugin? androidImplementation = flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
 
-      final bool? postNotificationsGranted =
-          await androidImplementation?.requestNotificationsPermission();
+      final bool? postNotificationsGranted = await androidImplementation?.requestNotificationsPermission();
       debugPrint('POST_NOTIFICATIONS granted: $postNotificationsGranted');
 
-      final bool? exactAlarmGranted =
-          await androidImplementation?.requestExactAlarmsPermission();
+      final bool? exactAlarmGranted = await androidImplementation?.requestExactAlarmsPermission();
       debugPrint('EXACT_ALARM permission granted: $exactAlarmGranted');
     }
   }
@@ -151,7 +153,7 @@ class NotificationService {
       call.time.minute,
     );
 
-    debugPrint('Scheduling notification:');
+    debugPrint('Scheduling call notification:');
     debugPrint('Current time (local): $now');
     debugPrint('Scheduled time (local): $scheduledDate');
 
@@ -160,15 +162,11 @@ class NotificationService {
       return;
     }
 
-    // Use a stable ID for the notification based on the call ID.
-    // Ensure it's a positive integer, as some platforms might have issues with negative IDs.
     final notificationId = call.id.isEmpty ? call.hashCode : call.id.hashCode;
-
-    // Verify types exist
     const androidAllowWhileIdle = AndroidScheduleMode.exactAllowWhileIdle;
 
     await flutterLocalNotificationsPlugin.zonedSchedule(
-      notificationId.abs(), 
+      notificationId.abs(),
       'Scheduled Call with ${call.contact.displayName}',
       call.note.isNotEmpty ? call.note : 'It\'s time for your call!',
       scheduledDate,
@@ -188,7 +186,7 @@ class NotificationService {
             const AndroidNotificationAction(
               'remind_later',
               'Remind Me Later',
-              showsUserInterface: false, // Background action
+              showsUserInterface: false,
             ),
           ],
         ),
@@ -197,11 +195,67 @@ class NotificationService {
         ),
       ),
       androidScheduleMode: androidAllowWhileIdle,
-      payload: jsonEncode(call.toJson()), // Use jsonEncode for valid JSON
+      payload: jsonEncode(call.toJson()),
     ).then((_) {
-      debugPrint('Notification scheduled successfully with ID: ${notificationId.abs()}');
+      debugPrint('Call notification scheduled successfully with ID: ${notificationId.abs()}');
     }).catchError((e) {
-      debugPrint('Error scheduling notification: $e');
+      debugPrint('Error scheduling call notification: $e');
+    });
+  }
+
+  Future<void> scheduleCalendarEventNotification(CalendarEvent event) async {
+    final now = tz.TZDateTime.now(tz.local);
+    final scheduledDate = tz.TZDateTime(
+      tz.local,
+      event.date.year,
+      event.date.month,
+      event.date.day,
+      event.timeHour,
+      event.timeMinute,
+    );
+
+    debugPrint('Scheduling event notification:');
+    debugPrint('Current time (local): $now');
+    debugPrint('Scheduled time (local): $scheduledDate');
+
+    if (scheduledDate.isBefore(now)) {
+      debugPrint('Skipping notification: Scheduled time is in the past.');
+      return;
+    }
+
+    final notificationId = event.id.isEmpty ? event.hashCode : event.id.hashCode;
+    const androidAllowWhileIdle = AndroidScheduleMode.exactAllowWhileIdle;
+
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      notificationId.abs(),
+      event.title,
+      event.description.isNotEmpty ? event.description : 'Your scheduled event is starting now!',
+      scheduledDate,
+      NotificationDetails(
+        android: AndroidNotificationDetails(
+          'scheduled_events_channel',
+          'Scheduled Events',
+          channelDescription: 'Notifications for scheduled events',
+          importance: Importance.max,
+          priority: Priority.high,
+          actions: [
+            const AndroidNotificationAction(
+              'view_event',
+              'View Event',
+              showsUserInterface: true,
+            ),
+          ],
+        ),
+        iOS: const DarwinNotificationDetails(
+          categoryIdentifier: 'call_reminder_category', // Can create separate category for iOS if needed
+        ),
+      ),
+      androidScheduleMode: androidAllowWhileIdle,
+      payload: jsonEncode(event.toJson()),
+    ).then((_) {
+      debugPrint('Event notification scheduled successfully with ID: ${notificationId.abs()}');
+    }).catchError((e) {
+      debugPrint('Error scheduling event notification: $e');
     });
   }
 
@@ -215,16 +269,15 @@ class NotificationService {
 
   Future<void> showTestNotification() async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
-        AndroidNotificationDetails(
-      'scheduled_calls_channel',
-      'Scheduled Calls',
-      channelDescription: 'Notifications for scheduled calls',
-      importance: Importance.max,
-      priority: Priority.high,
-      ticker: 'ticker',
-    );
-    const NotificationDetails platformChannelSpecifics =
-        NotificationDetails(android: androidPlatformChannelSpecifics);
+      AndroidNotificationDetails(
+        'scheduled_calls_channel',
+        'Scheduled Calls',
+        channelDescription: 'Notifications for scheduled calls',
+        importance: Importance.max,
+        priority: Priority.high,
+        ticker: 'ticker',
+      );
+    const NotificationDetails platformChannelSpecifics = NotificationDetails(android: androidPlatformChannelSpecifics);
     await flutterLocalNotificationsPlugin.show(
       0,
       'Test Notification',

@@ -25,19 +25,19 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage>
       'title': 'Welcome to Loop',
       'description':
           'Maintain meaningful connections with your favorite people through consistent interaction.',
-      'image': 'assets/images/onboarding_welcome.png',
+      'image': 'assets/svgs/onboarding/people.svg',
     },
     {
       'title': 'Stay Connected',
       'description':
           'Schedule regular calls and reminders to ensure you never lose touch with those who matter most.',
-      'image': 'assets/images/onboarding_connect.png',
+      'image': 'assets/svgs/onboarding/date-picker-bro.svg',
     },
     {
       'title': 'Smart Insights',
       'description':
           'Get intelligent suggestions and relationship health tracking to keep your social life thriving.',
-      'image': 'assets/images/onboarding_insights.png',
+      'image': 'assets/svgs/onboarding/connection.svg',
     },
   ];
 

@@ -8,6 +8,8 @@ import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_b
 import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_event.dart';
 import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_state.dart';
 import 'package:vivapro/features/schedule_call/presentation/pages/scheduled_calls_page.dart';
+import 'package:vivapro/features/events/data/calendar_event.dart';
+import 'package:vivapro/features/schedule_call/data/schedule_call.dart';
 import 'package:vivapro/pages/home/widgets/upcoming_reminder_card.dart';
 
 class UpcomingRemindersSection extends ConsumerStatefulWidget {
@@ -28,109 +30,100 @@ class _UpcomingRemindersSectionState extends ConsumerState<UpcomingRemindersSect
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ScheduleCallBloc, ScheduleCallState>(
-      builder: (context, state) {
-        if (state is ScheduleCallLoaded) {
-          final now = DateTime.now();
-          final allSchedules = state.scheduleCalls.map((call) {
-            final callDateTime = DateTime(
-              call.date.year,
-              call.date.month,
-              call.date.day,
-              call.time.hour,
-              call.time.minute,
-            );
-            return (call: call, dateTime: callDateTime);
-          }).toList();
+      builder: (context, scheduleState) {
+        return BlocBuilder<CalendarEventBloc, CalendarEventState>(
+          builder: (context, eventState) {
+            final now = DateTime.now();
+            final today = DateTime(now.year, now.month, now.day);
+            final tomorrow = today.add(const Duration(days: 1));
 
-          // Filter for upcoming calls OR missed calls from the last 24 hours
-          final displayedCalls = allSchedules.where((item) {
-            if (item.dateTime.isAfter(now)) return true;
-            // Include missed calls from the last 24 hours
-            return item.dateTime.isAfter(now.subtract(const Duration(hours: 24)));
-          }).toList();
+            // Extract relevant schedules
+            List<({ScheduleCall call, DateTime dateTime})> displayedSchedules = [];
+            if (scheduleState is ScheduleCallLoaded) {
+              displayedSchedules = scheduleState.scheduleCalls.map((call) {
+                final callDateTime = DateTime(
+                  call.date.year,
+                  call.date.month,
+                  call.date.day,
+                  call.time.hour,
+                  call.time.minute,
+                );
+                return (call: call, dateTime: callDateTime);
+              }).where((item) {
+                if (item.dateTime.isAfter(now)) return true;
+                // Include missed calls from the last 24 hours
+                return item.dateTime.isAfter(now.subtract(const Duration(hours: 24)));
+              }).toList();
+              
+              displayedSchedules.sort((a, b) => a.dateTime.compareTo(b.dateTime));
+            }
 
-          if (displayedCalls.isEmpty) {
-            return const SizedBox.shrink();
-          }
+            // Extract relevant events (Today or Tomorrow)
+            List<CalendarEvent> displayedEvents = [];
+            if (eventState is CalendarEventLoaded) {
+              final allEvents = eventState.events;
+              displayedEvents = allEvents.where((event) {
+                final eventDate = DateTime(event.date.year, event.date.month, event.date.day);
+                return eventDate == today || eventDate == tomorrow;
+              }).toList();
+              
+              displayedEvents.sort((a, b) {
+                final dtA = DateTime(a.date.year, a.date.month, a.date.day, a.timeHour, a.timeMinute);
+                final dtB = DateTime(b.date.year, b.date.month, b.date.day, b.timeHour, b.timeMinute);
+                return dtA.compareTo(dtB);
+              });
+            }
 
-          // Sort by date/time (closest to now first)
-          displayedCalls.sort((a, b) => a.dateTime.compareTo(b.dateTime));
+            if (displayedSchedules.isEmpty && displayedEvents.isEmpty) {
+              return const SizedBox.shrink();
+            }
 
-          final limitedCalls = displayedCalls.take(1).toList(); 
-
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Upcoming Reminders',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const ScheduledCallsPage()),
-                      );
-                    },
-                    child: Text(
-                      'View All',
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context).colorScheme.primary,
-                        fontWeight: FontWeight.w600,
-                      ),
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Upcoming Reminders',
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                     ),
-                  ),
+                    if (displayedSchedules.isNotEmpty)
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const ScheduledCallsPage()),
+                          );
+                        },
+                        child: Text(
+                          'View All',
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: Theme.of(context).colorScheme.primary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                
+                // Show most imminent schedule
+                if (displayedSchedules.isNotEmpty) ...[
+                  ...displayedSchedules.take(1).map((item) => Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: UpcomingReminderCard(call: item.call, callDateTime: item.dateTime),
+                  )),
                 ],
-              ),
-              const SizedBox(height: 12),
-              ...limitedCalls.map((item) => Padding(
-                padding: const EdgeInsetsGeometry.only(bottom: 10),
-                child: UpcomingReminderCard(call: item.call, callDateTime: item.dateTime),
-              )),
 
-              BlocBuilder<CalendarEventBloc, CalendarEventState>(
-                builder: (context, eventState) {
-                  if (eventState is CalendarEventLoaded) {
-                    final now = DateTime.now();
-                    final allEvents = eventState.events.map((event) {
-                      final eventDateTime = DateTime(
-                        event.date.year,
-                        event.date.month,
-                        event.date.day,
-                        event.time.hour,
-                        event.time.minute,
-                      );
-                      return (event: event, dateTime: eventDateTime);
-                    }).toList();
-
-                    // // Filter for upcoming events OR missed events from the last 24 hours
-                    // final displayedEvents = allEvents.where((item) {
-                    //   if (item.dateTime.isAfter(now)) return true;
-                    //   // Include missed events from the last 24 hours
-                    //   return item.dateTime.isAfter(now.subtract(const Duration(hours: 24)));
-                    // }).toList();
-
-                    // if (displayedEvents.isEmpty) {
-                    //   return const SizedBox.shrink();
-                    // }
-
-                    // // Sort by date/time (closest to now first)
-                    allEvents.sort((a, b) => a.dateTime.compareTo(b.dateTime));
-
-                    final limitedEvents = allEvents.take(1).toList();
-
-                    return EventCard(event: limitedEvents.first.event);
-                  }
-                  return const SizedBox.shrink();
-                },
-              ),
-            ],
-          );
-        }
-        return const SizedBox.shrink();
+                // Show most imminent event (today or tomorrow)
+                if (displayedEvents.isNotEmpty) ...[
+                  ...displayedEvents.take(1).map((event) => EventCard(event: event)),
+                ],
+              ],
+            );
+          },
+        );
       },
     );
   }

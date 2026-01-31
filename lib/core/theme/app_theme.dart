@@ -28,6 +28,13 @@ class AppTheme {
   );
   */
 
+  static final pageConfig =  BackGesturePageTransitionsBuilder(
+    parentTransitionBuilder: const CupertinoPageTransitionsBuilder(),
+    config: BackGestureConfig(
+      animationProgressCompleteThreshold: 0.4,
+    ),
+  );
+
   static const _darkColors = (
     primary: Color(0xFF8B5CF6),
     onPrimary: Colors.white,
@@ -58,12 +65,7 @@ class AppTheme {
     pageTransitionsTheme: PageTransitionsTheme(
       builders: {
         for (final platform in TargetPlatform.values)
-          platform: BackGesturePageTransitionsBuilder(
-            parentTransitionBuilder: const CupertinoPageTransitionsBuilder(),
-            config: BackGestureConfig(
-              animationProgressCompleteThreshold: 0.4,
-            ),
-          ),
+          platform: pageConfig,
       },
     ),
   );
@@ -84,11 +86,7 @@ class AppTheme {
     pageTransitionsTheme: PageTransitionsTheme(
       builders: {
         for (final platform in TargetPlatform.values)
-          platform: BackGesturePageTransitionsBuilder(
-            // Any transitionBuilder you want to use
-            parentTransitionBuilder: const FadeForwardsPageTransitionsBuilder(),
-            config: BackGestureConfig(),
-          ),
+          platform: pageConfig,
       },
     ),
   );

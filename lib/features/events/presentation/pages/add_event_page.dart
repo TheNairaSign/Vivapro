@@ -138,9 +138,18 @@ class _AddEventPageState extends ConsumerState<AddEventPage> {
           decoration: InputDecoration(
             hintText: hint,
             prefixIcon: Icon(icon),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+           enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: Colors.grey, width: .5),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(
+                color: Theme.of(context).colorScheme.primary,
+                width: .5,
+              ),
+            ),
             filled: true,
-            fillColor: Theme.of(context).colorScheme.surface,
           ),
         ),
       ],

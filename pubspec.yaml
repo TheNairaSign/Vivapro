@@ -105,6 +105,7 @@ flutter:
     - assets/avatars/
     - assets/images/
     - assets/svgs/
+    - assets/svgs/onboarding/
 
   fonts:
     - family: DM Sans
