@@ -24,8 +24,11 @@ class _AddEventPageState extends ConsumerState<AddEventPage> {
   late TextEditingController _titleController;
   late TextEditingController _descriptionController;
   Color _selectedColor = Colors.blue;
+  bool _addToCalendar = false;
 
   final List<Color> _colors = [
+// ... (omitting colors for brevity in replacement, but I will include them in the actual tool call if needed or just replace the whole block)
+
     Colors.blue,
     Colors.red,
     Colors.green,
@@ -107,6 +110,35 @@ class _AddEventPageState extends ConsumerState<AddEventPage> {
               selectedTime: _selectedTime,
               onTimeSelected: (time) => setState(() => _selectedTime = time),
             ),
+            const SizedBox(height: 20),
+            Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: Colors.grey.withValues(alpha: 0.2)),
+              ),
+              child: SwitchListTile(
+                title: const Text(
+                  "Add to device calendar",
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                ),
+                subtitle: Text(
+                  "Sync this event with your local calendar app",
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                    fontSize: 12,
+                  ),
+                ),
+                value: _addToCalendar,
+                onChanged: (value) => setState(() => _addToCalendar = value),
+                secondary: Icon(
+                  Icons.calendar_today_outlined,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                activeThumbColor: Theme.of(context).colorScheme.primary,
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              ),
+            ),
             const SizedBox(height: 32),
             SizedBox(
               width: double.infinity,
@@ -171,7 +203,10 @@ class _AddEventPageState extends ConsumerState<AddEventPage> {
       color: _selectedColor,
     );
 
-    context.read<CalendarEventBloc>().add(CalendarEventAdd(event));
+    context.read<CalendarEventBloc>().add(CalendarEventAdd(
+      event,
+      addToCalendar: _addToCalendar,
+    ));
     Navigator.pop(context);
     showFlushbarCustom(context, "Success", "Event added successfully", color: Colors.green);
   }

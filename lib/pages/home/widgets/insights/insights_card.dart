@@ -12,13 +12,21 @@ class InsightsCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final interactionTracker = ref.read(interactionTrackerProvider);
+    final theme = Theme.of(context);
 
     return Container(
       width: double.infinity,
       height: 180,
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
       ),
       child: Row(
         children: [
@@ -36,7 +44,7 @@ class InsightsCard extends ConsumerWidget {
                       const SizedBox(width: 6),
                       Text(
                         'RECONNECT',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        style: theme.textTheme.bodySmall?.copyWith(
                           color: Colors.grey,
                           fontWeight: FontWeight.bold,
                           letterSpacing: 1,
@@ -47,8 +55,9 @@ class InsightsCard extends ConsumerWidget {
                   const SizedBox(height: 12),
                   Text(
                     insight.message,
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      height: 1.3,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -78,18 +87,17 @@ class InsightsCard extends ConsumerWidget {
                             },
                             style: ElevatedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                              backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(.15),
+                              backgroundColor: theme.colorScheme.primary.withValues(alpha: .15),
                               elevation: 0,
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
                             ),
                             child: Text(
                               'Call Now',
-                              style: Theme.of(context).textTheme.bodyMedium
-                                ?.copyWith(
-                                  color: Theme.of(context,).colorScheme.primary,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 13,
-                                ),
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: theme.colorScheme.primary,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 13,
+                              ),
                             ),
                           ),
                         ),
@@ -110,17 +118,16 @@ class InsightsCard extends ConsumerWidget {
                               );
                             },
                             style: OutlinedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6,),
-                              side: BorderSide(color: Theme.of(context,).colorScheme.primary.withOpacity(.3),),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18),),
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                              side: BorderSide(color: theme.colorScheme.primary.withValues(alpha: .3)),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
                             ),
                             child: Text(
                               'Remind later',
-                              style: Theme.of(context).textTheme.bodySmall
-                                ?.copyWith(
-                                  color: Theme.of(context).colorScheme.primary,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: theme.colorScheme.primary,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ),
@@ -146,9 +153,7 @@ class InsightsCard extends ConsumerWidget {
                       fit: BoxFit.cover,
                     )
                   : const DecorationImage(
-                      image: NetworkImage(
-                        "https://images.unsplash.com/photo-1590086782957-93c06ef21604?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-                      ),
+                      image: AssetImage('assets/images/insight_placeholder.png'),
                       fit: BoxFit.cover,
                     ),
               ),

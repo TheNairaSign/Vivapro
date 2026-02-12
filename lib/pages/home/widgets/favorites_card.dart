@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vivapro/features/contacts/data/favorite_contact.dart';
 import 'package:vivapro/features/contacts/presentation/pages/contact_details_page.dart';
 import 'package:vivapro/core/extensions/first_name_extension.dart';
-import 'package:vivapro/widgets/text_avatar.dart';
+import 'package:vivapro/features/contacts/presentation/widgets/favorite_avatar.dart';
 import 'package:vivapro/core/utils/call_modal.dart';
 
 class FavoritesCard extends ConsumerWidget {
@@ -33,46 +33,18 @@ class FavoritesCard extends ConsumerWidget {
             children: [
               Stack(
                 children: [
-                  Container(
-                    decoration: BoxDecoration(
+                   Container(
+                    decoration: const BoxDecoration(
                       shape: BoxShape.circle,
-                      // border: Border.all(
-                      //   // color: priorityMap(contact.priority),
-                      //   color: Theme.of(context).colorScheme.primary,
-                      //   width: 2,
-                      // ),
                     ),
-                    child: contact.contactDetails.photo != null ? CircleAvatar(
-                      radius: 30,
-                      backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
-                      backgroundImage: contact.contactDetails.photo != null
-                          ? MemoryImage(contact.contactDetails.photo!)
-                          : null,
-                    ) : TextAvatar(name: contact.contactDetails.displayName, radius: 30),
+                    child: FavoriteAvatar(contact: contact, radius: 30),
                   ),
-                  // Positioned(
-                  //   bottom: 0,
-                  //   right: 0,
-                  //   child: Container(
-                  //     width: 16,
-                  //     height: 16,
-                  //     decoration: BoxDecoration(
-                  //       color: Colors.greenAccent,
-                  //       shape: BoxShape.circle,
-                  //       border: Border.all(
-                  //         color: const Color(0xFF1C2029),
-                  //         width: 2,
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
                 ],
               ),
               const SizedBox(height: 12),
               Text(
                 contact.contactDetails.displayName.capitalizeFirst,
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  // color: Colors.white,
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
                 ),
@@ -107,14 +79,13 @@ class FavoritesCard extends ConsumerWidget {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    // backgroundColor: const Color(0xFF2D8CFF),
                     backgroundColor: Theme.of(context).colorScheme.primary,
                     foregroundColor: Colors.white,
                     elevation: 0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(18),
                     ),
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   ),
                   child: Text(
                     'Call now',

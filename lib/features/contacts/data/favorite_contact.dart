@@ -30,6 +30,7 @@ class FavoriteContact {
 
   /// Internal field for Isar to store the contact details
   final String contactDetailsJson;
+  final String? profilePhotoUrl;
 
   @ignore
   late final Contact contactDetails;
@@ -44,6 +45,7 @@ class FavoriteContact {
     this.createdAt,
     this.updatedAt,
     required this.contactDetailsJson,
+    this.profilePhotoUrl,
   }) : contactDetails = Contact.fromJson(jsonDecode(contactDetailsJson));
 
   /// Factory constructor to create a FavoriteContact from a Contact object
@@ -57,6 +59,7 @@ class FavoriteContact {
     DateTime? lastInteractionAt,
     DateTime? createdAt,
     DateTime? updatedAt,
+    String? profilePhotoUrl,
   }) {
     return FavoriteContact(
       isarId: isarId,
@@ -68,6 +71,7 @@ class FavoriteContact {
       lastInteractionAt: lastInteractionAt,
       createdAt: createdAt,
       updatedAt: updatedAt ?? DateTime.now(),
+      profilePhotoUrl: profilePhotoUrl,
     );
   }
 
@@ -81,6 +85,7 @@ class FavoriteContact {
       'lastInteractionAt': lastInteractionAt,
       'createdAt': createdAt ?? FieldValue.serverTimestamp(),
       'updatedAt': updatedAt ?? FieldValue.serverTimestamp(),
+      'profilePhotoUrl': profilePhotoUrl,
     };
   }
 
@@ -102,6 +107,7 @@ class FavoriteContact {
       lastInteractionAt: (map['lastInteractionAt'] as Timestamp?)?.toDate(),
       createdAt: (map['createdAt'] as Timestamp?)?.toDate(),
       updatedAt: (map['updatedAt'] as Timestamp?)?.toDate(),
+      profilePhotoUrl: map['profilePhotoUrl'],
     );
   }
 
@@ -115,6 +121,7 @@ class FavoriteContact {
       'lastInteractionAt': lastInteractionAt?.toIso8601String(),
       'createdAt': createdAt?.toIso8601String(),
       'updatedAt': updatedAt?.toIso8601String(),
+      'profilePhotoUrl': profilePhotoUrl,
     };
   }
 
@@ -134,6 +141,7 @@ class FavoriteContact {
       lastInteractionAt: json['lastInteractionAt'] != null ? DateTime.parse(json['lastInteractionAt']) : null,
       createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt']) : null,
       updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : null,
+      profilePhotoUrl: json['profilePhotoUrl'],
     );
   }
 }

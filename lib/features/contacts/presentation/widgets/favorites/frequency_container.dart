@@ -1,6 +1,7 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vivapro/features/contacts/data/add_favorites_provider.dart';
 import 'package:vivapro/features/contacts/presentation/widgets/favorites/frequency_selection_chip.dart';
 import 'package:vivapro/features/contacts/presentation/widgets/favorites/priority_section_container.dart';
 import 'package:vivapro/core/enums/call_frequency.dart';
@@ -123,25 +124,5 @@ class _FrequencyContainerState extends State<FrequencyContainer> {
         ],
       ),
     );
-  }
-}
-
-
-class AddFavoritesProvider extends ChangeNotifier {
-
-  CallFrequency _callFrequency = CallFrequency.daily;
-  CallFrequency get callFrequency => _callFrequency;
-
-  CallPriority _callPriority = CallPriority.medium;
-  CallPriority get callPriority => _callPriority;
-
-  void updateCallPriority(CallPriority priority) {
-    _callPriority = priority;
-    notifyListeners();
-  }
-
-  void updateCallFrequency(CallFrequency frequency) {
-    _callFrequency = frequency;
-    notifyListeners();
   }
 }

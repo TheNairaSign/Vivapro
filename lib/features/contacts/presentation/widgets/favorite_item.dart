@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vivapro/features/contacts/data/favorite_contact.dart';
 import 'package:vivapro/features/contacts/presentation/pages/contact_details_page.dart';
+import 'package:vivapro/features/contacts/presentation/widgets/favorite_avatar.dart';
 import 'package:vivapro/core/enums/priority.dart';
 
 class FavoriteItem extends StatelessWidget {
@@ -28,26 +29,11 @@ class FavoriteItem extends StatelessWidget {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: priorityMap(
-                        favoriteContact.priority,
-                      ).withValues(alpha: 0.5),
+                      color: priorityColorMap(favoriteContact.priority).withValues(alpha: 0.5),
                       width: 2,
                     ),
                   ),
-                  child: CircleAvatar(
-                    radius: 28,
-                    backgroundColor: Theme.of(context).colorScheme.surface,
-                    child: Text(
-                      favoriteContact.contactDetails.displayName.isNotEmpty
-                          ? favoriteContact.contactDetails.displayName[0]
-                                .toUpperCase()
-                          : '?',
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                      ),
-                    ),
-                  ),
+                  child: FavoriteAvatar(contact: favoriteContact, radius: 28),
                 ),
                 Positioned(
                   right: 2,
@@ -56,7 +42,7 @@ class FavoriteItem extends StatelessWidget {
                     width: 14,
                     height: 14,
                     decoration: BoxDecoration(
-                      color: priorityMap(favoriteContact.priority),
+                      color: priorityColorMap(favoriteContact.priority),
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.white, width: 2),
                     ),

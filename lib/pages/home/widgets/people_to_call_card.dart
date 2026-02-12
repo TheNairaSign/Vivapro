@@ -133,28 +133,23 @@ class PeopleToCallCard extends ConsumerWidget {
                     : null;
 
                 if (phoneNumber != null) {
-                      showCallOptionsModal(
-                        context: context,
-                        ref: ref,
-                        phoneNumber: phoneNumber,
-                        contactId: contact.id,
-                      );
-                      
-                    }
+                  showCallOptionsModal(
+                    context: context,
+                    ref: ref,
+                    phoneNumber: phoneNumber,
+                    contactId: contact.id,
+                  );
+                }
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(
-                  context,
-                ).colorScheme.primary.withValues(alpha: 0.1),
+                backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
                 foregroundColor: Theme.of(context).colorScheme.primary,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 20,
                   vertical: 10,
                 ),
                 elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
               child: Text(
                 'Call',
@@ -171,13 +166,9 @@ class PeopleToCallCard extends ConsumerWidget {
   }
 
   String _getCallTodayMessage(FavoriteContact contact) {
-    if (contact.lastInteractionAt == null) {
-      return 'You haven\'t called yet';
-    }
+    if (contact.lastInteractionAt == null)  return 'You haven\'t called yet';
 
-    final daysSince = DateTime.now()
-        .difference(contact.lastInteractionAt!)
-        .inDays;
+    final daysSince = DateTime.now().difference(contact.lastInteractionAt!).inDays;
     if (daysSince == 0) {
       return 'Called today';
     } else if (daysSince == 1) {

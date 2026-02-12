@@ -54,8 +54,13 @@ const FavoriteContactSchema = CollectionSchema(
       type: IsarType.string,
       enumMap: _FavoriteContactpriorityEnumValueMap,
     ),
-    r'updatedAt': PropertySchema(
+    r'profilePhotoUrl': PropertySchema(
       id: 7,
+      name: r'profilePhotoUrl',
+      type: IsarType.string,
+    ),
+    r'updatedAt': PropertySchema(
+      id: 8,
       name: r'updatedAt',
       type: IsarType.dateTime,
     )
@@ -104,6 +109,12 @@ int _favoriteContactEstimateSize(
     }
   }
   bytesCount += 3 + object.priority.name.length * 3;
+  {
+    final value = object.profilePhotoUrl;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   return bytesCount;
 }
 
@@ -120,7 +131,8 @@ void _favoriteContactSerialize(
   writer.writeString(offsets[4], object.inAppUserId);
   writer.writeDateTime(offsets[5], object.lastInteractionAt);
   writer.writeString(offsets[6], object.priority.name);
-  writer.writeDateTime(offsets[7], object.updatedAt);
+  writer.writeString(offsets[7], object.profilePhotoUrl);
+  writer.writeDateTime(offsets[8], object.updatedAt);
 }
 
 FavoriteContact _favoriteContactDeserialize(
@@ -142,7 +154,8 @@ FavoriteContact _favoriteContactDeserialize(
     priority: _FavoriteContactpriorityValueEnumMap[
             reader.readStringOrNull(offsets[6])] ??
         CallPriority.high,
-    updatedAt: reader.readDateTimeOrNull(offsets[7]),
+    profilePhotoUrl: reader.readStringOrNull(offsets[7]),
+    updatedAt: reader.readDateTimeOrNull(offsets[8]),
   );
   return object;
 }
@@ -173,6 +186,8 @@ P _favoriteContactDeserializeProp<P>(
               reader.readStringOrNull(offset)] ??
           CallPriority.high) as P;
     case 7:
+      return (reader.readStringOrNull(offset)) as P;
+    case 8:
       return (reader.readDateTimeOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -1302,6 +1317,160 @@ extension FavoriteContactQueryFilter
   }
 
   QueryBuilder<FavoriteContact, FavoriteContact, QAfterFilterCondition>
+      profilePhotoUrlIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'profilePhotoUrl',
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterFilterCondition>
+      profilePhotoUrlIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'profilePhotoUrl',
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterFilterCondition>
+      profilePhotoUrlEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'profilePhotoUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterFilterCondition>
+      profilePhotoUrlGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'profilePhotoUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterFilterCondition>
+      profilePhotoUrlLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'profilePhotoUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterFilterCondition>
+      profilePhotoUrlBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'profilePhotoUrl',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterFilterCondition>
+      profilePhotoUrlStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'profilePhotoUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterFilterCondition>
+      profilePhotoUrlEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'profilePhotoUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterFilterCondition>
+      profilePhotoUrlContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'profilePhotoUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterFilterCondition>
+      profilePhotoUrlMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'profilePhotoUrl',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterFilterCondition>
+      profilePhotoUrlIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'profilePhotoUrl',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterFilterCondition>
+      profilePhotoUrlIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'profilePhotoUrl',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterFilterCondition>
       updatedAtIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -1481,6 +1650,20 @@ extension FavoriteContactQuerySortBy
   }
 
   QueryBuilder<FavoriteContact, FavoriteContact, QAfterSortBy>
+      sortByProfilePhotoUrl() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'profilePhotoUrl', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterSortBy>
+      sortByProfilePhotoUrlDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'profilePhotoUrl', Sort.desc);
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterSortBy>
       sortByUpdatedAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'updatedAt', Sort.asc);
@@ -1607,6 +1790,20 @@ extension FavoriteContactQuerySortThenBy
   }
 
   QueryBuilder<FavoriteContact, FavoriteContact, QAfterSortBy>
+      thenByProfilePhotoUrl() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'profilePhotoUrl', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterSortBy>
+      thenByProfilePhotoUrlDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'profilePhotoUrl', Sort.desc);
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterSortBy>
       thenByUpdatedAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'updatedAt', Sort.asc);
@@ -1675,6 +1872,14 @@ extension FavoriteContactQueryWhereDistinct
   }
 
   QueryBuilder<FavoriteContact, FavoriteContact, QDistinct>
+      distinctByProfilePhotoUrl({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'profilePhotoUrl',
+          caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QDistinct>
       distinctByUpdatedAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'updatedAt');
@@ -1735,6 +1940,13 @@ extension FavoriteContactQueryProperty
       priorityProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'priority');
+    });
+  }
+
+  QueryBuilder<FavoriteContact, String?, QQueryOperations>
+      profilePhotoUrlProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'profilePhotoUrl');
     });
   }
 

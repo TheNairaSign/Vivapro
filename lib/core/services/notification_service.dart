@@ -195,6 +195,7 @@ class NotificationService {
         ),
       ),
       androidScheduleMode: androidAllowWhileIdle,
+      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
       payload: jsonEncode(call.toJson()),
     ).then((_) {
       debugPrint('Call notification scheduled successfully with ID: ${notificationId.abs()}');
@@ -251,6 +252,7 @@ class NotificationService {
         ),
       ),
       androidScheduleMode: androidAllowWhileIdle,
+      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
       payload: jsonEncode(event.toJson()),
     ).then((_) {
       debugPrint('Event notification scheduled successfully with ID: ${notificationId.abs()}');

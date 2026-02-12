@@ -52,7 +52,7 @@ void showCallOptionsModal({
                 Navigator.pop(context);
                 final exists = await isWhatsAppInstalled(phoneNumber);
                 if (exists) {
-                  final whatsapp = await callWithWhatsApp(phoneNumber);
+                  final whatsapp = await launchWhatsAppCall(phoneNumber: phoneNumber);
                   if (whatsapp) {
                     final activityId = await interactionTracker.recordInteraction(contactId);
                     await PendingCallService().setPendingCall(contactId, activityId: activityId);

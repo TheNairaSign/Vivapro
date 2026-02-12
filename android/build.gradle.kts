@@ -16,7 +16,7 @@ subprojects {
     project.layout.buildDirectory.value(newSubprojectBuildDir)
 }
 subprojects {
-    project.evaluationDependsOn(":app") 
+    // Removed circular dependency: project.evaluationDependsOn(":app") 
 }
 
 subprojects {

@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vivapro/core/failures/failure.dart';
 import 'package:vivapro/core/services/notification_service.dart';
+import 'package:vivapro/core/utils/add_to_calendar.dart';
 import 'package:vivapro/features/events/data/calendar_event.dart';
 import 'package:vivapro/features/events/data/event_cache_service.dart';
 
@@ -30,6 +31,15 @@ class CalendarEventManager {
   Future<Either<Failure, Unit>> deleteEvent(String id) async {
     await notifications.cancelNotification(id.hashCode);
     return await local.deleteEvent(id);
+  }
+
+  Future<void> addToCalendar(CalendarEvent event) async {
+    await addEventToCalendar(
+      title: event.title,
+      description: event.description,
+      start: event.date,
+      end: event.date.add(const Duration(hours: 1)),
+    );
   }
 }
 

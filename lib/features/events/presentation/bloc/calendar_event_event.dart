@@ -12,10 +12,11 @@ class CalendarEventFetch extends CalendarEventEvent {}
 
 class CalendarEventAdd extends CalendarEventEvent {
   final CalendarEvent event;
-  const CalendarEventAdd(this.event);
+  final bool addToCalendar;
+  const CalendarEventAdd(this.event, {this.addToCalendar = false});
 
   @override
-  List<Object?> get props => [event];
+  List<Object?> get props => [event, addToCalendar];
 }
 
 class CalendarEventDelete extends CalendarEventEvent {

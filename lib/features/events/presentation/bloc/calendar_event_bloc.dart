@@ -31,7 +31,11 @@ class CalendarEventBloc extends Bloc<CalendarEventEvent, CalendarEventState> {
     final result = await _manager.addEvent(event.event);
     result.fold(
       (failure) => emit(CalendarEventError(message: failure.message)),
-      (_) {},
+      (_) async {
+        if (event.addToCalendar) {
+          await _manager.addToCalendar(event.event);
+        }
+      },
     );
   }
 
