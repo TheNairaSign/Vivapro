@@ -24,23 +24,15 @@ class InteractionTracker {
       // Get the favorite and update it
       final favorite = await _favoriteCache.getFavoriteById(contactId);
       if (favorite != null) {
-        final updatedFavorite = FavoriteContact(
-          isarId: favorite.isarId,
-          id: favorite.id,
-          inAppUserId: favorite.inAppUserId,
-          priority: favorite.priority,
-          callFrequency: favorite.callFrequency,
+        final updatedFavorite = favorite.copyWith(
           lastInteractionAt: now,
-          createdAt: favorite.createdAt,
           updatedAt: now,
-          contactDetailsJson: favorite.contactDetailsJson,
         );
         await _favoriteCache.addFavorite(updatedFavorite);
 
         // Log the activity
-        final activity = ActivityLog(
-          contactId: contactId,
-          contactName: favorite.contactDetails.displayName,
+        final activity = ActivityLog.create(
+          favorite: favorite,
           type: ActivityType.call,
           timestamp: now,
         );
@@ -67,16 +59,9 @@ class InteractionTracker {
     try {
       final favorite = await _favoriteCache.getFavoriteById(contactId);
       if (favorite != null) {
-        final updatedFavorite = FavoriteContact(
-          isarId: favorite.isarId,
-          id: favorite.id,
-          inAppUserId: favorite.inAppUserId,
-          priority: favorite.priority,
-          callFrequency: favorite.callFrequency,
+        final updatedFavorite = favorite.copyWith(
           lastInteractionAt: interactionTime,
-          createdAt: favorite.createdAt,
           updatedAt: DateTime.now(),
-          contactDetailsJson: favorite.contactDetailsJson,
         );
         await _favoriteCache.addFavorite(updatedFavorite);
       }

@@ -25,7 +25,7 @@ class _PeopleToCallSectionState extends ConsumerState<PeopleToCallSection> {
         }
 
         return Column(
-          crossAxisAlignment: .start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (_showTip)
               FeatureTipCard(onDismiss: () => setState(() => _showTip = false)),

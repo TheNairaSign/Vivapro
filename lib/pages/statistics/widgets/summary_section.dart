@@ -124,7 +124,7 @@ class _SummarySectionState extends State<SummarySection> {
     final counts = <String, int>{};
     for (var log in logs) {
       if (log.type == ActivityType.call) { // Only count calls for top caller
-        final name = log.contactName;
+        final name = log.favoriteContact?.contactDetails.displayName ?? log.contactName;
         counts[name] = (counts[name] ?? 0) + 1;
       }
     }

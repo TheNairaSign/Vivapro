@@ -5,6 +5,7 @@ import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:vivapro/components/show_flushbar_custom.dart';
 import 'package:vivapro/features/activity/data/models/activity_log.dart';
 import 'package:vivapro/features/activity/presentation/bloc/activity_bloc.dart';
+import 'package:vivapro/features/contacts/data/favorite_contact.dart';
 import 'package:vivapro/pages/navigation/widgets/contact_selection_container.dart';
 import 'package:vivapro/pages/navigation/widgets/quick_response_grid.dart';
 import 'package:vivapro/pages/navigation/widgets/manual_log_form.dart';
@@ -13,8 +14,9 @@ import 'package:vivapro/pages/navigation/widgets/manual_log_actions.dart';
 
 class ManualLogBottomSheet extends StatefulWidget {
   final Contact? contact;
+  final FavoriteContact? favoriteContact;
   final int? existingActivityId;
-  const ManualLogBottomSheet({super.key, this.contact, this.existingActivityId});
+  const ManualLogBottomSheet({super.key, this.contact, this.existingActivityId, this.favoriteContact});
 
   @override
   State<ManualLogBottomSheet> createState() => _ManualLogBottomSheetState();
@@ -56,8 +58,9 @@ class _ManualLogBottomSheetState extends State<ManualLogBottomSheet> {
     final contactName = _selectedContact!.displayName;
 
     final activity = ActivityLog(
-      contactId: _selectedContact!.id,
+      favoriteContact: widget.favoriteContact,
       contactName: contactName,
+      contactId: _selectedContact!.id,
       phoneNumber: _selectedContact!.phones.isNotEmpty ? _selectedContact!.phones.first.number : null,
       type: response['type'] as ActivityType,
       timestamp: DateTime.now(),
@@ -84,8 +87,9 @@ class _ManualLogBottomSheetState extends State<ManualLogBottomSheet> {
       }
 
       final activity = ActivityLog(
-        contactId: _selectedContact!.id,
+        favoriteContact: widget.favoriteContact,
         contactName: _selectedContact!.displayName,
+        contactId: _selectedContact!.id,
         phoneNumber: _selectedContact!.phones.isNotEmpty ? _selectedContact!.phones.first.number : null,
         type: _selectedType,
         timestamp: DateTime.now(),

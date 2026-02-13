@@ -33,7 +33,7 @@ class FavoriteItem extends StatelessWidget {
                       width: 2,
                     ),
                   ),
-                  child: FavoriteAvatar(contact: favoriteContact, radius: 28),
+                  child: FavoriteAvatar(favorite: favoriteContact, radius: 28),
                 ),
                 Positioned(
                   right: 2,

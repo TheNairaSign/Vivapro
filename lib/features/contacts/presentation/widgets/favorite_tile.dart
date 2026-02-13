@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_contacts/contact.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vivapro/core/services/interaction_tracker.dart';
@@ -7,15 +6,17 @@ import 'package:vivapro/core/services/pending_call_service.dart';
 import 'package:vivapro/features/contacts/data/favorite_cache_service.dart';
 import 'package:vivapro/core/enums/call_frequency.dart';
 import 'package:vivapro/core/extensions/capitalization.dart';
+import 'package:vivapro/features/contacts/data/favorite_contact.dart';
+import 'package:vivapro/features/contacts/presentation/widgets/favorite_avatar.dart';
 
 class FavoriteTile extends ConsumerWidget {
-  final Contact contact;
+  final FavoriteContact favoriteContact;
   final CallFrequency frequency;
   final bool isStarred;
 
   const FavoriteTile({
     super.key,
-    required this.contact,
+    required this.favoriteContact,
     required this.frequency,
     this.isStarred = false,
   });
@@ -31,6 +32,7 @@ class FavoriteTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final contact = favoriteContact.contactDetails;
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
@@ -47,25 +49,7 @@ class FavoriteTile extends ConsumerWidget {
       ),
       child: Row(
         children: [
-          Container(
-            width: 56,
-            height: 56,
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(18),
-            ),
-            child: Center(
-              child: Text(
-                (contact.displayName.isNotEmpty)
-                    ? contact.displayName.characters.first.toUpperCase()
-                    : '?',
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  color: Theme.of(context).colorScheme.primary,
-                  fontWeight: FontWeight.w900,
-                ),
-              ),
-            ),
-          ),
+          FavoriteAvatar(favorite: favoriteContact),
           const SizedBox(width: 16),
           Expanded(
             child: Column(

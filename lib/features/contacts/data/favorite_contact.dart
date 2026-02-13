@@ -111,6 +111,32 @@ class FavoriteContact {
     );
   }
 
+  FavoriteContact copyWith({
+    Id? isarId,
+    String? id,
+    String? inAppUserId,
+    CallPriority? priority,
+    CallFrequency? callFrequency,
+    DateTime? lastInteractionAt,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    String? contactDetailsJson,
+    String? profilePhotoUrl,
+  }) {
+    return FavoriteContact(
+      isarId: isarId ?? this.isarId,
+      id: id ?? this.id,
+      inAppUserId: inAppUserId ?? this.inAppUserId,
+      priority: priority ?? this.priority,
+      callFrequency: callFrequency ?? this.callFrequency,
+      lastInteractionAt: lastInteractionAt ?? this.lastInteractionAt,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      contactDetailsJson: contactDetailsJson ?? this.contactDetailsJson,
+      profilePhotoUrl: profilePhotoUrl ?? this.profilePhotoUrl,
+    );
+  }
+
   Map<String, dynamic> toJson() {
     return {
       'id': id,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/contact.dart';
+import 'package:vivapro/features/contacts/presentation/widgets/favorite_avatar.dart';
 import 'package:vivapro/pages/contact_picker_page.dart';
 
 class ContactSelectionContainer extends StatefulWidget {
@@ -64,13 +65,17 @@ class _ContactSelectionContainerState extends State<ContactSelectionContainer> {
         ),
         child: Row(
           children: [
-            CircleAvatar(
-              backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
-              child: Icon(
-                _selectedContact != null ? Icons.person : Icons.person_add,
-                color: Theme.of(context).colorScheme.primary,
+            if (_selectedContact != null)
+              FavoriteAvatar(contact: _selectedContact, radius: 24)
+            else
+              CircleAvatar(
+                backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
+                radius: 24,
+                child: Icon(
+                  Icons.person_add,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
               ),
-            ),
             const SizedBox(width: 16),
             Expanded(
               child: Column(

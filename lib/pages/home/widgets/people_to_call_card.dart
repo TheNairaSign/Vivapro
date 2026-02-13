@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vivapro/components/show_flushbar_custom.dart';
 import 'package:vivapro/core/utils/call_modal.dart';
 import 'package:vivapro/features/contacts/data/favorite_contact.dart';
+import 'package:vivapro/features/contacts/presentation/widgets/favorite_avatar.dart';
 import 'package:vivapro/features/schedule_call/dom/schedule_call_use_case.dart';
 import 'package:vivapro/features/schedule_call/presentation/pages/schedule_call_page.dart';
-import 'package:vivapro/widgets/text_avatar.dart';
 
 class PeopleToCallCard extends ConsumerWidget {
   const PeopleToCallCard({super.key, required this.contact});
@@ -98,13 +98,7 @@ class PeopleToCallCard extends ConsumerWidget {
         ),
         child: Row(
           children: [
-            contact.contactDetails.photo != null
-                ? CircleAvatar(
-                    radius: 28,
-                    backgroundColor: const Color(0xFF3E3E4A),
-                    backgroundImage: MemoryImage(contact.contactDetails.photo!),
-                  )
-                : TextAvatar(name: contact.contactDetails.displayName),
+            FavoriteAvatar(favorite: contact),
             const SizedBox(width: 12),
             Expanded(
               child: Column(

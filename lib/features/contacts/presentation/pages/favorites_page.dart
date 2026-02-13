@@ -115,7 +115,7 @@ class _FavoritesPageState extends ConsumerState<FavoritesPage> {
                   itemBuilder: (context, index) {
                     final favorite = favorites[index];
                     return FavoriteTile(
-                      contact: favorite.contactDetails,
+                      favoriteContact: favorite,
                       frequency: favorite.callFrequency,
                       isStarred: true,
                     );

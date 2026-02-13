@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:vivapro/core/extensions/capitalization.dart';
 import 'package:vivapro/features/activity/data/models/activity_log.dart';
+import 'package:vivapro/features/contacts/presentation/widgets/favorite_avatar.dart';
 import 'package:vivapro/widgets/text_avatar.dart';
 
 class ActivityItem extends StatefulWidget {
@@ -18,8 +19,6 @@ class _ActivityItemState extends State<ActivityItem> {
 
   @override
   Widget build(BuildContext context) {
-    final name = widget.log.contactName;
-
     final date = widget.log.timestamp;
 
     final formattedTime = DateFormat('h:mm a').format(date);
@@ -99,7 +98,7 @@ class _ActivityItemState extends State<ActivityItem> {
                 Stack(
                   clipBehavior: Clip.none,
                   children: [
-                    TextAvatar(name: name),
+                    widget.log.favoriteContact != null ? FavoriteAvatar(favorite: widget.log.favoriteContact!) : TextAvatar(name: widget.log.contactName),
                     Positioned(
                       bottom: -2,
                       right: -2,
@@ -129,7 +128,7 @@ class _ActivityItemState extends State<ActivityItem> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        name,
+                        widget.log.contactName,
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,

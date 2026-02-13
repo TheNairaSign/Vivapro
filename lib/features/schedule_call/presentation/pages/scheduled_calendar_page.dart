@@ -76,18 +76,18 @@ class _ScheduledCalendarPageState extends State<ScheduledCalendarPage> {
   void _showAddOptionDialog(DateTime date) {
     showModalBottomSheet(
       context: context,
-      shape: const RoundedRectangleBorder(borderRadius: .vertical(top: .circular(24))),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
       builder: (context) => Container(
-        padding: const .symmetric(vertical: 32, horizontal: 24),
+        padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
         child: Column(
-          mainAxisSize: .min,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Container(
               width: 40,
               height: 4,
               decoration: BoxDecoration(
                 color: Colors.grey[300],
-                borderRadius: .circular(2),
+                borderRadius: BorderRadius.circular(2),
               ),
             ),
             const SizedBox(height: 24),

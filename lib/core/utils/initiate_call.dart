@@ -24,19 +24,34 @@ Future<bool> callWithWhatsApp(String phoneNumber) async {
   }
 }
 
-Future<bool> launchWhatsAppCall({required String phoneNumber, bool video = false}) async {
-  final formatted = Uri.encodeComponent(phoneNumber);
-  final uri = video
-      ? 'whatsapp://call?video=true&phone=$formatted'
-      : 'whatsapp://call?phone=$formatted';
+Future<bool> launchWhatsAppCall({
+  required String phoneNumber,
+  bool video = false,
+}) async {
+  try {
+    final cleaned = phoneNumber.replaceAll(RegExp(r'[^\d]'), '');
 
-  if (await canLaunchUrl(Uri.parse(uri))) {
-    await launchUrl(Uri.parse(uri));
+    final uri = Uri.parse(
+      video
+          ? 'whatsapp://call?phone=$cleaned&video=true'
+          : 'whatsapp://call?phone=$cleaned',
+    );
+
+    final canLaunch = await canLaunchUrl(uri);
+
+    if (!canLaunch) return false;
+
+    await launchUrl(
+      uri,
+      mode: LaunchMode.externalApplication,
+    );
+
     return true;
-  } else {
+  } catch (_) {
     return false;
   }
 }
+
 
 Future<bool> isWhatsAppInstalled(String phoneNumber) async {
   final formattedNumber = phoneNumber.replaceAll(RegExp(r'\s+|\+'), '');

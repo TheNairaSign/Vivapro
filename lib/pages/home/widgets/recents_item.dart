@@ -9,7 +9,7 @@ class RecentsItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final name = log.contactName;
+    final name = log.favoriteContact?.contactDetails.displayName ?? log.contactName;
     final date = log.timestamp;
     final timeAgo = formatTimeAgo(date);
 

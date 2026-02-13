@@ -4,6 +4,7 @@ import 'package:ionicons/ionicons.dart';
 import 'package:vivapro/core/utils/initiate_call.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vivapro/core/services/interaction_tracker.dart';
+import 'package:vivapro/core/utils/whatsapp_launcher.dart';
 
 void showCallOptionsModal({
   required BuildContext context, 
@@ -52,7 +53,7 @@ void showCallOptionsModal({
                 Navigator.pop(context);
                 final exists = await isWhatsAppInstalled(phoneNumber);
                 if (exists) {
-                  final whatsapp = await launchWhatsAppCall(phoneNumber: phoneNumber);
+                  final whatsapp = await WhatsAppLauncher.launch(phoneNumber: phoneNumber, action: WhatsAppAction.voiceCall);
                   if (whatsapp) {
                     final activityId = await interactionTracker.recordInteraction(contactId);
                     await PendingCallService().setPendingCall(contactId, activityId: activityId);

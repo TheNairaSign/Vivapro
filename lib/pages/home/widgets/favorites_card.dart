@@ -34,10 +34,8 @@ class FavoritesCard extends ConsumerWidget {
               Stack(
                 children: [
                    Container(
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                    ),
-                    child: FavoriteAvatar(contact: contact, radius: 30),
+                    decoration: const BoxDecoration(shape: BoxShape.circle),
+                    child: FavoriteAvatar(favorite: contact, radius: 30),
                   ),
                 ],
               ),

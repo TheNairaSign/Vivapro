@@ -47,12 +47,9 @@ class NotificationService {
       debugPrint('Fallback timezone: ${tz.local.name}');
     }
 
-    const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+    const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
 
-
-    final DarwinInitializationSettings initializationSettingsDarwin =
-        DarwinInitializationSettings(
+    final DarwinInitializationSettings initializationSettingsDarwin = DarwinInitializationSettings(
       requestAlertPermission: false,
       requestBadgePermission: false,
       requestSoundPermission: false,
@@ -78,8 +75,7 @@ class NotificationService {
 
     final bool? initialized = await flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
-      onDidReceiveNotificationResponse:
-          (NotificationResponse notificationResponse) {
+      onDidReceiveNotificationResponse: (NotificationResponse notificationResponse) {
         _notificationStreamController.add(notificationResponse);
       },
       onDidReceiveBackgroundNotificationResponse: notificationTapBackground,

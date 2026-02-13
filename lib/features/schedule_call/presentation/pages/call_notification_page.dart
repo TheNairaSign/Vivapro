@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:vivapro/features/schedule_call/data/schedule_call.dart';
 import 'package:vivapro/features/schedule_call/presentation/widgets/reschedule_modal.dart';
+import 'package:vivapro/features/contacts/presentation/widgets/favorite_avatar.dart';
 
 class CallNotificationPage extends StatelessWidget {
-  const CallNotificationPage({super.key});
+  final ScheduleCall scheduleCall;
+  const CallNotificationPage({super.key, required this.scheduleCall});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,18 +41,15 @@ class CallNotificationPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 40),
-                const CircleAvatar(
-                  radius: 80,
-                  backgroundImage: AssetImage('assets/avatars/flat-top-boy.jpg'),
-                ),
+                FavoriteAvatar(contact: scheduleCall.contact, radius: 80),
                 const SizedBox(height: 24),
                 Text(
-                  'Call John Doe',
+                  'Call ${scheduleCall.contact.displayName}',
                   style: Theme.of(context).textTheme.headlineLarge!.copyWith(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  "It's been 2 weeks since you last spoke.\nTime to catch up?",
+                  scheduleCall.note.isNotEmpty ? scheduleCall.note : "It's time for your scheduled call.",
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.grey),
                 ),
@@ -79,7 +79,7 @@ class CallNotificationPage extends StatelessWidget {
                       isDismissible: true,
                       isScrollControlled: true,
                       backgroundColor: Colors.transparent,
-                      builder: (context) => const RescheduleModal(),
+                      builder: (context) => RescheduleModal(scheduleCall: scheduleCall),
                     );
                   },
                   child: Text(

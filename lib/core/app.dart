@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' hide ChangeNotifierProvider;
 import 'package:provider/provider.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:vivapro/core/bootstrap.dart';
 import 'package:vivapro/core/theme/app_theme.dart';
 import 'package:vivapro/features/activity/data/repositories/activity_repository_impl.dart';
 import 'package:vivapro/features/activity/presentation/bloc/activity_bloc.dart';
@@ -19,6 +18,7 @@ import 'package:vivapro/features/messaging/repositories/chat_repository.dart';
 import 'package:vivapro/features/messaging/repositories/message_repository.dart';
 import 'package:vivapro/features/schedule_call/dom/schedule_call_manager.dart';
 import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_bloc.dart';
+import 'package:vivapro/core/services/foreground_schedule_monitor.dart';
 
 import 'package:vivapro/core/services/notification_handler.dart';
 
@@ -42,11 +42,12 @@ class _LoopState extends ConsumerState<Loop> {
   @override
   void initState() {
     super.initState();
-    applyModernStatusBarStyle(context);
+    // applyModernStatusBarStyle(context);
     
-    // Listen to notifications
+    // Listen to notifications and schedules
     WidgetsBinding.instance.addPostFrameCallback((_) {
       NotificationHandler(ref).listenToNotifications();
+      ref.read(foregroundScheduleMonitorProvider).start();
     });
   }
 

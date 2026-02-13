@@ -32,23 +32,38 @@ const ActivityLogSchema = CollectionSchema(
       name: r'durationSeconds',
       type: IsarType.long,
     ),
-    r'notes': PropertySchema(
+    r'favoriteDetailsJson': PropertySchema(
       id: 3,
+      name: r'favoriteDetailsJson',
+      type: IsarType.string,
+    ),
+    r'isIncoming': PropertySchema(
+      id: 4,
+      name: r'isIncoming',
+      type: IsarType.bool,
+    ),
+    r'isManual': PropertySchema(
+      id: 5,
+      name: r'isManual',
+      type: IsarType.bool,
+    ),
+    r'notes': PropertySchema(
+      id: 6,
       name: r'notes',
       type: IsarType.string,
     ),
     r'phoneNumber': PropertySchema(
-      id: 4,
+      id: 7,
       name: r'phoneNumber',
       type: IsarType.string,
     ),
     r'timestamp': PropertySchema(
-      id: 5,
+      id: 8,
       name: r'timestamp',
       type: IsarType.dateTime,
     ),
     r'type': PropertySchema(
-      id: 6,
+      id: 9,
       name: r'type',
       type: IsarType.string,
       enumMap: _ActivityLogtypeEnumValueMap,
@@ -104,6 +119,12 @@ int _activityLogEstimateSize(
   bytesCount += 3 + object.contactId.length * 3;
   bytesCount += 3 + object.contactName.length * 3;
   {
+    final value = object.favoriteDetailsJson;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
     final value = object.notes;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
@@ -128,10 +149,13 @@ void _activityLogSerialize(
   writer.writeString(offsets[0], object.contactId);
   writer.writeString(offsets[1], object.contactName);
   writer.writeLong(offsets[2], object.durationSeconds);
-  writer.writeString(offsets[3], object.notes);
-  writer.writeString(offsets[4], object.phoneNumber);
-  writer.writeDateTime(offsets[5], object.timestamp);
-  writer.writeString(offsets[6], object.type.name);
+  writer.writeString(offsets[3], object.favoriteDetailsJson);
+  writer.writeBool(offsets[4], object.isIncoming);
+  writer.writeBool(offsets[5], object.isManual);
+  writer.writeString(offsets[6], object.notes);
+  writer.writeString(offsets[7], object.phoneNumber);
+  writer.writeDateTime(offsets[8], object.timestamp);
+  writer.writeString(offsets[9], object.type.name);
 }
 
 ActivityLog _activityLogDeserialize(
@@ -144,10 +168,13 @@ ActivityLog _activityLogDeserialize(
     contactId: reader.readString(offsets[0]),
     contactName: reader.readString(offsets[1]),
     durationSeconds: reader.readLongOrNull(offsets[2]),
-    notes: reader.readStringOrNull(offsets[3]),
-    phoneNumber: reader.readStringOrNull(offsets[4]),
-    timestamp: reader.readDateTime(offsets[5]),
-    type: _ActivityLogtypeValueEnumMap[reader.readStringOrNull(offsets[6])] ??
+    favoriteDetailsJson: reader.readStringOrNull(offsets[3]),
+    isIncoming: reader.readBoolOrNull(offsets[4]) ?? false,
+    isManual: reader.readBoolOrNull(offsets[5]) ?? false,
+    notes: reader.readStringOrNull(offsets[6]),
+    phoneNumber: reader.readStringOrNull(offsets[7]),
+    timestamp: reader.readDateTime(offsets[8]),
+    type: _ActivityLogtypeValueEnumMap[reader.readStringOrNull(offsets[9])] ??
         ActivityType.call,
   );
   object.id = id;
@@ -170,10 +197,16 @@ P _activityLogDeserializeProp<P>(
     case 3:
       return (reader.readStringOrNull(offset)) as P;
     case 4:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readBoolOrNull(offset) ?? false) as P;
     case 5:
-      return (reader.readDateTime(offset)) as P;
+      return (reader.readBoolOrNull(offset) ?? false) as P;
     case 6:
+      return (reader.readStringOrNull(offset)) as P;
+    case 7:
+      return (reader.readStringOrNull(offset)) as P;
+    case 8:
+      return (reader.readDateTime(offset)) as P;
+    case 9:
       return (_ActivityLogtypeValueEnumMap[reader.readStringOrNull(offset)] ??
           ActivityType.call) as P;
     default:
@@ -777,6 +810,160 @@ extension ActivityLogQueryFilter
     });
   }
 
+  QueryBuilder<ActivityLog, ActivityLog, QAfterFilterCondition>
+      favoriteDetailsJsonIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'favoriteDetailsJson',
+      ));
+    });
+  }
+
+  QueryBuilder<ActivityLog, ActivityLog, QAfterFilterCondition>
+      favoriteDetailsJsonIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'favoriteDetailsJson',
+      ));
+    });
+  }
+
+  QueryBuilder<ActivityLog, ActivityLog, QAfterFilterCondition>
+      favoriteDetailsJsonEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'favoriteDetailsJson',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ActivityLog, ActivityLog, QAfterFilterCondition>
+      favoriteDetailsJsonGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'favoriteDetailsJson',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ActivityLog, ActivityLog, QAfterFilterCondition>
+      favoriteDetailsJsonLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'favoriteDetailsJson',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ActivityLog, ActivityLog, QAfterFilterCondition>
+      favoriteDetailsJsonBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'favoriteDetailsJson',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ActivityLog, ActivityLog, QAfterFilterCondition>
+      favoriteDetailsJsonStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'favoriteDetailsJson',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ActivityLog, ActivityLog, QAfterFilterCondition>
+      favoriteDetailsJsonEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'favoriteDetailsJson',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ActivityLog, ActivityLog, QAfterFilterCondition>
+      favoriteDetailsJsonContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'favoriteDetailsJson',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ActivityLog, ActivityLog, QAfterFilterCondition>
+      favoriteDetailsJsonMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'favoriteDetailsJson',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ActivityLog, ActivityLog, QAfterFilterCondition>
+      favoriteDetailsJsonIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'favoriteDetailsJson',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<ActivityLog, ActivityLog, QAfterFilterCondition>
+      favoriteDetailsJsonIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'favoriteDetailsJson',
+        value: '',
+      ));
+    });
+  }
+
   QueryBuilder<ActivityLog, ActivityLog, QAfterFilterCondition> idEqualTo(
       Id value) {
     return QueryBuilder.apply(this, (query) {
@@ -826,6 +1013,26 @@ extension ActivityLogQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<ActivityLog, ActivityLog, QAfterFilterCondition>
+      isIncomingEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'isIncoming',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ActivityLog, ActivityLog, QAfterFilterCondition> isManualEqualTo(
+      bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'isManual',
+        value: value,
       ));
     });
   }
@@ -1366,6 +1573,44 @@ extension ActivityLogQuerySortBy
     });
   }
 
+  QueryBuilder<ActivityLog, ActivityLog, QAfterSortBy>
+      sortByFavoriteDetailsJson() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'favoriteDetailsJson', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ActivityLog, ActivityLog, QAfterSortBy>
+      sortByFavoriteDetailsJsonDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'favoriteDetailsJson', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ActivityLog, ActivityLog, QAfterSortBy> sortByIsIncoming() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isIncoming', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ActivityLog, ActivityLog, QAfterSortBy> sortByIsIncomingDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isIncoming', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ActivityLog, ActivityLog, QAfterSortBy> sortByIsManual() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isManual', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ActivityLog, ActivityLog, QAfterSortBy> sortByIsManualDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isManual', Sort.desc);
+    });
+  }
+
   QueryBuilder<ActivityLog, ActivityLog, QAfterSortBy> sortByNotes() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'notes', Sort.asc);
@@ -1454,6 +1699,20 @@ extension ActivityLogQuerySortThenBy
     });
   }
 
+  QueryBuilder<ActivityLog, ActivityLog, QAfterSortBy>
+      thenByFavoriteDetailsJson() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'favoriteDetailsJson', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ActivityLog, ActivityLog, QAfterSortBy>
+      thenByFavoriteDetailsJsonDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'favoriteDetailsJson', Sort.desc);
+    });
+  }
+
   QueryBuilder<ActivityLog, ActivityLog, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
@@ -1463,6 +1722,30 @@ extension ActivityLogQuerySortThenBy
   QueryBuilder<ActivityLog, ActivityLog, QAfterSortBy> thenByIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ActivityLog, ActivityLog, QAfterSortBy> thenByIsIncoming() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isIncoming', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ActivityLog, ActivityLog, QAfterSortBy> thenByIsIncomingDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isIncoming', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ActivityLog, ActivityLog, QAfterSortBy> thenByIsManual() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isManual', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ActivityLog, ActivityLog, QAfterSortBy> thenByIsManualDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isManual', Sort.desc);
     });
   }
 
@@ -1538,6 +1821,26 @@ extension ActivityLogQueryWhereDistinct
     });
   }
 
+  QueryBuilder<ActivityLog, ActivityLog, QDistinct>
+      distinctByFavoriteDetailsJson({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'favoriteDetailsJson',
+          caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<ActivityLog, ActivityLog, QDistinct> distinctByIsIncoming() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'isIncoming');
+    });
+  }
+
+  QueryBuilder<ActivityLog, ActivityLog, QDistinct> distinctByIsManual() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'isManual');
+    });
+  }
+
   QueryBuilder<ActivityLog, ActivityLog, QDistinct> distinctByNotes(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1589,6 +1892,25 @@ extension ActivityLogQueryProperty
   QueryBuilder<ActivityLog, int?, QQueryOperations> durationSecondsProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'durationSeconds');
+    });
+  }
+
+  QueryBuilder<ActivityLog, String?, QQueryOperations>
+      favoriteDetailsJsonProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'favoriteDetailsJson');
+    });
+  }
+
+  QueryBuilder<ActivityLog, bool, QQueryOperations> isIncomingProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'isIncoming');
+    });
+  }
+
+  QueryBuilder<ActivityLog, bool, QQueryOperations> isManualProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'isManual');
     });
   }
 
