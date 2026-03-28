@@ -1,12 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:vivapro/core/services/navigator_service.dart';
-import 'package:vivapro/features/call_reminder/presentation/pages/call_reminder_screen.dart';
+import 'package:vivapro/features/call_reminder/presentation/providers/call_reminder_provider.dart';
 import 'package:vivapro/features/schedule_call/data/schedule_call.dart';
 import 'package:vivapro/features/schedule_call/dom/schedule_call_manager.dart';
 
-class ForegroundScheduleMonitor {
+class ForegroundScheduleMonitor with WidgetsBindingObserver {
   final Ref ref;
   final Set<String> _notifiedIds = {};
   StreamSubscription? _subscription;
@@ -17,8 +16,19 @@ class ForegroundScheduleMonitor {
   List<ScheduleCall> _currentCalls = [];
   final Map<String, Timer> _scheduledTimers = {};
 
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      debugPrint('App resumed → immediate check');
+      _checkSchedules(_currentCalls);
+      // Optionally re-schedule timers if needed
+      _scheduleTimersForCalls(_currentCalls);
+    }
+  }
+
   void start() {
     debugPrint('🚀 ForegroundScheduleMonitor: Starting...');
+    WidgetsBinding.instance.addObserver(this);
     
     try {
       final manager = ref.read(scheduleCallManagerProvider);
@@ -40,8 +50,8 @@ class ForegroundScheduleMonitor {
       );
       debugPrint('✅ Stream subscription created');
 
-      // Check every 5 seconds as a fallback (in case timers miss)
-      _periodicTimer = Timer.periodic(const Duration(seconds: 5), (_) {
+      // Check every 1 second as a fallback for faster response (in case timers miss)
+      _periodicTimer = Timer.periodic(const Duration(seconds: 10), (_) {
         debugPrint('⏰ Periodic check triggered (${_currentCalls.length} calls cached)');
         if (_currentCalls.isNotEmpty) {
           _checkSchedules(_currentCalls);
@@ -58,14 +68,14 @@ class ForegroundScheduleMonitor {
 
   void _scheduleTimersForCalls(List<ScheduleCall> calls) {
     final now = DateTime.now();
-    
+
     // Cancel existing timers
     for (final timer in _scheduledTimers.values) {
       timer.cancel();
     }
     _scheduledTimers.clear();
-    
-    // Schedule precise timers for each upcoming call
+
+    // Schedule precise timers for ALL future calls (no 24-hour limit)
     for (final call in calls) {
       final scheduledDateTime = DateTime(
         call.date.year,
@@ -74,18 +84,18 @@ class ForegroundScheduleMonitor {
         call.timeHour,
         call.timeMinute,
       );
-      
+
       final difference = scheduledDateTime.difference(now);
-      
-      // Only schedule timers for future calls (within next 24 hours)
-      if (difference.isNegative || difference.inHours > 24) {
+
+      // Only schedule timers for future calls
+      if (difference.isNegative || difference < const Duration(seconds: 1)) {
         continue;
       }
-      
-      debugPrint('⏱️ Scheduling precise timer for ${call.contact.displayName} in ${difference.inSeconds} seconds');
-      
+
+      debugPrint('⏱️ Scheduling timer for ${call.contact.displayName} in ${difference.inSeconds}s');
+
       _scheduledTimers[call.id] = Timer(difference, () {
-        debugPrint('⏰ Precise timer fired for ${call.contact.displayName}');
+        debugPrint('⏰ Timer fired for ${call.contact.displayName}');
         if (!_notifiedIds.contains(call.id)) {
           _showReminder(call);
           _notifiedIds.add(call.id);
@@ -118,7 +128,7 @@ class ForegroundScheduleMonitor {
       // 1. Time has reached (scheduledDateTime <= now)
       // 2. Not too old (within last 5 minutes) to avoid spamming old reminders on app start
       // 3. Haven't notified in this session
-      final isTimeReached = scheduledDateTime.isBefore(now.add(const Duration(seconds: 1)));
+      final isTimeReached = scheduledDateTime.isBefore(now.add(const Duration(milliseconds: 100))); // Increased precision
       final isNotTooOld = scheduledDateTime.isAfter(now.subtract(const Duration(minutes: 5)));
       final notYetNotified = !_notifiedIds.contains(call.id);
 
@@ -149,25 +159,23 @@ class ForegroundScheduleMonitor {
   }
 
   void _showReminder(ScheduleCall call) {
-    // Wait for next frame to ensure navigator is ready and avoid conflicting with current build
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (navigatorKey.currentState != null) {
-        navigatorKey.currentState!.push(
-          MaterialPageRoute(
-            fullscreenDialog: true,
-            builder: (context) => CallReminderScreen(schedule: call),
-          ),
-        );
-      } else {
-        debugPrint('Navigator state is null, cannot show reminder');
-      }
+    // Instead of showing a full screen, we now show a banner via the provider
+    // The HomePage will listen to this provider and display the banner
+    Future.microtask(() {
+      ref.read(callReminderBannerProvider.notifier).show(call);
     });
   }
 
   void stop() {
+    WidgetsBinding.instance.removeObserver(this);
     debugPrint('ForegroundScheduleMonitor stopped');
     _subscription?.cancel();
     _periodicTimer?.cancel();
+    for (var t in _scheduledTimers.values) {
+      t.cancel();
+    }
+    _scheduledTimers.clear();
+    _notifiedIds.clear();
   }
 }
 

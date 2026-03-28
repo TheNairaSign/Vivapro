@@ -3,7 +3,7 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
-  dynamic_color
+  awesome_notifications
   file_selector_linux
   flutter_timezone
   isar_flutter_libs

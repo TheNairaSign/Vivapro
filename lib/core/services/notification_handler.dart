@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -14,22 +15,23 @@ class NotificationHandler {
 
   void listenToNotifications() {
     final notificationService = NotificationService();
-    notificationService.onNotificationResponse.listen((response) {
-      _handleNotificationResponse(response);
+    notificationService.onActionReceived.listen((ReceivedAction action) {
+      _handleNotificationResponse(action);
     });
   }
 
-  Future<void> _handleNotificationResponse(dynamic response) async {
-    final actionId = response.actionId;
-    final payload = response.payload;
+  Future<void> _handleNotificationResponse(ReceivedAction action) async {
+    final actionId = action.buttonKeyPressed;
+    final payload = action.payload?['data'];
     
-    if (payload == null || payload == 'test') return;
+    if (payload == null) return;
 
     try {
       final Map<String, dynamic> data = jsonDecode(payload);
       final scheduleCall = ScheduleCall.fromJson(data);
       
-      if (actionId == 'call_now') {
+      // Default action (tapping the notification itself) or specific button
+      if (actionId == 'call_now' || action.buttonKeyPressed.isEmpty) {
         await _handleCallNow(scheduleCall);
       } else if (actionId == 'remind_later') {
         await _handleRemindLater(scheduleCall);

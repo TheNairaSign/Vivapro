@@ -1,3 +1,4 @@
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 Future<bool> callWithPhone(String phoneNumber) async {
@@ -10,6 +11,11 @@ Future<bool> callWithPhone(String phoneNumber) async {
     return false;
   }
 }
+
+// Future<bool?> callNumberDirectly(String phoneNumber) async {
+//   final result = await FlutterPhoneDirectCaller.callNumber(phoneNumber);
+//   return result;
+// }
 
 Future<bool> callWithWhatsApp(String phoneNumber) async {
   final formattedNumber = phoneNumber.replaceAll(RegExp(r'\s+|\+'), '');

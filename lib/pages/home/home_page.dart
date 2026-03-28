@@ -6,6 +6,9 @@ import 'package:intl/intl.dart';
 import 'package:vivapro/core/app_constants.dart';
 import 'package:vivapro/core/utils/format_date.dart';
 import 'package:vivapro/features/activity/presentation/bloc/activity_bloc.dart';
+import 'package:vivapro/features/call_reminder/presentation/providers/call_reminder_provider.dart';
+import 'package:vivapro/features/call_reminder/presentation/widgets/banner.dart';
+import 'package:vivapro/features/schedule_call/data/schedule_call.dart';
 import 'package:vivapro/pages/home/widgets/favorites_section.dart';
 import 'package:vivapro/pages/home/widgets/insights/insights_section.dart';
 import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_bloc.dart';
@@ -13,6 +16,7 @@ import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_e
 import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_state.dart';
 import 'package:vivapro/pages/home/widgets/people_to_call_section.dart';
 import 'package:vivapro/pages/home/widgets/upcoming_reminders_section.dart';
+import 'package:vivapro/features/call_reminder/presentation/widgets/call_reminder_banner.dart';
 import 'package:vivapro/features/schedule_call/presentation/pages/scheduled_calendar_page.dart';
 
 class HomePage extends ConsumerStatefulWidget {
@@ -50,6 +54,19 @@ class _HomePageState extends ConsumerState<HomePage> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final now = DateTime.now();
     final dateString = DateFormat('EEEE, MMM d').format(now) + now.daySuffix;
+
+    final state = ref.watch(callReminderBannerProvider);
+    final call = state.activeCall;
+
+    // final demoCall = ScheduleCall(
+    //   id: 'demo_id',
+    //   date: DateTime.now(),
+    //   timeHour: 10,
+    //   timeMinute: 30,
+    //   note: 'Demo call reminder',
+    //   contactDetailsJson: '{"name": "Demo Contact", "phone": "+1234567890"}',
+    //   updatedAt: DateTime.now(),
+    // );
 
     return Scaffold(
       extendBody: true,
@@ -156,7 +173,12 @@ class _HomePageState extends ConsumerState<HomePage> {
           child: Column(
             spacing: 32,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
+            children: [
+              if (call != null) ...[
+                // const SizedBox(height: 10),
+                CallReminderBanner()
+              ],
+              // CustomBanner(),
               PeopleToCallSection(),
               InsightsSection(),
               FavoritesSection(),

@@ -30,9 +30,7 @@ class AppTheme {
 
   static final pageConfig =  BackGesturePageTransitionsBuilder(
     parentTransitionBuilder: const CupertinoPageTransitionsBuilder(),
-    config: BackGestureConfig(
-      animationProgressCompleteThreshold: 0.4,
-    ),
+    config: BackGestureConfig(animationProgressCompleteThreshold: 0.4),
   );
 
   static const _darkColors = (

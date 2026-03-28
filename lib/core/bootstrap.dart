@@ -1,14 +1,13 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:vivapro/firebase_options.dart';
 
 import 'package:vivapro/core/services/background_task_manager.dart';
 import 'package:vivapro/core/services/notification_service.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 
 Future<void> bootstrap() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await LiquidGlassWidgets.initialize();
 
   final notificationService = NotificationService();
   await notificationService.initialize();

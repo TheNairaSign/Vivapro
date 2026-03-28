@@ -1,22 +1,9 @@
 import 'dart:convert';
 import 'dart:async';
-import 'dart:io';
-
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_timezone/flutter_timezone.dart';
-import 'package:timezone/data/latest.dart' as tz;
-import 'package:timezone/timezone.dart' as tz;
+import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:flutter/material.dart';
 import 'package:vivapro/features/events/data/calendar_event.dart';
 import 'package:vivapro/features/schedule_call/data/schedule_call.dart';
-import 'package:flutter/foundation.dart';
-
-@pragma('vm:entry-point')
-void notificationTapBackground(NotificationResponse notificationResponse) {
-  // This runs in a separate isolate.
-  // We can handle simple logic here or communicating with the main isolate if needed.
-  // dealing with actions usually requires handling them when the app opens or via a service.
-  debugPrint('notificationTapBackground: ${notificationResponse.actionId}');
-}
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
@@ -25,123 +12,84 @@ class NotificationService {
 
   NotificationService._internal();
 
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-
-  final StreamController<NotificationResponse> _notificationStreamController = StreamController<NotificationResponse>.broadcast();
+  final StreamController<ReceivedAction> _actionStreamController = StreamController<ReceivedAction>.broadcast();
   
-  Stream<NotificationResponse> get onNotificationResponse => _notificationStreamController.stream;
+  Stream<ReceivedAction> get onActionReceived => _actionStreamController.stream;
 
   Future<void> initialize() async {
-    tz.initializeTimeZones();
-    
-    try {
-      final timeZoneResult = await FlutterTimezone.getLocalTimezone();
-      final String timeZoneName = timeZoneResult.identifier;
-      debugPrint('Detected timezone: $timeZoneName');
-      tz.setLocalLocation(tz.getLocation(timeZoneName));
-      debugPrint('Timezone set successfully to: ${tz.local.name}');
-    } catch (e) {
-      debugPrint('Could not set local timezone: $e');
-      // Fallback to UTC or a default if necessary, though getting local usually works
-      tz.setLocalLocation(tz.local); 
-      debugPrint('Fallback timezone: ${tz.local.name}');
-    }
-
-    const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
-
-    final DarwinInitializationSettings initializationSettingsDarwin = DarwinInitializationSettings(
-      requestAlertPermission: false,
-      requestBadgePermission: false,
-      requestSoundPermission: false,
-      notificationCategories: [
-        DarwinNotificationCategory(
-          'call_reminder_category',
-          actions: [
-            DarwinNotificationAction.plain('call_now', 'Call Now'),
-            DarwinNotificationAction.plain('remind_later', 'Remind Me Later'),
-          ],
-          options: <DarwinNotificationCategoryOption>{
-            DarwinNotificationCategoryOption.hiddenPreviewShowTitle,
-          },
-        )
+    await AwesomeNotifications().initialize(
+      // set the icon to null if you want to use the default app icon
+      null,
+      [
+        NotificationChannel(
+          channelKey: 'scheduled_calls_channel',
+          channelName: 'Scheduled Calls',
+          channelDescription: 'Notifications for scheduled calls',
+          defaultColor: const Color(0xFF9D50BB),
+          ledColor: Colors.white,
+          importance: NotificationImportance.Max,
+          channelShowBadge: true,
+          onlyAlertOnce: true,
+          playSound: true,
+          criticalAlerts: true,
+        ),
+        NotificationChannel(
+          channelKey: 'scheduled_events_channel',
+          channelName: 'Scheduled Events',
+          channelDescription: 'Notifications for scheduled events',
+          defaultColor: const Color(0xFF9D50BB),
+          ledColor: Colors.white,
+          importance: NotificationImportance.Max,
+          channelShowBadge: true,
+          playSound: true,
+        ),
       ],
+      debug: true,
     );
 
-    final InitializationSettings initializationSettings = InitializationSettings(
-      android: initializationSettingsAndroid,
-      iOS: initializationSettingsDarwin,
-      macOS: initializationSettingsDarwin,
+    // Set up listeners
+    AwesomeNotifications().setListeners(
+      onActionReceivedMethod: NotificationService.onActionReceivedMethod,
+      onNotificationCreatedMethod: NotificationService.onNotificationCreatedMethod,
+      onNotificationDisplayedMethod: NotificationService.onNotificationDisplayedMethod,
+      onDismissActionReceivedMethod: NotificationService.onDismissActionReceivedMethod,
     );
-
-    final bool? initialized = await flutterLocalNotificationsPlugin.initialize(
-      initializationSettings,
-      onDidReceiveNotificationResponse: (NotificationResponse notificationResponse) {
-        _notificationStreamController.add(notificationResponse);
-      },
-      onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
-    );
-    debugPrint('Notification Plugin Initialized: $initialized');
-
-    if (Platform.isAndroid) {
-      await _createNotificationChannel();
-    }
   }
 
-  Future<void> _createNotificationChannel() async {
-    const AndroidNotificationChannel channel = AndroidNotificationChannel(
-      'scheduled_calls_channel',
-      'Scheduled Calls',
-      description: 'Notifications for scheduled calls',
-      importance: Importance.max,
-      playSound: true,
-      enableVibration: true,
-    );
+  /// Use this method to detect when a new notification or a schedule is created
+  @pragma("vm:entry-point")
+  static Future<void> onNotificationCreatedMethod(ReceivedNotification receivedNotification) async {
+    debugPrint('Notification created: ${receivedNotification.id}');
+  }
 
-    const AndroidNotificationChannel eventChannel = AndroidNotificationChannel(
-      'scheduled_events_channel',
-      'Scheduled Events',
-      description: 'Notifications for scheduled events',
-      importance: Importance.max,
-      playSound: true,
-      enableVibration: true,
-    );
+  /// Use this method to detect every time that a new notification is displayed
+  @pragma("vm:entry-point")
+  static Future<void> onNotificationDisplayedMethod(ReceivedNotification receivedNotification) async {
+    debugPrint('Notification displayed: ${receivedNotification.id}');
+  }
 
-    await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.createNotificationChannel(channel);
-    await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.createNotificationChannel(eventChannel);
-    debugPrint('Android Notification Channels Created');
+  /// Use this method to detect if the user dismissed a notification
+  @pragma("vm:entry-point")
+  static Future<void> onDismissActionReceivedMethod(ReceivedAction receivedAction) async {
+    debugPrint('Notification dismissed: ${receivedAction.id}');
+  }
+
+  /// Use this method to detect when the user taps on a notification or action button
+  @pragma("vm:entry-point")
+  static Future<void> onActionReceivedMethod(ReceivedAction receivedAction) async {
+    debugPrint('Notification action received: ${receivedAction.buttonKeyPressed}');
+    NotificationService()._actionStreamController.add(receivedAction);
   }
 
   Future<void> requestPermissions() async {
-    if (Platform.isIOS || Platform.isMacOS) {
-      await flutterLocalNotificationsPlugin
-          .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
-          ?.requestPermissions(
-            alert: true,
-            badge: true,
-            sound: true,
-          );
-      await flutterLocalNotificationsPlugin
-          .resolvePlatformSpecificImplementation<MacOSFlutterLocalNotificationsPlugin>()
-          ?.requestPermissions(
-            alert: true,
-            badge: true,
-            sound: true,
-          );
-    } else if (Platform.isAndroid) {
-      final AndroidFlutterLocalNotificationsPlugin? androidImplementation = flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
-
-      final bool? postNotificationsGranted = await androidImplementation?.requestNotificationsPermission();
-      debugPrint('POST_NOTIFICATIONS granted: $postNotificationsGranted');
-
-      final bool? exactAlarmGranted = await androidImplementation?.requestExactAlarmsPermission();
-      debugPrint('EXACT_ALARM permission granted: $exactAlarmGranted');
+    bool isAllowed = await AwesomeNotifications().isNotificationAllowed();
+    if (!isAllowed) {
+      await AwesomeNotifications().requestPermissionToSendNotifications();
     }
   }
 
   Future<void> scheduleCallNotification(ScheduleCall call) async {
-    final now = tz.TZDateTime.now(tz.local);
-    final scheduledDate = tz.TZDateTime(
-      tz.local,
+    final scheduledDate = DateTime(
       call.date.year,
       call.date.month,
       call.date.day,
@@ -149,61 +97,46 @@ class NotificationService {
       call.time.minute,
     );
 
-    debugPrint('Scheduling call notification:');
-    debugPrint('Current time (local): $now');
-    debugPrint('Scheduled time (local): $scheduledDate');
-
-    if (scheduledDate.isBefore(now)) {
+    if (scheduledDate.isBefore(DateTime.now())) {
       debugPrint('Skipping notification: Scheduled time is in the past.');
       return;
     }
 
     final notificationId = call.id.isEmpty ? call.hashCode : call.id.hashCode;
-    const androidAllowWhileIdle = AndroidScheduleMode.exactAllowWhileIdle;
 
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-      notificationId.abs(),
-      'Scheduled Call with ${call.contact.displayName}',
-      call.note.isNotEmpty ? call.note : 'It\'s time for your call!',
-      scheduledDate,
-      NotificationDetails(
-        android: AndroidNotificationDetails(
-          'scheduled_calls_channel',
-          'Scheduled Calls',
-          channelDescription: 'Notifications for scheduled calls',
-          importance: Importance.max,
-          priority: Priority.high,
-          actions: [
-            const AndroidNotificationAction(
-              'call_now',
-              'Call Now',
-              showsUserInterface: true,
-            ),
-            const AndroidNotificationAction(
-              'remind_later',
-              'Remind Me Later',
-              showsUserInterface: false,
-            ),
-          ],
-        ),
-        iOS: const DarwinNotificationDetails(
-          categoryIdentifier: 'call_reminder_category',
-        ),
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: notificationId.abs(),
+        channelKey: 'scheduled_calls_channel',
+        title: 'Scheduled Call with ${call.contact.displayName}',
+        body: call.note.isNotEmpty ? call.note : "It's time for your call!",
+        notificationLayout: NotificationLayout.Default,
+        payload: {
+          'data': jsonEncode(call.toJson()),
+        },
+        // HIDE notification in foreground as requested
+        displayOnForeground: false,
+        displayOnBackground: true,
       ),
-      androidScheduleMode: androidAllowWhileIdle,
-      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
-      payload: jsonEncode(call.toJson()),
-    ).then((_) {
-      debugPrint('Call notification scheduled successfully with ID: ${notificationId.abs()}');
-    }).catchError((e) {
-      debugPrint('Error scheduling call notification: $e');
-    });
+      actionButtons: [
+        NotificationActionButton(
+          key: 'call_now',
+          label: 'Call Now',
+          actionType: ActionType.Default,
+        ),
+        NotificationActionButton(
+          key: 'remind_later',
+          label: 'Remind Me Later',
+          actionType: ActionType.SilentBackgroundAction,
+        ),
+      ],
+      schedule: NotificationCalendar.fromDate(date: scheduledDate),
+    );
+    debugPrint('Call notification scheduled for $scheduledDate');
   }
 
   Future<void> scheduleCalendarEventNotification(CalendarEvent event) async {
-    final now = tz.TZDateTime.now(tz.local);
-    final scheduledDate = tz.TZDateTime(
-      tz.local,
+    final scheduledDate = DateTime(
       event.date.year,
       event.date.month,
       event.date.day,
@@ -211,78 +144,55 @@ class NotificationService {
       event.timeMinute,
     );
 
-    debugPrint('Scheduling event notification:');
-    debugPrint('Current time (local): $now');
-    debugPrint('Scheduled time (local): $scheduledDate');
-
-    if (scheduledDate.isBefore(now)) {
+    if (scheduledDate.isBefore(DateTime.now())) {
       debugPrint('Skipping notification: Scheduled time is in the past.');
       return;
     }
 
     final notificationId = event.id.isEmpty ? event.hashCode : event.id.hashCode;
-    const androidAllowWhileIdle = AndroidScheduleMode.exactAllowWhileIdle;
 
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-      notificationId.abs(),
-      event.title,
-      event.description.isNotEmpty ? event.description : 'Your scheduled event is starting now!',
-      scheduledDate,
-      NotificationDetails(
-        android: AndroidNotificationDetails(
-          'scheduled_events_channel',
-          'Scheduled Events',
-          channelDescription: 'Notifications for scheduled events',
-          importance: Importance.max,
-          priority: Priority.high,
-          actions: [
-            const AndroidNotificationAction(
-              'view_event',
-              'View Event',
-              showsUserInterface: true,
-            ),
-          ],
-        ),
-        iOS: const DarwinNotificationDetails(
-          categoryIdentifier: 'call_reminder_category', // Can create separate category for iOS if needed
-        ),
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: notificationId.abs(),
+        channelKey: 'scheduled_events_channel',
+        title: event.title,
+        body: event.description.isNotEmpty ? event.description : 'Your scheduled event is starting now!',
+        notificationLayout: NotificationLayout.Default,
+        payload: {
+          'data': jsonEncode(event.toJson()),
+        },
+        displayOnForeground: false, // HIDE in foreground
+        displayOnBackground: true,
       ),
-      androidScheduleMode: androidAllowWhileIdle,
-      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
-      payload: jsonEncode(event.toJson()),
-    ).then((_) {
-      debugPrint('Event notification scheduled successfully with ID: ${notificationId.abs()}');
-    }).catchError((e) {
-      debugPrint('Error scheduling event notification: $e');
-    });
+      actionButtons: [
+        NotificationActionButton(
+          key: 'view_event',
+          label: 'View Event',
+          actionType: ActionType.Default,
+        ),
+      ],
+      schedule: NotificationCalendar.fromDate(date: scheduledDate),
+    );
+    debugPrint('Event notification scheduled for $scheduledDate');
   }
 
   Future<void> cancelNotification(int id) async {
-    await flutterLocalNotificationsPlugin.cancel(id);
+    await AwesomeNotifications().cancel(id);
   }
 
   Future<void> cancelAllNotifications() async {
-    await flutterLocalNotificationsPlugin.cancelAll();
+    await AwesomeNotifications().cancelAll();
   }
 
   Future<void> showTestNotification() async {
-    const AndroidNotificationDetails androidPlatformChannelSpecifics =
-      AndroidNotificationDetails(
-        'scheduled_calls_channel',
-        'Scheduled Calls',
-        channelDescription: 'Notifications for scheduled calls',
-        importance: Importance.max,
-        priority: Priority.high,
-        ticker: 'ticker',
-      );
-    const NotificationDetails platformChannelSpecifics = NotificationDetails(android: androidPlatformChannelSpecifics);
-    await flutterLocalNotificationsPlugin.show(
-      0,
-      'Test Notification',
-      'If you see this, notifications are working!',
-      platformChannelSpecifics,
-      payload: 'test',
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: 1,
+        channelKey: 'scheduled_calls_channel',
+        title: 'Test Notification',
+        body: 'If you see this, notifications are working!',
+        displayOnForeground: false, // HIDE in foreground
+      ),
     );
-    debugPrint('Immediate test notification triggered');
   }
 }

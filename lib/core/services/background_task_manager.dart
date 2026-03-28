@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vivapro/core/services/notification_service.dart';
 import 'package:vivapro/features/schedule_call/data/schedule_call.dart';
@@ -9,20 +9,20 @@ class BackgroundTaskManager {
   final NotificationService _notificationService = NotificationService();
 
   void initialize() {
-    _notificationService.onNotificationResponse.listen(_handleNotificationResponse);
+    _notificationService.onActionReceived.listen(_handleNotificationResponse);
   }
 
-  Future<void> _handleNotificationResponse(NotificationResponse response) async {
-    final payload = response.payload;
+  Future<void> _handleNotificationResponse(ReceivedAction action) async {
+    final payload = action.payload?['data'];
     if (payload == null) return;
 
     try {
       final json = jsonDecode(payload);
       final call = ScheduleCall.fromJson(json);
 
-      if (response.actionId == 'call_now') {
+      if (action.buttonKeyPressed == 'call_now' || action.buttonKeyPressed.isEmpty) {
         await _makePhoneCall(call);
-      } else if (response.actionId == 'remind_later') {
+      } else if (action.buttonKeyPressed == 'remind_later') {
         await _reschedule(call);
       }
     } catch (e) {

@@ -15,9 +15,8 @@ void showCallOptionsModal({
   final interactionTracker = ref.read(interactionTrackerProvider);
   showModalBottomSheet(
     context: context,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-    ),
+    isScrollControlled: true,
+    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
     builder: (_) {
       return SafeArea(
         child: Column(

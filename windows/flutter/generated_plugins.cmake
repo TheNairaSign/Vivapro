@@ -3,8 +3,8 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  awesome_notifications
   cloud_firestore
-  dynamic_color
   file_selector_windows
   firebase_core
   flutter_timezone

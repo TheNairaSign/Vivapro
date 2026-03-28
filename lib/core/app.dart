@@ -39,6 +39,8 @@ class Loop extends ConsumerStatefulWidget {
 
 class _LoopState extends ConsumerState<Loop> {
 
+  final routeObserver = RouteObserver<ModalRoute<void>>();
+
   @override
   void initState() {
     super.initState();
@@ -80,6 +82,7 @@ class _LoopState extends ConsumerState<Loop> {
                   systemNavigationBarIconBrightness: Brightness.dark,
                 ),
                 child: MaterialApp(
+                  navigatorObservers: [routeObserver],
                   navigatorKey: navigatorKey,
                   title: 'Loop',
                   debugShowCheckedModeBanner: false,
