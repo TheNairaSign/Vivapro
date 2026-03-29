@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_contacts/contact.dart';
+import 'package:flutter_contacts/models/contact/contact.dart';
 import 'package:ionicons/ionicons.dart';
 
 class ProfileCard extends StatelessWidget {
@@ -9,7 +9,7 @@ class ProfileCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasPhoto = contact.photo != null && contact.photo!.isNotEmpty;
+    final hasPhoto = contact.photo != null;
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
@@ -39,15 +39,15 @@ class ProfileCard extends StatelessWidget {
                 child: CircleAvatar(
                   radius: 40,
                   backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
-                  backgroundImage: hasPhoto ? MemoryImage(contact.photo!) : null,
+                  backgroundImage: hasPhoto ? MemoryImage(contact.photo!.thumbnail!) : null,
                   child: !hasPhoto
                       ? Text(
-                          (contact.displayName.isNotEmpty) ? contact.displayName.characters.first.toUpperCase() : '?',
+                          (contact.displayName ?? "John Doe").characters.first.toUpperCase(),
                           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                fontSize: 32,
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
+                            fontSize: 32,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
                         )
                       : null,
                 ),
@@ -69,11 +69,12 @@ class ProfileCard extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            contact.displayName,
+            contact.displayName ?? "John Doe",
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 0.2,
-                ),
+              fontWeight: FontWeight.bold,
+              letterSpacing: 0.2,
+            ),
+            textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8),
           Container(

@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:cloud_firestore/cloud_firestore.dart' hide Index;
+
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:isar/isar.dart';
 import 'package:vivapro/core/enums/call_frequency.dart';
@@ -83,8 +83,8 @@ class FavoriteContact {
       'priority': priority.name,
       'callFrequency': callFrequency.name,
       'lastInteractionAt': lastInteractionAt,
-      'createdAt': createdAt ?? FieldValue.serverTimestamp(),
-      'updatedAt': updatedAt ?? FieldValue.serverTimestamp(),
+      'createdAt': createdAt?.toIso8601String(),
+      'updatedAt': (updatedAt ?? DateTime.now()).toIso8601String(),
       'profilePhotoUrl': profilePhotoUrl,
     };
   }
@@ -104,9 +104,15 @@ class FavoriteContact {
             (map['callFrequency'] as String?)?.toLowerCase(),
         orElse: () => CallFrequency.daily,
       ),
-      lastInteractionAt: (map['lastInteractionAt'] as Timestamp?)?.toDate(),
-      createdAt: (map['createdAt'] as Timestamp?)?.toDate(),
-      updatedAt: (map['updatedAt'] as Timestamp?)?.toDate(),
+      lastInteractionAt: map['lastInteractionAt'] != null
+          ? DateTime.parse(map['lastInteractionAt'] as String)
+          : null,
+      createdAt: map['createdAt'] != null
+          ? DateTime.parse(map['createdAt'] as String)
+          : null,
+      updatedAt: map['updatedAt'] != null
+          ? DateTime.parse(map['updatedAt'] as String)
+          : null,
       profilePhotoUrl: map['profilePhotoUrl'],
     );
   }

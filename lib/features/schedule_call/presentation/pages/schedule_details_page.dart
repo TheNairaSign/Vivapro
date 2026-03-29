@@ -49,12 +49,12 @@ class ScheduleDetailsPage extends ConsumerWidget {
                   radius: 60,
                   backgroundColor: isDarkMode ? Colors.grey[800] : Colors.grey[200],
                   backgroundImage: (scheduleCall.contact.photo != null)
-                      ? MemoryImage(scheduleCall.contact.photo!)
+                      ? MemoryImage(scheduleCall.contact.photo!.thumbnail!)
                       : null,
                   child: (scheduleCall.contact.photo == null)
                       ? Text(
-                          scheduleCall.contact.displayName.isNotEmpty
-                              ? scheduleCall.contact.displayName[0]
+                          (scheduleCall.contact.displayName ?? 'John Doe').isNotEmpty
+                              ? (scheduleCall.contact.displayName ?? 'John Doe')[0]
                               : '?',
                           style: TextStyle(
                             fontSize: 48,
@@ -70,7 +70,7 @@ class ScheduleDetailsPage extends ConsumerWidget {
             
             // Contact Name
             Text(
-              scheduleCall.contact.displayName,
+              (scheduleCall.contact.displayName ?? 'John Doe'),
               style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
@@ -236,8 +236,8 @@ class ScheduleDetailsPage extends ConsumerWidget {
                                 ? scheduleCall.contact.phones.first.number
                                 : null;
                             
-                  if (phoneNumber != null) {
-                    await interactionTracker.recordInteraction(scheduleCall.contact.id);
+                  if (phoneNumber != null && scheduleCall.contact.id != null) {
+                    await interactionTracker.recordInteraction(scheduleCall.contact.id!);
                     final uri = Uri(scheme: 'tel', path: phoneNumber);
                     if (await canLaunchUrl(uri)) {
                       await launchUrl(uri);

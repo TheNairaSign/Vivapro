@@ -149,7 +149,7 @@ class InsightsCard extends ConsumerWidget {
                 color: Colors.grey[800],
                 image: insight.contact.contactDetails.photo != null
                   ? DecorationImage(
-                      image: MemoryImage(insight.contact.contactDetails.photo!),
+                      image: MemoryImage(insight.contact.contactDetails.photo!.thumbnail!),
                       fit: BoxFit.cover,
                     )
                   : const DecorationImage(

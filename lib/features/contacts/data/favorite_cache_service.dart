@@ -1,4 +1,6 @@
-import 'package:flutter_contacts/contact.dart';
+import 'dart:developer';
+
+import 'package:flutter_contacts/models/contact/contact.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
 import 'package:vivapro/core/enums/call_frequency.dart';
@@ -59,17 +61,20 @@ class FavoriteCacheService {
   }
 
   Future<void> toggleFavorite(bool currentlyFavorite, Contact contact) async {
-    if (currentlyFavorite) {
-      await removeFavorite(contact.id);
-    } else {
+    if (currentlyFavorite && contact.id != null) {
+      await removeFavorite(contact.id!);
+    } else if (contact.id != null) {
       await addFavorite(
         FavoriteContact.create(
-          id: contact.id,
+          id: contact.id!,
           contactDetails: contact,
           priority: CallPriority.low,
           callFrequency: CallFrequency.daily,
         ),
       );
+    } else {
+      log('Contact ID is null', name: 'FavoriteContactCache');
+      return;
     }
   }
 }

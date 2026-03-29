@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_contacts/flutter_contacts.dart';
+import 'package:flutter_contacts/flutter_contacts.dart' hide Contact;
+import 'package:flutter_contacts/models/contact/contact.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:vivapro/widgets/custom_back_button.dart';
 
@@ -21,13 +22,12 @@ class _ContactPickerPageState extends State<ContactPickerPage> {
   }
 
   Future<void> _fetchContacts() async {
-    if (!await FlutterContacts.requestPermission(readonly: true)) {
+    final permission = await FlutterContacts.permissions.request(.readWrite);
+    if (permission != PermissionStatus.granted) {
       if (mounted) setState(() => _permissionDenied = true);
     } else {
-      final contacts = await FlutterContacts.getContacts(
-        withProperties: true,
-        withPhoto: true,
-      );
+      final contacts = await FlutterContacts.getAll(properties: {ContactProperty.name, ContactProperty.phone});
+      debugPrint('Contacts: ${contacts.toString()}');
       if (mounted) {
         setState(() {
           _contacts = contacts;
@@ -91,7 +91,7 @@ class _ContactPickerPageState extends State<ContactPickerPage> {
       separatorBuilder: (context, index) => const SizedBox(height: 10),
       itemBuilder: (context, i) {
         final contact = _contacts![i];
-        final hasPhoto = contact.photo != null && contact.photo!.isNotEmpty;
+        final hasPhoto = contact.photo != null && contact.photo!.thumbnail != null;
         
         return Container(
           decoration: BoxDecoration(
@@ -101,11 +101,11 @@ class _ContactPickerPageState extends State<ContactPickerPage> {
           child: ListTile(
             leading: CircleAvatar(
               backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
-              backgroundImage: hasPhoto ? MemoryImage(contact.photo!) : null,
+              backgroundImage: hasPhoto ? MemoryImage(contact.photo!.thumbnail!) : null,
               child: !hasPhoto
                   ? Text(
-                      (contact.displayName.isNotEmpty)
-                          ? contact.displayName.characters.first.toUpperCase()
+                      ((contact.displayName ?? 'John Doe').isNotEmpty)
+                          ? (contact.displayName ?? 'John Doe').characters.first.toUpperCase()
                           : '?',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Theme.of(context).colorScheme.primary,
@@ -114,9 +114,9 @@ class _ContactPickerPageState extends State<ContactPickerPage> {
                     )
                   : null,
             ),
-            title: Text(contact.displayName),
+            title: Text(contact.displayName ?? 'John Doe'),
             subtitle: (contact.phones.isNotEmpty)
-                ? Text(contact.phones.first.number)
+                ? Text(contact.phones.firstWhere((phone) => phone.number.isNotEmpty).number)
                 : null,
             onTap: () {
               Navigator.of(context).pop(contact);

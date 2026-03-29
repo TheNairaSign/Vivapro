@@ -83,7 +83,7 @@ class CallReminderScreen extends ConsumerWidget {
                 
                 // Name
                 Text(
-                  contact.displayName,
+                  contact.displayName ?? 'John Doe',
                   style: theme.textTheme.headlineMedium?.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -108,9 +108,9 @@ class CallReminderScreen extends ConsumerWidget {
                 _ActionButton(
                   onTap: () async {
                     final phoneNumber = contact.phones.isNotEmpty ? contact.phones.first.number : null;
-                    if (phoneNumber != null) {
+                    if (phoneNumber != null && contact.id != null) {
                       final interactionTracker = ref.read(interactionTrackerProvider);
-                      await interactionTracker.recordInteraction(contact.id);
+                      await interactionTracker.recordInteraction(contact.id!);
                       
                       // Delete the schedule after calling
                       await ref.read(scheduleCallManagerProvider).deleteSchedule(schedule.id);

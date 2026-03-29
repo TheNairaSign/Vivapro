@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:vivapro/components/show_flushbar_custom.dart';
 import 'package:vivapro/core/providers/navigation_provider.dart';
 import 'package:vivapro/pages/statistics/relationship_stats_page.dart';
 import 'package:vivapro/pages/home/home_page.dart';
@@ -79,19 +81,56 @@ class _NavigationPageState extends ConsumerState<NavigationPage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          final contact = await Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const ContactPickerPage(),
-            ),
-          );
-          if (contact != null && context.mounted) {
-            Navigator.push(
+          // Check contacts permission before proceeding
+          var status = await Permission.contacts.status;
+          
+          if (status.isPermanentlyDenied) {
+            if (context.mounted) { 
+              showFlushbarCustom(
+                context, 
+                'Permission Required', 
+                'You have permanently denied contact access. Please enable it in Settings.',
+                color: Colors.orange,
+                mainButton: TextButton(  
+                  onPressed: () => openAppSettings(),
+                  child: Text('Settings', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onPrimary)),
+                ),
+              );
+            }
+            return;
+          }
+
+          if (!status.isGranted) {
+            status = await Permission.contacts.request();
+          }
+          
+          if (!status.isGranted) {
+            if (context.mounted) {
+              showFlushbarCustom(
+                context, 
+                'Permission Denied', 
+                'Vivapro needs contact access to schedule calls correctly.',
+                color: Colors.orange,
+              );
+            }
+            return;
+          }
+
+          if (context.mounted) {
+            final contact = await Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ScheduleCallPage(contact: contact),
+                builder: (context) => const ContactPickerPage(),
               ),
             );
+            if (contact != null && context.mounted) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ScheduleCallPage(contact: contact),
+                ),
+              );
+            }
           }
         },
         backgroundColor: Theme.of(context).colorScheme.primary,

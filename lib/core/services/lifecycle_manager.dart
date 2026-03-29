@@ -50,7 +50,7 @@ class _LifecycleManagerState extends State<LifecycleManager> with WidgetsBinding
       // Only show banner if the call was initiated in the last 5 minutes
       if (difference.inMinutes < 5) {
         await pendingCallService.clearPendingCall();
-        final contact = await FlutterContacts.getContact(pendingCall['contactId']);
+        final contact = await FlutterContacts.get(pendingCall['contactId']);
 
         if (contact != null && navigatorKey.currentContext!.mounted) {
           final navigatorState = navigatorKey.currentState;

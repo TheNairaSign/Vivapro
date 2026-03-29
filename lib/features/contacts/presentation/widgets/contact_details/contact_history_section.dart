@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_contacts/contact.dart';
+import 'package:flutter_contacts/models/contact/contact.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:vivapro/core/extensions/capitalization.dart';
 import 'package:vivapro/features/activity/data/models/activity_log.dart';

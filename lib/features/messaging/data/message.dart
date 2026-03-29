@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class Message {
   String? id;
   final String senderId;
@@ -35,7 +33,7 @@ class Message {
     return {
       'senderId': senderId,
       'text': text,
-      'createdAt': createdAt,
+      'createdAt': createdAt.toIso8601String(),
       'seenBy': seenBy,
     };
   }
@@ -45,7 +43,7 @@ class Message {
       id: json['id'] as String,
       senderId: json['senderId'] as String,
       text: json['text'] as String,
-      createdAt: (json['createdAt'] as Timestamp).toDate(),
+      createdAt: DateTime.parse(json['createdAt'] as String),
       seenBy: List<String>.from(json['seenBy'] as List),
     );
   }

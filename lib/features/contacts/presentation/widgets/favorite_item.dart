@@ -54,7 +54,7 @@ class FavoriteItem extends StatelessWidget {
             SizedBox(
               width: 70,
               child: Text(
-                favoriteContact.contactDetails.displayName,
+                favoriteContact.contactDetails.displayName ?? 'John Doe',
                 textAlign: TextAlign.center,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,

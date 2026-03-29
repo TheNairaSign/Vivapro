@@ -1,6 +1,6 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_contacts/contact.dart';
+import 'package:flutter_contacts/models/contact/contact.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vivapro/core/services/interaction_tracker.dart';
@@ -23,10 +23,10 @@ class ContactActionButtons extends ConsumerWidget {
               final interactionTracker = ref.read(interactionTrackerProvider);
               final phoneNumber = contact.phones.isNotEmpty ? contact.phones.first.number : null;
               
-              if (phoneNumber != null) {
+              if (phoneNumber != null && contact.id != null) {
                 // Record the interaction if it's a favorite
-                final activityId = await interactionTracker.recordInteraction(contact.id);
-                await PendingCallService().setPendingCall(contact.id, activityId: activityId);
+                final activityId = await interactionTracker.recordInteraction(contact.id!);
+                await PendingCallService().setPendingCall(contact.id!, activityId: activityId);
                 
                 // Open phone dialer
                 final uri = Uri(scheme: 'tel', path: phoneNumber);
@@ -49,7 +49,7 @@ class ContactActionButtons extends ConsumerWidget {
                 const Icon(EvaIcons.phone, size: 20),
                 const SizedBox(width: 8),
                 Text(
-                  'Call ${contact.displayName.split(' ').first}',
+                  'Call ${contact.displayName?.split(' ').first}',
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,

@@ -26,11 +26,9 @@ class ContactRepository {
 
   Future<List<Contact>> _fetchContacts() async {
     try {
-      if (await FlutterContacts.requestPermission()) {
-        _contacts = await FlutterContacts.getContacts(
-          withProperties: true,
-          withPhoto: true,
-        );
+      final permission = await FlutterContacts.permissions.request(.readWrite);
+      if (permission == PermissionStatus.granted) {
+        _contacts = await FlutterContacts.getAll();
         _hasLoaded = true;
       }
       return _contacts;
@@ -39,19 +37,19 @@ class ContactRepository {
     }
   }
 
-  Future<List<String>> matchContactIdToName(List<String> ids) async {
-    // Ensure contacts are loaded before matching
-    if (!_hasLoaded) await getContacts();
+  // Future<List<String>> matchContactIdToName(List<String> ids) async {
+  //   // Ensure contacts are loaded before matching
+  //   if (!_hasLoaded) await getContacts();
     
-    return ids.map((id) {
-      try {
-        final contact = _contacts.firstWhere((element) => element.id == id);
-        return contact.displayName;
-      } catch (_) {
-        return id;
-      }
-    }).toList();
-  }
+  //   return ids.map((id) {
+  //     try {
+  //       final contact = _contacts.firstWhere((element) => element.id == id);
+  //       return contact.displayName;
+  //     } catch (_) {
+  //       return id;
+  //     }
+  //   }).toList();
+  // }
 
   Future<String?> pickFavoriteImage() async {
     final picker = ImagePicker();

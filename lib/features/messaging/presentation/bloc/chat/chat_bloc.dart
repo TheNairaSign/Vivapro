@@ -38,9 +38,10 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     Emitter<ChatState> emit,
   ) async {
     try {
-      final contactNames = await contactRepository.matchContactIdToName(
-        event.participants,
-      );
+      // final contactNames = await contactRepository.matchContactIdToName(
+      //   event.participants,
+      // );
+      final contactNames = event.participants;
       dev.log("Contact names: $contactNames", name: "ChatBloc");
       await chatRepo.createChat(contactNames);
       emit(ChatInitial());

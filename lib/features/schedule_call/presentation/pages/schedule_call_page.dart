@@ -53,6 +53,7 @@ class _ScheduleCallPageState extends ConsumerState<ScheduleCallPage> {
       child: BlocListener<ScheduleCallBloc, ScheduleCallState>(
         listener: (context, state) {
           if (state is ScheduleCallError) {
+            debugPrint("Error adding schedule: ${state.message}");
             showFlushbarCustom(context, 'Error', state.message, color: Colors.red);
             debugPrint("Error adding schedule: ${state.message}");
           }
@@ -66,7 +67,7 @@ class _ScheduleCallPageState extends ConsumerState<ScheduleCallPage> {
               onPressed: () => Navigator.pop(context),
             ),
             title: Text(
-              widget.scheduleCall == null ? "Schedule a Call" : "Update Call",
+              (widget.scheduleCall == null || widget.scheduleCall!.id.isEmpty) ? "Schedule a Call" : "Update Call",
               style: Theme.of(context)
                   .textTheme
                   .headlineSmall
@@ -114,7 +115,7 @@ class _ScheduleCallPageState extends ConsumerState<ScheduleCallPage> {
                             note: _noteController.text,
                           );
                           
-                          if (widget.scheduleCall == null) {
+                          if (widget.scheduleCall == null || widget.scheduleCall!.id.isEmpty) {
                             context.read<ScheduleCallBloc>().add(ScheduleCallAdd(scheduleCall: scheduleCall));
                           } else {
                             context.read<ScheduleCallBloc>().add(ScheduleCallReschedule(scheduleCall: scheduleCall));
@@ -125,7 +126,7 @@ class _ScheduleCallPageState extends ConsumerState<ScheduleCallPage> {
                           showFlushbarCustom(
                             context,
                             'Schedule',
-                            widget.scheduleCall == null ? "Call Scheduled" : "Call Updated",
+                            (widget.scheduleCall == null || widget.scheduleCall!.id.isEmpty) ? "Call Scheduled" : "Call Updated",
                             mainButton: TextButton(
                               onPressed: () => navigator.push(MaterialPageRoute(builder: (ctx) => ScheduleDetailsPage(scheduleCall: scheduleCall))),
                               child: const Text('View', style: TextStyle(color: Colors.amber)),
@@ -147,7 +148,7 @@ class _ScheduleCallPageState extends ConsumerState<ScheduleCallPage> {
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              widget.scheduleCall == null ? "Schedule Call" : "Update Call",
+                              (widget.scheduleCall == null || widget.scheduleCall!.id.isEmpty) ? "Schedule Call" : "Update Call",
                               style: Theme.of(context)
                                 .textTheme
                                 .headlineSmall

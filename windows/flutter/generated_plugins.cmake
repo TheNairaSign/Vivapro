@@ -4,9 +4,7 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   awesome_notifications
-  cloud_firestore
   file_selector_windows
-  firebase_core
   flutter_timezone
   isar_flutter_libs
   permission_handler_windows

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_contacts/contact.dart';
+import 'package:flutter_contacts/models/contact/contact.dart';
 import 'package:vivapro/features/contacts/presentation/widgets/favorite_avatar.dart';
 import 'package:vivapro/pages/contact_picker_page.dart';
 

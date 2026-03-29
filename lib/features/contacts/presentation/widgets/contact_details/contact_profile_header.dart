@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_contacts/contact.dart';
+import 'package:flutter_contacts/models/contact/contact.dart';
 import 'package:vivapro/widgets/text_avatar.dart';
 
 class ContactProfileHeader extends StatelessWidget {
@@ -8,7 +8,7 @@ class ContactProfileHeader extends StatelessWidget {
   const ContactProfileHeader({super.key, required this.contact});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {  
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Column(
       children: [
@@ -21,8 +21,8 @@ class ContactProfileHeader extends StatelessWidget {
               ),
               child: contact.photo != null ? CircleAvatar(
                 radius: 60,
-                backgroundImage: MemoryImage(contact.photo!),
-              ) : TextAvatar(name: contact.displayName, radius: 60, textSize: 40),
+                backgroundImage: MemoryImage(contact.photo!.thumbnail!),
+              ) : TextAvatar(name: contact.displayName ?? 'John Doe', radius: 60, textSize: 40),
             ),
             Positioned(
               bottom: 0,
@@ -44,7 +44,7 @@ class ContactProfileHeader extends StatelessWidget {
         ),
         const SizedBox(height: 20),
         Text(
-          contact.displayName,
+          contact.displayName ?? 'John Doe',
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),

@@ -27,7 +27,7 @@ class _AddFavoritePageState extends ConsumerState<AddFavoritePage> {
   @override
   void initState() {
     super.initState();
-    _nameController.text = widget.contact.displayName;
+    _nameController.text = widget.contact.displayName ?? '';
     if (widget.contact.phones.isNotEmpty) {
       _phoneController.text = widget.contact.phones.first.number;
     }
@@ -46,9 +46,13 @@ class _AddFavoritePageState extends ConsumerState<AddFavoritePage> {
     final favoritesProvider = context.read<AddFavoritesProvider>();
 
     try {
+      if (widget.contact.id == null) {
+        showFlushbarCustom(context, 'Error', 'Failed to save contact: Contact ID is null');
+        return;
+      } 
       await ref.read(favoriteCacheServiceProvider).addFavorite(
         FavoriteContact.create(
-          id: widget.contact.id,
+          id: widget.contact.id!,
           callFrequency: favoritesProvider.callFrequency,
           contactDetails: widget.contact,
           priority: favoritesProvider.callPriority,

@@ -45,9 +45,9 @@ class NotificationHandler {
     final interactionTracker = ref.read(interactionTrackerProvider);
     final phoneNumber = call.contact.phones.isNotEmpty ? call.contact.phones.first.number : null;
     
-    if (phoneNumber != null) {
+    if (phoneNumber != null && call.contact.id != null) {
       // Record the interaction
-      await interactionTracker.recordInteraction(call.contact.id);
+      await interactionTracker.recordInteraction(call.contact.id!);
       
       // Open phone dialer
       final uri = Uri(scheme: 'tel', path: phoneNumber);

@@ -1,37 +1,20 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'dart:developer' as developer;
 
+/// Local-only placeholder for TypingRepository.
+/// Firebase (Firestore) has been removed.
 class TypingRepository {
-  final _firestore = FirebaseFirestore.instance;
-
   void startTyping(String chatId) {
-    final value = _firestore.collection('typing').doc(chatId).set({
-      'userId': true,
-    }, SetOptions(merge: true));
-    value.then(
-      (value) => developer.log("Typing started", name: "TypingRepository"),
-    );
-    value.catchError(
-      (error) =>
-          developer.log("Typing started failed", name: "TypingRepository"),
-    );
+    developer.log('startTyping: $chatId (local stub)', name: 'TypingRepository');
+    // TODO: implement with your chosen backend
   }
 
   void stopTyping(String chatId) {
-    final value = _firestore.collection('typing').doc(chatId).update({
-      'userId': FieldValue.delete(),
-    });
-    value.then(
-      (value) => developer.log("Typing stopped", name: "TypingRepository"),
-    );
-    value.catchError(
-      (error) =>
-          developer.log("Typing stopped failed", name: "TypingRepository"),
-    );
+    developer.log('stopTyping: $chatId (local stub)', name: 'TypingRepository');
+    // TODO: implement with your chosen backend
   }
 
-  Stream<DocumentSnapshot> typingListener(String chatId) {
-    return _firestore.collection('typing').doc(chatId).snapshots();
+  Stream<Map<String, dynamic>> typingListener(String chatId) {
+    // TODO: implement with your chosen backend
+    return Stream.value({});
   }
 }

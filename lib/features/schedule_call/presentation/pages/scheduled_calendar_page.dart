@@ -77,7 +77,7 @@ class _ScheduledCalendarPageState extends State<ScheduledCalendarPage> {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
-      builder: (context) => Container(
+      builder: (sheetContext) => Container(
         padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -93,13 +93,13 @@ class _ScheduledCalendarPageState extends State<ScheduledCalendarPage> {
             const SizedBox(height: 24),
             Text(
               "Add to Calendar",
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+              style: Theme.of(sheetContext).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Text(
               "Choose what you want to schedule for ${DateFunctions.formatDay(date, DateTime.now())}",
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
+              style: Theme.of(sheetContext).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
             ),
             const SizedBox(height: 32),
             Row(
@@ -108,9 +108,9 @@ class _ScheduledCalendarPageState extends State<ScheduledCalendarPage> {
                   child: _OptionCard(
                     icon: EvaIcons.phoneOutline,
                     label: "Schedule Call",
-                    color: Theme.of(context).colorScheme.primary,
+                    color: Theme.of(sheetContext).colorScheme.primary,
                     onTap: () async {
-                      Navigator.pop(context);
+                      Navigator.pop(sheetContext);
                       final contact = await Navigator.of(context).push<Contact?>(
                         MaterialPageRoute(builder: (ctx) => const ContactPickerPage()),
                       );
@@ -140,7 +140,7 @@ class _ScheduledCalendarPageState extends State<ScheduledCalendarPage> {
                     label: "Add Event",
                     color: Colors.orange,
                     onTap: () {
-                      Navigator.pop(context);
+                      Navigator.pop(sheetContext);
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (ctx) => AddEventPage(initialDate: date),
@@ -210,8 +210,7 @@ class _ScheduledCalendarPageState extends State<ScheduledCalendarPage> {
                           selectedDay: _selectedDay,
                           calendarFormat: _calendarFormat,
                           eventsForDay: (day) => _getEventsForDay(day, allCalls, allEvents),
-                          onDaySelected: (selectedDay, focusedDay) => 
-                              _onDaySelected(selectedDay, focusedDay, allCalls, allEvents),
+                          onDaySelected: (selectedDay, focusedDay) => _onDaySelected(selectedDay, focusedDay, allCalls, allEvents),
                         ),
                         onFormatChanged: onFormatChanged,
                         onPageChanged: onPageChanged,
@@ -317,10 +316,9 @@ class _OptionCard extends StatelessWidget {
             Text(
               label,
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: color,
                 fontWeight: FontWeight.bold,
-                fontSize: 14,
               ),
             ),
           ],

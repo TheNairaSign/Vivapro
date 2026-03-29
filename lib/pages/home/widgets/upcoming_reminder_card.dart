@@ -171,7 +171,7 @@ class UpcomingReminderCard extends ConsumerWidget {
                       children: [
                         Expanded(
                           child: Text(
-                            call.contact.displayName,
+                            call.contact.displayName ?? "John Doe",
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 16,

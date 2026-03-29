@@ -56,7 +56,7 @@ class FavoriteTile extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  contact.displayName,
+                  contact.displayName ?? 'John Doe',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w800,
                     letterSpacing: -0.2,
@@ -120,9 +120,9 @@ class FavoriteTile extends ConsumerWidget {
                 final interactionTracker = ref.read(interactionTrackerProvider);
                 final phoneNumber = contact.phones.isNotEmpty ? contact.phones.first.number : null;
                 
-                if (phoneNumber != null) {
-                  final activityId = await interactionTracker.recordInteraction(contact.id);
-                  await PendingCallService().setPendingCall(contact.id, activityId: activityId);
+                if (phoneNumber != null && contact.id != null) {
+                  final activityId = await interactionTracker.recordInteraction(contact.id!);
+                  await PendingCallService().setPendingCall(contact.id!, activityId: activityId);
                   
                   final uri = Uri(scheme: 'tel', path: phoneNumber);
                   if (await canLaunchUrl(uri)) {

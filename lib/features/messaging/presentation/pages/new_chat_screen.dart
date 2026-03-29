@@ -42,19 +42,17 @@ class _NewChatScreenState extends ConsumerState<NewChatScreen> {
     final query = _searchController.text.toLowerCase();
     setState(() {
       _filteredContacts = _contacts!.where((c) {
-        return c.displayName.toLowerCase().contains(query);
+        return (c.displayName ?? "John Doe").toLowerCase().contains(query);
       }).toList();
     });
   }
 
   Future<void> _fetchContacts() async {
-    if (!await FlutterContacts.requestPermission(readonly: true)) {
+    final permissions = await FlutterContacts.permissions.request(.readWrite);
+    if (permissions != PermissionStatus.granted) {
       if (mounted) setState(() => _permissionDenied = true);
     } else {
-      final contacts = await FlutterContacts.getContacts(
-        withProperties: true,
-        withPhoto: false,
-      );
+      final contacts = await FlutterContacts.getAll();
       if (mounted) {
         setState(() {
           _contacts = contacts;
@@ -76,8 +74,9 @@ class _NewChatScreenState extends ConsumerState<NewChatScreen> {
   }
 
   Future<List<String>> _contactNames(List<String> ids) async {
-    final contactsRepo = ref.read(contactsRepository);
-    return await contactsRepo.matchContactIdToName(ids);
+    // final contactsRepo = ref.read(contactsRepository);
+    // return await contactsRepo.matchContactIdToName(ids);
+    return ids.map((id) => id).toList();
   }
 
   Future<void> _createChat() async {
@@ -168,7 +167,7 @@ class _NewChatScreenState extends ConsumerState<NewChatScreen> {
                     return Chip(
                       backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.2),
                       label: Text(
-                        contact.displayName,
+                        contact.displayName ?? "John Doe",
                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
@@ -251,8 +250,8 @@ class _NewChatScreenState extends ConsumerState<NewChatScreen> {
               child: isSelected
                   ? Icon(EvaIcons.checkmark, color: Colors.white, size: 20)
                   : Text(
-                      (contact.displayName.isNotEmpty)
-                          ? contact.displayName[0].toUpperCase()
+                      (contact.displayName!.isNotEmpty)
+                          ? contact.displayName![0].toUpperCase()
                           : '?',
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                         color: Theme.of(context).colorScheme.primary,
@@ -261,7 +260,7 @@ class _NewChatScreenState extends ConsumerState<NewChatScreen> {
                     ),
             ),
             title: Text(
-              contact.displayName,
+              contact.displayName ?? "John Doe",
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                 color: isSelected
                     ? Theme.of(context).colorScheme.primary
@@ -275,7 +274,16 @@ class _NewChatScreenState extends ConsumerState<NewChatScreen> {
                     style: TextStyle(color: Colors.grey.shade500),
                   )
                 : null,
-            onTap: () => _toggleSelection(contact.id),
+            onTap: () {
+              if (contact.id != null) {
+                _toggleSelection(contact.id!);
+              }
+              // if (isSelected) {
+              //   Navigator.of(context).pushReplacement(
+              //     MaterialPageRoute(builder: (_) => MessagesScreen(chat: newChat)),
+              //   );
+              // }
+            },
             trailing: isSelected
                 ? Icon(EvaIcons.checkmarkCircle2, color: Theme.of(context).colorScheme.primary)
                 : null,

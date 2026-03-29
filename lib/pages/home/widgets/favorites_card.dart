@@ -41,7 +41,7 @@ class FavoritesCard extends ConsumerWidget {
               ),
               const SizedBox(height: 12),
               Text(
-                contact.contactDetails.displayName.capitalizeFirst,
+                (contact.contactDetails.displayName ?? 'John Doe').capitalizeFirst,
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,

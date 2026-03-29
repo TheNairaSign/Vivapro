@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:cloud_firestore/cloud_firestore.dart' hide Index;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:isar/isar.dart';
@@ -95,7 +95,9 @@ class ScheduleCall {
         minute: map['time']['minute'] as int,
       ),
       note: map['note'] as String,
-      updatedAt: (map['updatedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      updatedAt: map['updatedAt'] != null 
+          ? DateTime.parse(map['updatedAt'] as String) 
+          : DateTime.now(),
     );
   }
 

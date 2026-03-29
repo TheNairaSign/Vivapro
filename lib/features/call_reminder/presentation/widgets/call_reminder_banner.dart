@@ -95,9 +95,9 @@ class _CallReminderBannerState extends ConsumerState<CallReminderBanner> with Si
                     call: call,
                     onCallNow: () async {
                       final phoneNumber = call.contact.phones.isNotEmpty ? call.contact.phones.first.number : null;
-                      if (phoneNumber != null) {
+                      if (phoneNumber != null && call.contact.id != null) {
                         final interactionTracker = ref.read(interactionTrackerProvider);
-                        await interactionTracker.recordInteraction(call.contact.id);
+                        await interactionTracker.recordInteraction(call.contact.id!);
                         await ref.read(scheduleCallManagerProvider).deleteSchedule(call.id);
                         final uri = Uri(scheme: 'tel', path: phoneNumber);
                         if (await canLaunchUrl(uri)) {

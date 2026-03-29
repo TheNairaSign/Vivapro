@@ -105,7 +105,7 @@ class PeopleToCallCard extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    contact.contactDetails.displayName,
+                    contact.contactDetails.displayName ?? "John Doe",
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),

@@ -21,13 +21,11 @@ class _ContactsPageState extends State<ContactsPage> {
   }
 
   Future<void> _fetchContacts() async {
-    if (!await FlutterContacts.requestPermission(readonly: true)) {
+    final permission = await FlutterContacts.permissions.request(.readWrite);
+    if (permission != PermissionStatus.granted) {
       if (mounted) setState(() => _permissionDenied = true);
     } else {
-      final contacts = await FlutterContacts.getContacts(
-        withProperties: true,
-        withPhoto: true,
-      );
+      final contacts = await FlutterContacts.getAll();
       if (mounted) {
         setState(() {
           _contacts = contacts;
@@ -99,8 +97,8 @@ class _ContactsPageState extends State<ContactsPage> {
             leading: CircleAvatar(
               backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
               child: Text(
-                (contact.displayName.isNotEmpty)
-                    ? contact.displayName.characters.first.toUpperCase()
+                ((contact.displayName ?? 'John Doe').isNotEmpty)
+                    ? (contact.displayName ?? 'John Doe').characters.first.toUpperCase()
                     : '?',
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.primary,
@@ -108,12 +106,13 @@ class _ContactsPageState extends State<ContactsPage> {
                 ),
               ),
             ),
-            title: Text(contact.displayName),
+            title: Text(contact.displayName ?? 'John Doe'),
             subtitle: (contact.phones.isNotEmpty)
                 ? Text(contact.phones.first.number)
                 : null,
             onTap: () async {
-              final fullContact = await FlutterContacts.getContact(contact.id);
+              if (contact.id == null) return;
+              final fullContact = await FlutterContacts.get(contact.id!);
               if (context.mounted && fullContact != null) {
                 Navigator.of(context).push(
                   MaterialPageRoute(

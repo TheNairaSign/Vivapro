@@ -78,7 +78,7 @@ class ActivityLog {
   }) {
     return ActivityLog(
       contactId: favorite.id,
-      contactName: favorite.contactDetails.displayName,
+      contactName: favorite.contactDetails.displayName ?? 'John Doe',
       type: type,
       timestamp: timestamp ?? DateTime.now(),
       notes: notes,

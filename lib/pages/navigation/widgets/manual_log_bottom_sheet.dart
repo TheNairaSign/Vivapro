@@ -55,12 +55,22 @@ class _ManualLogBottomSheetState extends State<ManualLogBottomSheet> {
       return;
     }
 
-    final contactName = _selectedContact!.displayName;
+    final contactName = _selectedContact!.displayName ?? 'John Doe';
+
+    if (_selectedContact!.id == null) {
+      showFlushbarCustom(
+        context,
+        'Error',
+        'Please select a contact first',
+        color: Colors.red,
+      );
+      return;
+    }
 
     final activity = ActivityLog(
       favoriteContact: widget.favoriteContact,
       contactName: contactName,
-      contactId: _selectedContact!.id,
+      contactId: _selectedContact!.id!,
       phoneNumber: _selectedContact!.phones.isNotEmpty ? _selectedContact!.phones.first.number : null,
       type: response['type'] as ActivityType,
       timestamp: DateTime.now(),
@@ -86,10 +96,20 @@ class _ManualLogBottomSheetState extends State<ManualLogBottomSheet> {
         return;
       }
 
+      if (_selectedContact!.id == null) {
+        showFlushbarCustom(
+          context,
+          'Error',
+          'Please select a contact first',
+          color: Colors.red,
+        );
+        return;
+      }
+
       final activity = ActivityLog(
         favoriteContact: widget.favoriteContact,
-        contactName: _selectedContact!.displayName,
-        contactId: _selectedContact!.id,
+        contactName: _selectedContact!.displayName ?? 'John Doe',
+        contactId: _selectedContact!.id!,
         phoneNumber: _selectedContact!.phones.isNotEmpty ? _selectedContact!.phones.first.number : null,
         type: _selectedType,
         timestamp: DateTime.now(),

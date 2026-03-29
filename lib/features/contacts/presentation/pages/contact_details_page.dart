@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_contacts/contact.dart';
+import 'package:flutter_contacts/models/contact/contact.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vivapro/features/contacts/data/favorite_cache_service.dart';
 import 'package:vivapro/features/contacts/data/favorite_contact.dart';

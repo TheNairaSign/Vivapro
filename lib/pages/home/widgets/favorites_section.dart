@@ -73,7 +73,11 @@ class _FavoritesSectionState extends ConsumerState<FavoritesSection> {
                   child: InkWell(
                     onTap: () async {
                       // Request contact permission
-                      if (await FlutterContacts.requestPermission() && context.mounted) {
+                      final permission = await FlutterContacts.permissions.request(.readWrite);
+                      if (permission != PermissionStatus.granted) {
+                        return;
+                      }
+                      if (context.mounted) {
                         final contact = await Navigator.of(context).push<Contact?>(
                           MaterialPageRoute(builder: (_) => const ContactPickerPage()),
                         );
