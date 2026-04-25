@@ -15,6 +15,7 @@ class _ActivityChartState extends State<ActivityChart> {
   final ScrollController _scrollController = ScrollController();
   bool _showLeftArrow = false;
   bool _showRightArrow = false;
+  int? _selectedIndex;
 
   late List<DateTime> _timePoints;
   late List<int> _counts;
@@ -37,6 +38,9 @@ class _ActivityChartState extends State<ActivityChart> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.logs != widget.logs || oldWidget.period != widget.period) {
       _computeData();
+      setState(() {
+        _selectedIndex = null;
+      });
     }
   }
 
@@ -186,6 +190,7 @@ class _ActivityChartState extends State<ActivityChart> {
           ),
 
           const Spacer(),
+
           AnimatedSwitcher(
             duration: const Duration(milliseconds: 500),
             switchInCurve: Curves.easeOutQuart,
@@ -219,43 +224,80 @@ class _ActivityChartState extends State<ActivityChart> {
                       ? _getMonthName(_timePoints[index].month)
                       : _getDayName(_timePoints[index].weekday);
                   final isLast = index == _timePoints.length - 1;
+                  final isSelected = _selectedIndex == index;
 
-                  return Container(
-                    margin: isMonthly
-                        ? const EdgeInsets.symmetric(horizontal: 10)
-                        : EdgeInsets.zero,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        TweenAnimationBuilder<double>(
-                          tween: Tween(begin: 0, end: heightFactor),
-                          duration: Duration(milliseconds: 500 + (index * 100)),
-                          curve: Curves.easeOutBack,
-                          builder: (context, value, _) {
-                            return Container(
-                              width: 12,
-                              height: 70 * value + 10,
-                              decoration: BoxDecoration(
-                                color: isLast
-                                    ? Theme.of(context).colorScheme.primary
-                                    : Theme.of(context)
-                                        .colorScheme
-                                        .primary
-                                        .withAlpha(76),
-                                borderRadius: BorderRadius.circular(6),
-                              ),
-                            );
-                          },
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          label,
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: Colors.grey[500],
-                                fontWeight: FontWeight.w500,
-                              ),
-                        ),
-                      ],
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _selectedIndex = isSelected ? null : index;
+                      });
+                    },
+                    behavior: HitTestBehavior.opaque,
+                    child: Container(
+                      margin: isMonthly
+                          ? const EdgeInsets.symmetric(horizontal: 10)
+                          : EdgeInsets.zero,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 200),
+                            child: isSelected 
+                              ? Container(
+                                  key: ValueKey('tooltip_$index'),
+                                  margin: const EdgeInsets.only(bottom: 4),
+                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context).colorScheme.primary,
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                  child: Text(
+                                    '$count',
+                                    style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                                  ),
+                                )
+                              : const SizedBox(height: 18), // Placeholder height
+                          ),
+                          TweenAnimationBuilder<double>(
+                            tween: Tween(begin: 0, end: heightFactor),
+                            duration: Duration(milliseconds: 500 + (index * 100)),
+                            curve: Curves.easeOutBack,
+                            builder: (context, value, _) {
+                              return AnimatedContainer(
+                                duration: const Duration(milliseconds: 200),
+                                width: 12,
+                                height: 70 * value + 10,
+                                decoration: BoxDecoration(
+                                  color: isSelected 
+                                      ? Theme.of(context).colorScheme.primary
+                                      : isLast
+                                          ? Theme.of(context).colorScheme.primary
+                                          : Theme.of(context)
+                                              .colorScheme
+                                              .primary
+                                              .withAlpha(76),
+                                  borderRadius: BorderRadius.circular(6),
+                                  // boxShadow: isSelected ? [
+                                  //   BoxShadow(
+                                  //     color: Theme.of(context).colorScheme.primary.withAlpha(80),
+                                  //     blurRadius: 8,
+                                  //     spreadRadius: 1,
+                                  //   )
+                                  // ] : null,
+                                ),
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            label,
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: isSelected ? Theme.of(context).colorScheme.primary : Colors.grey[500],
+                              fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 }),

@@ -32,7 +32,7 @@ class _CallsPlannedContainerState extends State<CallsPlannedContainer> {
           }
         },
         child: Container(
-          height: 140,
+          height: 130,
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surface,
@@ -50,12 +50,17 @@ class _CallsPlannedContainerState extends State<CallsPlannedContainer> {
               Text(
                 '$_plannedCalls',
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontSize: 24,
+                  fontSize: 22,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               const SizedBox(height: 4),
-              const Text('Calls planned', style: TextStyle(fontSize: 12)),
+              Text(
+                'Calls planned',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              ),
             ],
           ),
         ),

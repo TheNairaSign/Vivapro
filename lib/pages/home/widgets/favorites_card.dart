@@ -42,8 +42,8 @@ class FavoritesCard extends ConsumerWidget {
               const SizedBox(height: 12),
               Text(
                 (contact.contactDetails.displayName ?? 'John Doe').capitalizeFirst,
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  fontSize: 18,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  // fontSize: 18,
                   fontWeight: FontWeight.w600,
                 ),
                 maxLines: 1,
@@ -52,15 +52,12 @@ class FavoritesCard extends ConsumerWidget {
               const SizedBox(height: 4),
               Text(
                 'Last called: ${contact.lastInteractionAt != null ? _formatLastInteraction(contact.lastInteractionAt!) : 'Never'}',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.grey[500],
-                  fontSize: 12,
-                ),
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey[500]),
               ),
               const SizedBox(height: 8),
               SizedBox(
                 width: double.infinity,
-                height: 36,
+                height: 34,
                 child: ElevatedButton(
                   onPressed: () async {
                     final phoneNumber = contact.contactDetails.phones.isNotEmpty
@@ -87,7 +84,7 @@ class FavoritesCard extends ConsumerWidget {
                   ),
                   child: Text(
                     'Call now',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),

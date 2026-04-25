@@ -20,9 +20,9 @@ class ContactProfileHeader extends StatelessWidget {
                 border: Border.all(color: Theme.of(context).colorScheme.primary, width: 3),
               ),
               child: contact.photo != null ? CircleAvatar(
-                radius: 60,
+                radius: 45,
                 backgroundImage: MemoryImage(contact.photo!.thumbnail!),
-              ) : TextAvatar(name: contact.displayName ?? 'John Doe', radius: 60, textSize: 40),
+              ) : TextAvatar(name: contact.displayName ?? 'John Doe', radius: 45, textSize: 28),
             ),
             Positioned(
               bottom: 0,
@@ -45,7 +45,9 @@ class ContactProfileHeader extends StatelessWidget {
         const SizedBox(height: 20),
         Text(
           contact.displayName ?? 'John Doe',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
         ),
         const SizedBox(height: 8),
         Row(
@@ -57,13 +59,11 @@ class ContactProfileHeader extends StatelessWidget {
                 color: Colors.blue.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Text(
+              child: Text(
                 'CLOSE FRIEND',
-                style: TextStyle(
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: Colors.blue,
-                  fontSize: 11,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 0.5,
+                  fontSize: 10
                 ),
               ),
             ),
@@ -88,9 +88,9 @@ class ContactProfileHeader extends StatelessWidget {
                     const SizedBox(width: 4),
                     Text(
                       'Mobile',
-                      style: TextStyle(
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: isDark ? Colors.grey[400] : Colors.grey[700],
-                        fontSize: 11,
+                        fontSize: 10,
                         fontWeight: FontWeight.w600,
                       ),
                     ),

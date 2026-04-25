@@ -52,7 +52,7 @@ class RelationshipHealthContainer extends ConsumerWidget {
                 //   );
                 // },
                 child: Container(
-                  height: 140,
+                  height: 130,
                   padding: const EdgeInsets.all(15),
                   decoration: BoxDecoration(
                     color: healthColor.withValues(alpha: 0.1),
@@ -69,18 +69,19 @@ class RelationshipHealthContainer extends ConsumerWidget {
                         ),
                         child: Icon(EvaIcons.peopleOutline, color: healthColor, size: 20),
                       ),
-                      const Spacer(),
+                      const SizedBox(height: 0),
                       Text(
                         '$healthPercentage%',
                         style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                           color: healthColor,
+                          fontSize: 22,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         'Relationship Health',
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                       ),

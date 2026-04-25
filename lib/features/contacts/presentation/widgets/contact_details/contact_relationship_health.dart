@@ -22,9 +22,11 @@ class ContactRelationshipHealth extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Relationship Health',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
         ),
         const SizedBox(height: 16),
         Container(
@@ -37,6 +39,7 @@ class ContactRelationshipHealth extends StatelessWidget {
             children: [
               Expanded(
                 child: _buildHealthCard(
+                  context,
                   icon: EvaIcons.phoneOutline,
                   label: 'LAST CALL',
                   value: lastInteractionStr,
@@ -52,11 +55,13 @@ class ContactRelationshipHealth extends StatelessWidget {
               ),
               Expanded(
                 child: _buildHealthCard(
+                  context,
                   icon: EvaIcons.calendarOutline,
                   label: 'TARGET FREQ',
                   value: favorite.callFrequency.name[0].toUpperCase() + favorite.callFrequency.name.substring(1),
                   subtitle: 'Recommended',
                   iconColor: Colors.green,
+                  isEnd: true,
                 ),
               ),
             ],
@@ -81,27 +86,28 @@ class ContactRelationshipHealth extends StatelessWidget {
     }
   }
 
-  Widget _buildHealthCard({
-    required IconData icon,
-    required String label,
-    required String value,
-    required String subtitle,
-    required Color iconColor,
+  Widget _buildHealthCard(
+    BuildContext context, 
+    {
+      required IconData icon,
+      required String label,
+      required String value,
+      required String subtitle,
+      required Color iconColor,
+      bool isEnd = false
   }) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: isEnd ? .end: CrossAxisAlignment.start,
       children: [
         Row(
+          mainAxisAlignment: isEnd ? .end: .start,
           children: [
             Icon(icon, size: 14, color: iconColor),
             const SizedBox(width: 6),
             Text(
               label,
-              style: TextStyle(
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: Colors.grey[500],
-                fontSize: 11,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 0.5,
               ),
             ),
           ],
@@ -109,10 +115,14 @@ class ContactRelationshipHealth extends StatelessWidget {
         const SizedBox(height: 12),
         Text(
           value,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
         ),
         const SizedBox(height: 4),
-        Text(subtitle, style: TextStyle(color: Colors.grey[500], fontSize: 12)),
+        Text(subtitle, style: Theme.of(context).textTheme.bodySmall?.copyWith(
+          color: Colors.grey[500],
+        )),
       ],
     );
   }

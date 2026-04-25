@@ -12,9 +12,7 @@ class ContactSettingsList extends StatelessWidget {
       children: [
         Text(
           'Settings & Reminders',
-          style: Theme.of(
-            context,
-          ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: 16),
         Container(
@@ -35,8 +33,9 @@ class ContactSettingsList extends StatelessWidget {
               ),
               Divider(
                 height: 1,
-                indent: 60,
-                color: isDark ? Colors.grey[800] : Colors.grey[200],
+                indent: 10,
+                endIndent: 10,
+                color: isDark ? Colors.grey[800] : Colors.grey[300],
               ),
               _buildSettingTile(
                 context: context,
@@ -49,8 +48,9 @@ class ContactSettingsList extends StatelessWidget {
               ),
               Divider(
                 height: 1,
-                indent: 60,
-                color: isDark ? Colors.grey[800] : Colors.grey[200],
+                indent: 10,
+                endIndent: 10,
+                color: isDark ? Colors.grey[800] : Colors.grey[300],
               ),
               _buildSettingTile(
                 context: context,
@@ -85,7 +85,7 @@ class ContactSettingsList extends StatelessWidget {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: iconColor.withOpacity(0.15),
+              color: iconColor.withValues(alpha: 0.15),
               shape: BoxShape.circle,
             ),
             child: Icon(icon, color: iconColor, size: 20),
@@ -97,13 +97,17 @@ class ContactSettingsList extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 if (subtitle != null) ...[
                   const SizedBox(height: 2),
                   Text(
                     subtitle,
-                    style: TextStyle(fontSize: 13, color: Colors.grey[500]),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Colors.grey[500],
+                    ),
                   ),
                 ],
               ],
@@ -113,7 +117,11 @@ class ContactSettingsList extends StatelessWidget {
             Switch(
               value: switchValue,
               onChanged: (value) {},
-              activeColor: Theme.of(context).colorScheme.primary,
+              activeThumbColor: Theme.of(context).colorScheme.primary,
+              activeTrackColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
+              inactiveThumbColor: Theme.of(context).appBarTheme.backgroundColor,
+              inactiveTrackColor: Theme.of(context).scaffoldBackgroundColor,
+              trackOutlineColor:  WidgetStateProperty.all(Colors.transparent),
             ),
           if (hasArrow) Icon(EvaIcons.arrowIosForwardOutline, color: Colors.grey[400]),
         ],

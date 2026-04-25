@@ -168,7 +168,6 @@ class _HomePageState extends ConsumerState<HomePage> {
               // CustomBanner(),
               PeopleToCallSection(),
               InsightsSection(),
-              SizedBox(height: 10),
               FavoritesSection(),
               UpcomingRemindersSection(),
               SizedBox(height: 50),

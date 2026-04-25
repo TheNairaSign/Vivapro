@@ -17,7 +17,7 @@ class ContactActionButtons extends ConsumerWidget {
       children: [
         SizedBox(
           width: double.infinity,
-          height: 50,
+          height: 45,
           child: ElevatedButton(
             onPressed: () async {
               final interactionTracker = ref.read(interactionTrackerProvider);
@@ -46,12 +46,11 @@ class ContactActionButtons extends ConsumerWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(EvaIcons.phone, size: 20),
+                const Icon(EvaIcons.phone, size: 18, color: Colors.white),
                 const SizedBox(width: 8),
                 Text(
                   'Call ${contact.displayName?.split(' ').first}',
-                  style: const TextStyle(
-                    fontSize: 16,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -103,11 +102,13 @@ class ContactActionButtons extends ConsumerWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 20, color: Theme.of(context).colorScheme.primary),
+            Icon(icon, size: 18, color: Theme.of(context).colorScheme.primary),
             const SizedBox(width: 8),
             Text(
               label,
-              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ],
         ),
