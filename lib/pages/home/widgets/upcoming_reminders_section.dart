@@ -11,6 +11,7 @@ import 'package:vivapro/features/schedule_call/presentation/pages/scheduled_call
 import 'package:vivapro/features/events/data/calendar_event.dart';
 import 'package:vivapro/features/schedule_call/data/schedule_call.dart';
 import 'package:vivapro/pages/home/widgets/upcoming_reminder_card.dart';
+import 'package:vivapro/widgets/view_all.dart';
 
 class UpcomingRemindersSection extends ConsumerStatefulWidget {
   const UpcomingRemindersSection({super.key});
@@ -86,27 +87,21 @@ class _UpcomingRemindersSectionState extends ConsumerState<UpcomingRemindersSect
                   children: [
                     Text(
                       'Upcoming Reminders',
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     if (displayedSchedules.isNotEmpty)
-                      TextButton(
-                        onPressed: () {
+                      ViewAll(
+                        title: "All Reminders",
+                        onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => const ScheduledCallsPage()),
                           );
                         },
-                        child: Text(
-                          'View All',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Theme.of(context).colorScheme.primary,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
                       ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 8),
                 
                 // Show most imminent schedule
                 if (displayedSchedules.isNotEmpty) ...[

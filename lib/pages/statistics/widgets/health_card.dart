@@ -43,11 +43,9 @@ class HealthCard extends StatelessWidget {
                 children: [
                   Text(
                     'Relationship Health',
-                    style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.9),
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.titleMedium?.copyWith(color: Colors.white.withValues(alpha: 0.9), fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 8),
                   TweenAnimationBuilder<double>(
@@ -57,9 +55,9 @@ class HealthCard extends StatelessWidget {
                     builder: (context, value, child) {
                       return Text(
                         '${value.toInt()}%',
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: Colors.white,
-                          fontSize: 42,
+                          fontSize: 38,
                           fontWeight: FontWeight.bold,
                         ),
                       );
@@ -68,8 +66,8 @@ class HealthCard extends StatelessWidget {
                 ],
               ),
               Container(
-                width: 60,
-                height: 60,
+                width: 50,
+                height: 50,
                 decoration: BoxDecoration(
                   color: Colors.white.withValues(alpha: 0.2),
                   shape: BoxShape.circle,
@@ -77,12 +75,12 @@ class HealthCard extends StatelessWidget {
                 child: Icon(
                   EvaIcons.heart,
                   color: Colors.white.withValues(alpha: 0.9),
-                  size: 30,
+                  size: 25,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 18),
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
             child: TweenAnimationBuilder<double>(
@@ -105,10 +103,9 @@ class HealthCard extends StatelessWidget {
             percentage > 80
                 ? 'Great job keeping in touch!'
                 : 'Time to reconnect with some friends.',
-            style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.9),
-              fontSize: 14,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: Colors.white.withValues(alpha: 0.9), fontWeight: FontWeight.w500),
           ),
         ],
       ),

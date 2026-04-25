@@ -59,6 +59,9 @@ class _CallReminderBannerState extends ConsumerState<CallReminderBanner> with Si
     final call = state.activeCall;
 
     if (call == null) return const SizedBox.shrink();
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final shadowColor = isDark ? Colors.transparent : Colors.black;
 
     return AnimatedBuilder(
       animation: _controller,
@@ -78,7 +81,7 @@ class _CallReminderBannerState extends ConsumerState<CallReminderBanner> with Si
           borderRadius: BorderRadius.circular(28),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.1),
+              color: shadowColor.withValues(alpha: 0.1),
               blurRadius: 30,
               offset: const Offset(0, 15),
             ),
@@ -192,9 +195,9 @@ class _MainCard extends StatelessWidget {
       child: Column(
         children: [
           _HeaderRow(onDismiss: onDismiss, call: call),
-          const SizedBox(height: 15),
+          const SizedBox(height: 10),
           _ProfileSection(call: call),
-          const SizedBox(height: 20),
+          const SizedBox(height: 15),
           _ActionButtons(onCallNow: onCallNow, onLater: onLater),
         ],
       ),
@@ -279,14 +282,14 @@ class _ProfileSection extends StatelessWidget {
             children: [
               Text(
                 call.contact.displayName,
-                style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: 4),
               Text(
                 call.note.isNotEmpty ? call.note : "Reminder",
-                style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -357,7 +360,7 @@ class _ActionButton extends StatelessWidget {
         elevation: 2,
       ),
       icon: Icon(icon, size: 18),
-      label: Text(label, style: Theme.of(context).textTheme.bodyMedium),
+      label: Text(label, style: Theme.of(context).textTheme.bodySmall),
     );
   }
 }

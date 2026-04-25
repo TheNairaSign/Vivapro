@@ -8,6 +8,7 @@ import 'package:vivapro/features/contacts/presentation/pages/add_favorite_page.d
 import 'package:vivapro/features/contacts/presentation/pages/favorites_page.dart';
 import 'package:vivapro/pages/contact_picker_page.dart';
 import 'package:vivapro/pages/home/widgets/favorites_card.dart';
+import 'package:vivapro/widgets/view_all.dart';
 
 class FavoritesSection extends ConsumerStatefulWidget {
   const FavoritesSection({super.key});
@@ -34,23 +35,11 @@ class _FavoritesSectionState extends ConsumerState<FavoritesSection> {
           children: [
             Text(
               'Favorites',
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
-            GestureDetector(
-              onTap: () => Navigator.of(
-                context,
-              ).push(MaterialPageRoute(builder: (_) => const FavoritesPage())),
-              child: Text(
-                'View all',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.primary,
-                  fontWeight: FontWeight.w500,
-                  decoration: TextDecoration.underline,
-                  decorationColor: Theme.of(context).colorScheme.primary,
-                ),
-              ),
+            ViewAll(
+              title: "My Favorites",
+              onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const FavoritesPage())),
             ),
           ],
         ),

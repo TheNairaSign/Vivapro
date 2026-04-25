@@ -13,7 +13,7 @@ import 'package:vivapro/features/contacts/repositories/contact_repository.dart';
 import 'package:vivapro/pages/statistics/widgets/health_card.dart';
 import 'package:vivapro/pages/statistics/widgets/period_selector_chips.dart';
 import 'package:vivapro/pages/statistics/widgets/stats_card.dart';
-import 'package:vivapro/pages/statistics/widgets/weekly_activity_chart.dart';
+import 'package:vivapro/pages/statistics/widgets/activity_chart.dart';
 
 class RelationshipStatsPage extends ConsumerStatefulWidget {
  const RelationshipStatsPage({super.key});
@@ -86,7 +86,6 @@ class _RelationshipStatsPageState extends ConsumerState<RelationshipStatsPage> w
                       'Relationship Stats',
                       style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
                     ),
-                    const SizedBox(height: 5),
                     Text(
                       'Your relationship progress',
                       style: Theme.of(
@@ -123,7 +122,7 @@ class _RelationshipStatsPageState extends ConsumerState<RelationshipStatsPage> w
                         // },
                         child: HealthCard(percentage: healthPercentage, color: healthColor)),
 
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 20),
 
                       // Stats Grid
                       Row(
@@ -148,18 +147,18 @@ class _RelationshipStatsPageState extends ConsumerState<RelationshipStatsPage> w
                         ],
                       ),
 
-                      const SizedBox(height: 32),
+                      const SizedBox(height: 20),
 
                       Text(
                         '$_selectedFilter Activity',
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 10),
 
                       if (activityState is ActivityLoading)
                         const Center(child: CircularProgressIndicator())
                       else
-                        WeeklyActivityChart(logs: activities),
+                        ActivityChart(logs: activities, period: _selectedFilter),
                       
                       // const SizedBox(height: 32),
                       

@@ -46,7 +46,7 @@ class ScheduleDetailsPage extends ConsumerWidget {
               child: Hero(
                 tag: 'contact_avatar_${scheduleCall.id}',
                 child: CircleAvatar(
-                  radius: 60,
+                  radius: 50,
                   backgroundColor: isDarkMode ? Colors.grey[800] : Colors.grey[200],
                   backgroundImage: (scheduleCall.contact.photo != null)
                       ? MemoryImage(scheduleCall.contact.photo!.thumbnail!)
@@ -57,7 +57,7 @@ class ScheduleDetailsPage extends ConsumerWidget {
                               ? (scheduleCall.contact.displayName ?? 'John Doe')[0]
                               : '?',
                           style: TextStyle(
-                            fontSize: 48,
+                            fontSize: 40,
                             fontWeight: FontWeight.bold,
                             color: isDarkMode ? Colors.white : Colors.black,
                           ),
@@ -71,7 +71,7 @@ class ScheduleDetailsPage extends ConsumerWidget {
             // Contact Name
             Text(
               (scheduleCall.contact.displayName ?? 'John Doe'),
-              style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
             
@@ -80,14 +80,15 @@ class ScheduleDetailsPage extends ConsumerWidget {
                 padding: const EdgeInsets.only(top: 8.0),
                 child: Text(
                   scheduleCall.contact.phones.first.number,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: Colors.grey,
-                      ),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Colors.grey,
+                    fontWeight: FontWeight.bold,
+                  ),
                   textAlign: TextAlign.center,
                 ),
               ),
 
-            const SizedBox(height: 32),
+            const SizedBox(height: 22),
 
             // Date and Time Card
             Container(
@@ -97,6 +98,7 @@ class ScheduleDetailsPage extends ConsumerWidget {
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
                     child: Column(
@@ -104,23 +106,21 @@ class ScheduleDetailsPage extends ConsumerWidget {
                       children: [
                         Text(
                           "Date",
-                          style: TextStyle(
-                            color: Colors.grey[600],
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: Colors.grey,
                           ),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           _formatDate(scheduleCall.date),
-                          style: const TextStyle(
-                            fontSize: 18,
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                       ],
                     ),
                   ),
+                  const SizedBox(width: 20),
                   Container(
                     width: 1,
                     height: 40,
@@ -129,21 +129,18 @@ class ScheduleDetailsPage extends ConsumerWidget {
                   const SizedBox(width: 20),
                   Expanded(
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
                           "Time",
-                          style: TextStyle(
-                            color: Colors.grey[600],
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: Colors.grey,
                           ),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           _formatTime(scheduleCall.time),
-                          style: const TextStyle(
-                            fontSize: 18,
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -154,7 +151,7 @@ class ScheduleDetailsPage extends ConsumerWidget {
               ),
             ),
             
-            const SizedBox(height: 20),
+            const SizedBox(height: 15),
             
             // Note Card
             if (scheduleCall.note.isNotEmpty)
@@ -185,8 +182,8 @@ class ScheduleDetailsPage extends ConsumerWidget {
                     const SizedBox(height: 12),
                     Text(
                       scheduleCall.note,
-                      style: const TextStyle(
-                        fontSize: 16,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontSize: 14,
                         height: 1.5,
                       ),
                     ),
@@ -194,7 +191,7 @@ class ScheduleDetailsPage extends ConsumerWidget {
                 ),
               ),
               
-            const SizedBox(height: 40),
+            const SizedBox(height: 22),
 
             // Actions
             SizedBox(
@@ -220,9 +217,12 @@ class ScheduleDetailsPage extends ConsumerWidget {
                   elevation: 2,
                 ),
                 icon: const Icon(EvaIcons.edit2Outline),
-                label: const Text(
+                label: Text(
                   "Update Call",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
@@ -230,7 +230,7 @@ class ScheduleDetailsPage extends ConsumerWidget {
              SizedBox(
               width: double.infinity,
               height: 56,
-              child: OutlinedButton.icon(
+              child: TextButton.icon(
                 onPressed: () async {
                   final phoneNumber = scheduleCall.contact.phones.isNotEmpty
                                 ? scheduleCall.contact.phones.first.number
@@ -244,17 +244,21 @@ class ScheduleDetailsPage extends ConsumerWidget {
                     }
                   }
                 },
-                 style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.green,
-                  side: const BorderSide(color: Colors.green, width: 2),
+                 style: TextButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.green,
+                  elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
                 ),
                 icon: const Icon(EvaIcons.phoneCallOutline),
-                label: const Text(
+                label: Text(
                   "Call Now",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),

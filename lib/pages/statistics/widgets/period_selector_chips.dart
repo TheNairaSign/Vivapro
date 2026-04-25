@@ -29,7 +29,7 @@ class PeriodSelectorChips extends StatelessWidget {
               backgroundColor: Theme.of(context).colorScheme.surface,
               selectedColor: Theme.of(context).colorScheme.primary,
               checkmarkColor: Theme.of(context).colorScheme.primary,
-              labelStyle: TextStyle(
+              labelStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: isSelected ? Colors.white : Colors.grey,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
               ),
