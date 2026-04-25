@@ -79,6 +79,8 @@ class _RelationshipStatsPageState extends ConsumerState<RelationshipStatsPage> w
 
             return Scaffold(
               appBar: AppBar(
+                automaticallyImplyLeading: false,
+                centerTitle: false,
                 title: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

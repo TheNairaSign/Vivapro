@@ -75,8 +75,7 @@ class FilterPills extends StatelessWidget {
                   const SizedBox(width: 8),
                   Text(
                     _getLabel(filterType),
-                    style: TextStyle(
-                      fontSize: 13,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                       color: isSelected
                           ? Colors.white

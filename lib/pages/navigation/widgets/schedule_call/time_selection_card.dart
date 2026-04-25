@@ -43,8 +43,8 @@ class TimeSelectionCard extends StatelessWidget {
                   Text(
                     "Set Time",
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ],
               ),
@@ -69,9 +69,9 @@ class TimeSelectionCard extends StatelessWidget {
                       Text(
                         selectedTime.format(context),
                         style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                              color: Theme.of(context).colorScheme.primary,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          color: Theme.of(context).colorScheme.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       const SizedBox(width: 4),
                       Icon(

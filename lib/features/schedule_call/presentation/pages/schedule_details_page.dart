@@ -25,7 +25,6 @@ class ScheduleDetailsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     final cardColor = Theme.of(context).colorScheme.surface;
     final interactionTracker = ref.read(interactionTrackerProvider);
 
@@ -37,7 +36,7 @@ class ScheduleDetailsPage extends ConsumerWidget {
         leading: CustomBackButton(),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24.0),
+        padding: .symmetric(vertical: 24.0, horizontal: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -47,7 +46,7 @@ class ScheduleDetailsPage extends ConsumerWidget {
                 tag: 'contact_avatar_${scheduleCall.id}',
                 child: CircleAvatar(
                   radius: 50,
-                  backgroundColor: isDarkMode ? Colors.grey[800] : Colors.grey[200],
+                  backgroundColor: Theme.of(context).colorScheme.surface,
                   backgroundImage: (scheduleCall.contact.photo != null)
                       ? MemoryImage(scheduleCall.contact.photo!.thumbnail!)
                       : null,
@@ -56,10 +55,9 @@ class ScheduleDetailsPage extends ConsumerWidget {
                           (scheduleCall.contact.displayName ?? 'John Doe').isNotEmpty
                               ? (scheduleCall.contact.displayName ?? 'John Doe')[0]
                               : '?',
-                          style: TextStyle(
-                            fontSize: 40,
+                          style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                             fontWeight: FontWeight.bold,
-                            color: isDarkMode ? Colors.white : Colors.black,
+                            color: Theme.of(context).colorScheme.primary,
                           ),
                         )
                       : null,

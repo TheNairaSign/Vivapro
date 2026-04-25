@@ -354,7 +354,6 @@ class _ActionButton extends StatelessWidget {
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
         backgroundColor: theme.scaffoldBackgroundColor,
-        foregroundColor: Colors.white,
         padding: const EdgeInsets.symmetric(vertical: 12),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         elevation: 2,
@@ -416,7 +415,7 @@ class _FooterSectionState extends State<_FooterSection> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -424,7 +423,7 @@ class _FooterSectionState extends State<_FooterSection> {
           const SizedBox(width: 8),
           Text(
             "Banner will disappear in ${_formatDuration(_remaining)}",
-            style: const TextStyle(
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
               color: Colors.white,
               fontWeight: FontWeight.w600,
               fontSize: 12,

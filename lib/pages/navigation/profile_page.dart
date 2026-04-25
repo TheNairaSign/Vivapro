@@ -31,7 +31,7 @@ class ProfilePage extends ConsumerWidget {
               
               _buildProfileHeader(context, ref, profile),
               const SizedBox(height: 32),
-              
+
               if (profile != null) ...[
                 _buildCategoryContainer(
                   context,
@@ -89,6 +89,18 @@ class ProfilePage extends ConsumerWidget {
     final nameController = TextEditingController(text: profile.name);
     final emailController = TextEditingController(text: profile.email);
 
+    final theme = Theme.of(context);
+
+    final decoration = InputDecoration(
+      enabled: true,
+      enabledBorder: UnderlineInputBorder(
+        borderSide: .new(color: Colors.grey, width: .5)
+      ),
+      focusedBorder: UnderlineInputBorder(
+        borderSide: .new(color: theme.primaryColor, width: 2)
+      )
+    );
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -98,19 +110,21 @@ class ProfilePage extends ConsumerWidget {
           children: [
             TextField(
               controller: nameController,
-              decoration: const InputDecoration(labelText: "Full Name"),
+              decoration: decoration.copyWith(
+                labelText: "Full Name",
+              ),
             ),
             const SizedBox(height: 16),
             TextField(
               controller: emailController,
-              decoration: const InputDecoration(labelText: "Email Address"),
+              decoration: decoration.copyWith(labelText: "Email Address"),
             ),
           ],
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text("Cancel"),
+            child: const Text("Cancel", style: .new(color: Colors.red),),
           ),
           ElevatedButton(
             onPressed: () {
@@ -261,26 +275,33 @@ class ProfilePage extends ConsumerWidget {
     required ValueChanged<bool> onChanged,
   }) {
     final theme = Theme.of(context);
-    return SwitchListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
-      secondary: Icon(
-        icon,
-        color: theme.colorScheme.onSurface.withValues(alpha: 0.8),
+    return Theme(
+      data: theme.copyWith(
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        hoverColor: Colors.transparent,
       ),
-      title: Text(
-        title,
-        style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
-      ),
-      subtitle: Text(
-        subtitle,
-        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-          color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
+      child: SwitchListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
+        secondary: Icon(
+          icon,
+          color: theme.colorScheme.onSurface.withValues(alpha: 0.8),
         ),
+        title: Text(
+          title,
+          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+        ),
+        subtitle: Text(
+          subtitle,
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
+          ),
+        ),
+        value: value,
+        onChanged: onChanged,
+        activeThumbColor: theme.colorScheme.primary,
+        inactiveThumbColor: theme.colorScheme.onSurface.withValues(alpha: 0.8),
       ),
-      value: value,
-      onChanged: onChanged,
-      activeThumbColor: theme.colorScheme.primary,
-      inactiveThumbColor: theme.colorScheme.onSurface.withValues(alpha: 0.8),
     );
   }
 }

@@ -34,6 +34,7 @@ class _RecentsPageState extends State<RecentsPage> {
         physics: const BouncingScrollPhysics(),
         slivers: [
           SliverAppBar(
+            centerTitle: false,
             expandedHeight: 70,
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

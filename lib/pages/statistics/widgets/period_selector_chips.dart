@@ -13,7 +13,7 @@ class PeriodSelectorChips extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 40,
-      margin: const EdgeInsets.only(bottom: 24),
+      margin: const EdgeInsets.only(bottom: 12),
       child: ListView(
         scrollDirection: Axis.horizontal,
         children: ['Daily', 'Weekly', 'Monthly'].map((filter) {
@@ -28,8 +28,7 @@ class PeriodSelectorChips extends StatelessWidget {
               },
               backgroundColor: Theme.of(context).colorScheme.surface,
               selectedColor: Theme.of(context).colorScheme.primary,
-              checkmarkColor: Theme.of(context).colorScheme.primary,
-              labelStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              labelStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: isSelected ? Colors.white : Colors.grey,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
               ),

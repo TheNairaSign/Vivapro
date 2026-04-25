@@ -47,11 +47,11 @@ class ContactHistorySection extends StatelessWidget {
             if (state is ActivityLoaded) {
               // Filter activities for this contact
               final contactActivities = state.activities
-                  .where((log) {
-                    return log.contactId == contact.id;
-                  })
-                  .take(2)
-                  .toList();
+                .where((log) {
+                  return log.contactId == contact.id;
+                })
+                .take(2)
+                .toList();
 
               if (contactActivities.isEmpty) {
                 return _buildEmptyHistory(context);

@@ -11,7 +11,7 @@ class RescheduleModal extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return DraggableScrollableSheet(
-      initialChildSize: 0.7,
+      initialChildSize: 0.65,
       minChildSize: 0.4,
       maxChildSize: 0.8,
       builder: (_, controller) {
@@ -23,6 +23,7 @@ class RescheduleModal extends ConsumerWidget {
           child: Padding(
             padding: const EdgeInsets.all(20.0),
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
                   width: 40,
@@ -35,23 +36,23 @@ class RescheduleModal extends ConsumerWidget {
                 const SizedBox(height: 24),
                 Row(
                   children: [
-                    FavoriteAvatar(contact: scheduleCall.contact, radius: 30),
-                    const SizedBox(width: 16),
+                    FavoriteAvatar(contact: scheduleCall.contact, radius: 22),
+                    const SizedBox(width: 12),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           'Reschedule with ${scheduleCall.contact.displayName}',
-                          style: const TextStyle(
-                            fontSize: 20,
+                          maxLines: 2,
+                          overflow: .ellipsis,
+                          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const SizedBox(height: 4),
-                        const Text(
+                        // const SizedBox(height: 4),
+                        Text(
                           'Snooze reminder for...',
-                          style: TextStyle(
-                            fontSize: 16,
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             color: Colors.grey,
                           ),
                         ),
@@ -59,47 +60,47 @@ class RescheduleModal extends ConsumerWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 24),
-                Expanded(
-                  child: GridView.count(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 16,
-                    mainAxisSpacing: 16,
-                    childAspectRatio: 1.2,
-                    physics: const NeverScrollableScrollPhysics(),
-                    children: [
-                      _buildGridItem(
-                        context,
-                        icon: Icons.timer_outlined,
-                        title: 'Later',
-                        subtitle: '30 minutes',
-                        onTap: () => _handleReschedule(context, ref, const Duration(minutes: 30)),
-                      ),
-                      _buildGridItem(
-                        context,
-                        icon: Icons.hourglass_empty,
-                        title: 'In an hour',
-                        subtitle: 'Focus time',
-                        onTap: () => _handleReschedule(context, ref, const Duration(hours: 1)),
-                      ),
-                      _buildGridItem(
-                        context,
-                        icon: Icons.wb_sunny_outlined,
-                        title: 'Tomorrow',
-                        subtitle: '9:00 AM',
-                        onTap: () => _handleReschedule(context, ref, null, isTomorrow: true),
-                      ),
-                      _buildGridItem(
-                        context,
-                        icon: Icons.calendar_today_outlined,
-                        title: 'Custom...',
-                        subtitle: 'Pick date & time',
-                        onTap: () => _handleCustomReschedule(context, ref),
-                      ),
-                    ],
-                  ),
+                const SizedBox(height: 16),
+                GridView.count(
+                  padding: EdgeInsets.zero,
+                  shrinkWrap: true,
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                  childAspectRatio: 1.35,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: [
+                    _buildGridItem(
+                      context,
+                      icon: Icons.timer_outlined,
+                      title: 'Later',
+                      subtitle: '30 minutes',
+                      onTap: () => _handleReschedule(context, ref, const Duration(minutes: 30)),
+                    ),
+                    _buildGridItem(
+                      context,
+                      icon: Icons.hourglass_empty,
+                      title: 'In an hour',
+                      subtitle: 'Focus time',
+                      onTap: () => _handleReschedule(context, ref, const Duration(hours: 1)),
+                    ),
+                    _buildGridItem(
+                      context,
+                      icon: Icons.wb_sunny_outlined,
+                      title: 'Tomorrow',
+                      subtitle: '9:00 AM',
+                      onTap: () => _handleReschedule(context, ref, null, isTomorrow: true),
+                    ),
+                    _buildGridItem(
+                      context,
+                      icon: Icons.calendar_today_outlined,
+                      title: 'Custom...',
+                      subtitle: 'Pick date & time',
+                      onTap: () => _handleCustomReschedule(context, ref),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () {
                     // Mark as done = Delete schedule
@@ -108,7 +109,7 @@ class RescheduleModal extends ConsumerWidget {
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Theme.of(context).colorScheme.primary,
-                    minimumSize: const Size(double.infinity, 56),
+                    minimumSize: const Size(double.infinity, 50),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                   ),
                   child: Text(
@@ -116,10 +117,10 @@ class RescheduleModal extends ConsumerWidget {
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 12),
                 TextButton(
                   style: TextButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 56),
+                    minimumSize: const Size(double.infinity, 50),
                     backgroundColor: Colors.red.withValues(alpha: 0.1),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                   ),
@@ -201,20 +202,19 @@ class RescheduleModal extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, color: Theme.of(context).colorScheme.primary, size: 32),
-            const Spacer(),
+            Icon(icon, color: Theme.of(context).colorScheme.primary, size: 25),
+            // const Spacer(),
+            const SizedBox(height: 15),
             Text(
               title,
-              style: const TextStyle(
-                fontSize: 18,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 4),
+            // const SizedBox(height: 4),
             Text(
               subtitle,
-              style: const TextStyle(
-                fontSize: 14,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: Colors.grey,
               ),
             ),
