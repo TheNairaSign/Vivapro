@@ -63,7 +63,8 @@ class ActivityListView extends StatelessWidget {
               padding: const EdgeInsets.only(top: 100),
               child: Center(
                 child: LoadingAnimationWidget.threeRotatingDots(
-                  color: const Color(0xFF2D8CFF),
+                  // color: const Color(0xFF2D8CFF),
+                  color: Theme.of(context).colorScheme.primary,
                   size: 30,
                 ),
               ),
@@ -104,15 +105,11 @@ class ActivityListView extends StatelessWidget {
                       ),
                       child: Text(
                         key,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall
-                            ?.copyWith(
-                              fontSize: 13,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.grey[500],
-                              letterSpacing: 1.2,
-                            ),
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey[500],
+                          letterSpacing: 1.2,
+                        ),
                       ),
                     ),
                     ...logs.map((log) => ActivityItem(log: log)),

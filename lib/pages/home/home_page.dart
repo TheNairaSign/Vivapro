@@ -7,8 +7,6 @@ import 'package:vivapro/core/app_constants.dart';
 import 'package:vivapro/core/utils/format_date.dart';
 import 'package:vivapro/features/activity/presentation/bloc/activity_bloc.dart';
 import 'package:vivapro/features/call_reminder/presentation/providers/call_reminder_provider.dart';
-import 'package:vivapro/features/call_reminder/presentation/widgets/banner.dart';
-import 'package:vivapro/features/schedule_call/data/schedule_call.dart';
 import 'package:vivapro/pages/home/widgets/favorites_section.dart';
 import 'package:vivapro/pages/home/widgets/insights/insights_section.dart';
 import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_bloc.dart';
@@ -58,16 +56,6 @@ class _HomePageState extends ConsumerState<HomePage> {
     final state = ref.watch(callReminderBannerProvider);
     final call = state.activeCall;
 
-    // final demoCall = ScheduleCall(
-    //   id: 'demo_id',
-    //   date: DateTime.now(),
-    //   timeHour: 10,
-    //   timeMinute: 30,
-    //   note: 'Demo call reminder',
-    //   contactDetailsJson: '{"name": "Demo Contact", "phone": "+1234567890"}',
-    //   updatedAt: DateTime.now(),
-    // );
-
     return Scaffold(
       extendBody: true,
       appBar: AppBar(
@@ -102,8 +90,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                     call.time.hour,
                     call.time.minute,
                   );
-                  return callDateTime.isAfter(now) || 
-                         callDateTime.isAfter(now.subtract(const Duration(hours: 24)));
+                  return callDateTime.isAfter(now) || callDateTime.isAfter(now.subtract(const Duration(hours: 24)));
                 }).length;
 
                 if (upcomingCount > 0) {
@@ -137,7 +124,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                               const SizedBox(width: 4),
                               Text(
                                 '$upcomingCount',
-                                style: TextStyle(
+                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                   fontSize: 13,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.orange,
@@ -171,7 +158,7 @@ class _HomePageState extends ConsumerState<HomePage> {
           physics: const BouncingScrollPhysics(),
           padding: AppConstants.padding,
           child: Column(
-            spacing: 32,
+            spacing: 15,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (call != null) ...[
@@ -181,6 +168,7 @@ class _HomePageState extends ConsumerState<HomePage> {
               // CustomBanner(),
               PeopleToCallSection(),
               InsightsSection(),
+              SizedBox(height: 10),
               FavoritesSection(),
               UpcomingRemindersSection(),
               SizedBox(height: 50),

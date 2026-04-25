@@ -34,6 +34,10 @@ class _ScheduleCallPageState extends ConsumerState<ScheduleCallPage> {
   void initState() {
     super.initState();
     _selectedDate = widget.scheduleCall?.date ?? DateTime.now();
+    final DateTime today = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+    if (_selectedDate.isBefore(today)) {
+      _selectedDate = today;
+    }
     _selectedTime = widget.scheduleCall?.time ?? TimeOfDay.now();
     _noteController = TextEditingController(text: widget.scheduleCall?.note ?? '');
   }
@@ -129,7 +133,7 @@ class _ScheduleCallPageState extends ConsumerState<ScheduleCallPage> {
                             (widget.scheduleCall == null || widget.scheduleCall!.id.isEmpty) ? "Call Scheduled" : "Call Updated",
                             mainButton: TextButton(
                               onPressed: () => navigator.push(MaterialPageRoute(builder: (ctx) => ScheduleDetailsPage(scheduleCall: scheduleCall))),
-                              child: const Text('View', style: TextStyle(color: Colors.amber)),
+                              child: Text('View', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.amber)),
                             ),
                           );
                         },

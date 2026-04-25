@@ -114,7 +114,7 @@ class _ScheduledCalendarPageState extends State<ScheduledCalendarPage> {
                       final contact = await Navigator.of(context).push<Contact?>(
                         MaterialPageRoute(builder: (ctx) => const ContactPickerPage()),
                       );
-                      if (contact != null && context.mounted) {
+                      if (contact != null && mounted) {
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (ctx) => ScheduleCallPage(
@@ -141,11 +141,7 @@ class _ScheduledCalendarPageState extends State<ScheduledCalendarPage> {
                     color: Colors.orange,
                     onTap: () {
                       Navigator.pop(sheetContext);
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (ctx) => AddEventPage(initialDate: date),
-                        ),
-                      );
+                      Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => AddEventPage(initialDate: date)));
                     },
                   ),
                 ),

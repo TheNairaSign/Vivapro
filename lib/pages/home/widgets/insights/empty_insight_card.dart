@@ -8,7 +8,7 @@ class EmptyInsightCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 180,
+      height: 150,
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
@@ -19,7 +19,7 @@ class EmptyInsightCard extends StatelessWidget {
           children: [
             Icon(
               EvaIcons.checkmarkCircle,
-              size: 48,
+              size: 40,
               color: Colors.green[400],
             ),
             const SizedBox(height: 12),

@@ -54,14 +54,14 @@ class ScheduleCalendar extends StatelessWidget {
               Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
             ],
           ),
-          shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(
-              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
-              blurRadius: 12,
-              offset: const Offset(0, 6),
-            ),
-          ],
+          shape: BoxShape.circle, 
+          // boxShadow: [
+          //   BoxShadow(
+          //     color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
+          //     blurRadius: 12,
+          //     offset: const Offset(0, 6),
+          //   ),
+          // ],
         ),
         outsideDaysVisible: false,
         defaultTextStyle: const TextStyle(fontWeight: FontWeight.w500),

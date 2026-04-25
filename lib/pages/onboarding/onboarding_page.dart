@@ -174,10 +174,7 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage>
                         _currentPage == _onboardingData.length - 1
                             ? 'Get Started'
                             : 'Next',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold, color: Colors.white),
                       ),
                     ),
                   ],

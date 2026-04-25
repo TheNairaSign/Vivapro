@@ -55,76 +55,76 @@ class _FavoritesSectionState extends ConsumerState<FavoritesSection> {
           ],
         ),
         const SizedBox(height: 16),
-        SizedBox(
-          height: 210,
-          child: StreamBuilder<List<FavoriteContact>>(
-            stream: _favoritesStream,
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                return Center(
-                  child: Text('Error', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white)),
-                );
-              }
-
-              final favorites = snapshot.data ?? [];
-
-              if (favorites.isEmpty) {
-                return Center(
-                  child: InkWell(
-                    onTap: () async {
-                      // Request contact permission
-                      final permission = await FlutterContacts.permissions.request(.readWrite);
-                      if (permission != PermissionStatus.granted) {
-                        return;
-                      }
-                      if (context.mounted) {
-                        final contact = await Navigator.of(context).push<Contact?>(
-                          MaterialPageRoute(builder: (_) => const ContactPickerPage()),
+        StreamBuilder<List<FavoriteContact>>(
+          stream: _favoritesStream,
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Center(
+                child: Text('Error', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white)),
+              );
+            }
+        
+            final favorites = snapshot.data ?? [];
+        
+            if (favorites.isEmpty) {
+              return Center(
+                child: InkWell(
+                  onTap: () async {
+                    final permission = await FlutterContacts.permissions.request(.readWrite);
+                    if (permission != PermissionStatus.granted) {
+                      return;
+                    }
+                    if (context.mounted) {
+                      final contact = await Navigator.of(context).push<Contact?>(
+                        MaterialPageRoute(builder: (_) => const ContactPickerPage()),
+                      );
+                      if (contact != null && context.mounted) {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(builder: (_) => AddFavoritePage(contact: contact)),
                         );
-                        if (contact != null && context.mounted) {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(builder: (_) => AddFavoritePage(contact: contact)),
-                          );
-                        }
                       }
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.all(20),
-                      width: 160,
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.surface,
-                        borderRadius: BorderRadius.circular(24),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            EvaIcons.plusCircleOutline,
-                            color: Colors.grey,
-                            size: 30,
-                          ),
-                          SizedBox(height: 10),
-                          Text(
-                            "Add Favorites",
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey),
-                          ),
-                        ],
-                      ),
+                    }
+                  },
+                  child: Container(
+                    height: 160,
+                    padding: const EdgeInsets.all(20),
+                    width: 160,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.surface,
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          EvaIcons.plusCircleOutline,
+                          color: Colors.grey,
+                          size: 30,
+                        ),
+                        SizedBox(height: 10),
+                        Text(
+                          "Add Favorites",
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey),
+                        ),
+                      ],
                     ),
                   ),
-                );
-              }
-
-              return ListView.separated(
+                ),
+              );
+            }
+        
+            return SizedBox(
+              height: 210,
+              child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: favorites.length,
                 separatorBuilder: (_, _) => const SizedBox(width: 15),
                 itemBuilder: (context, index) {
                   return FavoritesCard(contact: favorites[index]);
                 },
-              );
-            },
-          ),
+              ),
+            );
+          },
         ),
       ],
     );

@@ -72,18 +72,11 @@ class _StartPageState extends State<StartPage> with SingleTickerProviderStateMix
                             height: 150,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(30),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: theme.colorScheme.primary.withValues(alpha: 0.3),
-                                  blurRadius: 30,
-                                  offset: const Offset(0, 15),
-                                ),
-                              ],
                             ),
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(30),
                               child: Image.asset(
-                                'assets/images/loop_logo.png',
+                                'assets/loop.png',
                                 fit: BoxFit.cover,
                               ),
                             ),
@@ -99,7 +92,8 @@ class _StartPageState extends State<StartPage> with SingleTickerProviderStateMix
                           ),
                           const SizedBox(height: 10),
                           Text(
-                            'Meaningful connections, effortlessly maintained.',
+                            // 'Meaningful connections, effortlessly maintained.',
+                            'Stay connected, intentionally',
                             textAlign: TextAlign.center,
                             style: theme.textTheme.bodyLarge?.copyWith(
                               color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
@@ -119,27 +113,20 @@ class _StartPageState extends State<StartPage> with SingleTickerProviderStateMix
                         ElevatedButton(
                           onPressed: () {
                             Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => const OnboardingPage(),
-                              ),
+                              MaterialPageRoute( builder: (context) => const OnboardingPage()),
                             );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: theme.colorScheme.primary,
                             foregroundColor: Colors.white,
                             minimumSize: const Size(double.infinity, 60),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                             elevation: 8,
                             shadowColor: theme.colorScheme.primary.withValues(alpha: 0.5),
                           ),
-                          child: const Text(
+                          child: Text(
                             'Get Started',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold, color: Colors.white),
                           ),
                         ),
                       ],

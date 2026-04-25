@@ -50,10 +50,10 @@ class _NavigationPageState extends ConsumerState<NavigationPage> {
     });
 
 
-    List<Widget> pages = [
+    List<Widget> pages = const [
       HomePage(),
-      const RecentsPage(),
-      const RelationshipStatsPage(),
+      RecentsPage(),
+      RelationshipStatsPage(),
       ProfilePage(),
     ];
 
@@ -62,9 +62,7 @@ class _NavigationPageState extends ConsumerState<NavigationPage> {
       extendBody: true,
       body: PageView(
         controller: pageController,
-        onPageChanged: (index) {
-          ref.read(navigationIndexProvider.notifier).state = index;
-        },
+        onPageChanged: (index) => ref.read(navigationIndexProvider.notifier).state = index,
         physics: const NeverScrollableScrollPhysics(),
         children: pages,
       ),
@@ -117,19 +115,9 @@ class _NavigationPageState extends ConsumerState<NavigationPage> {
           }
 
           if (context.mounted) {
-            final contact = await Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const ContactPickerPage(),
-              ),
-            );
+            final contact = await Navigator.push(context, MaterialPageRoute( builder: (context) => const ContactPickerPage()));
             if (contact != null && context.mounted) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ScheduleCallPage(contact: contact),
-                ),
-              );
+              Navigator.push(context, MaterialPageRoute( builder: (context) => ScheduleCallPage(contact: contact)));
             }
           }
         },

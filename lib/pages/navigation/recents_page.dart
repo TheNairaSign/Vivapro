@@ -34,6 +34,7 @@ class _RecentsPageState extends State<RecentsPage> {
         physics: const BouncingScrollPhysics(),
         slivers: [
           SliverAppBar(
+            expandedHeight: 70,
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -59,25 +60,14 @@ class _RecentsPageState extends State<RecentsPage> {
             actionsPadding: const EdgeInsets.only(right: 20),
             actions: [
               Center(
-                child: Container(
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
-                        blurRadius: 12,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
+                child: FilledButton.icon(
+                  style: FilledButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
-                  child: FilledButton.icon(
-                    style: FilledButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    ),
-                    onPressed: () => showManualLogDialog(context),
-                    icon: const Icon(EvaIcons.plus, size: 15, color: Colors.white,),
-                    label: const Text("Log", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),),
-                  ),
+                  onPressed: () => showManualLogDialog(context),
+                  icon: const Icon(EvaIcons.plus, size: 15, color: Colors.white,),
+                  label: Text("Log", style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold, color: Colors.white),),
                 ),
               ),
             ],

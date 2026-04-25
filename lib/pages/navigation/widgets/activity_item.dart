@@ -106,7 +106,7 @@ class _ActivityItemState extends State<ActivityItem> {
                         width: 20,
                         height: 20,
                         decoration: BoxDecoration(
-                          color: isDark ? const Color(0xFF2C2C3E) : Colors.white,
+                          color: Theme.of(context).colorScheme.surface,
                           shape: BoxShape.circle,
                         ),
                         padding: const EdgeInsets.all(2), // White border effect
@@ -209,7 +209,7 @@ class _ActivityItemState extends State<ActivityItem> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 12),
-                      Divider(height: 1, color: isDark ? Colors.grey[700] : Colors.grey[300]),
+                      Divider(height: 1, color: isDark ? Colors.grey[800] : Colors.grey[300]),
                       const SizedBox(height: 12),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,

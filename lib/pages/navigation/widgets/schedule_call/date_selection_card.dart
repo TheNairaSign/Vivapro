@@ -39,32 +39,35 @@ class DateSelectionCard extends StatelessWidget {
                 const SizedBox(width: 8),
                 Text(
                   "Choose Date",
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 0.5,
-                  ),
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, letterSpacing: 0.5),
                 ),
               ],
             ),
           ),
           Theme(
             data: Theme.of(context).copyWith(
-              colorScheme: Theme.of(context).colorScheme.copyWith(
-                    primary: Theme.of(context).colorScheme.primary,
-                  ),
+              colorScheme: Theme.of(context).colorScheme.copyWith(primary: Theme.of(context).colorScheme.primary),
               dividerColor: Colors.transparent,
             ),
             child: SizedBox(
-              height: 350,
-              child: CalendarDatePicker(
-                initialDate: selectedDate,
-                firstDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
-                lastDate: DateTime.now().add(const Duration(days: 365)),
-                onDateChanged: onDateSelected,
+              height: 320,
+              width: double.infinity,
+              child: Builder(
+                builder: (BuildContext context) {
+                  final DateTime today = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+                  final DateTime effectiveInitialDate = selectedDate.isBefore(today) ? today : selectedDate;
+
+                  return CalendarDatePicker(
+                    initialDate: effectiveInitialDate,
+                    firstDate: today,
+                    lastDate: DateTime.now().add(const Duration(days: 365)),
+                    onDateChanged: onDateSelected,
+                  );
+                },
               ),
             ),
           ),
-          const SizedBox(height: 10),
+          // const SizedBox(height: 10),
         ],
       ),
     );
