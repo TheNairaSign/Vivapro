@@ -52,15 +52,16 @@ class _ContactSelectionContainerState extends State<ContactSelectionContainer> {
       onTap: _pickContact,
       borderRadius: BorderRadius.circular(16),
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
         decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF2C2C3E) : const Color(0xFFF2F4F7),
+          // color: isDark ? const Color(0xFF2C2C3E) : const Color(0xFFF2F4F7),
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: _selectedContact != null
                 ? Theme.of(context).colorScheme.primary
                 : Colors.transparent,
-            width: 2,
+            width: 0.5,
           ),
         ),
         child: Row(
@@ -76,7 +77,7 @@ class _ContactSelectionContainerState extends State<ContactSelectionContainer> {
                   color: Theme.of(context).colorScheme.primary,
                 ),
               ),
-            const SizedBox(width: 16),
+            const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

@@ -35,7 +35,8 @@ class QuickResponseGrid extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF2C2C3E) : const Color(0xFFF2F4F7),
+                  // color: isDark ? const Color(0xFF2C2C3E) : const Color(0xFFF2F4F7),
+                  color: Theme.of(context).colorScheme.surface,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
@@ -49,9 +50,8 @@ class QuickResponseGrid extends StatelessWidget {
                     const SizedBox(width: 8),
                     Text(
                       response['label'] as String,
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        fontWeight: FontWeight.bold,
                         color: isDark ? Colors.white : const Color(0xFF1A1D1E),
                       ),
                     ),

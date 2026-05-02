@@ -19,13 +19,13 @@ class ManualLogActions extends StatelessWidget {
             onPressed: onCancel,
             style: OutlinedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 16),
-              backgroundColor: Colors.red,
+              backgroundColor: Theme.of(context).colorScheme.surface,
               side: BorderSide.none,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
-            child: Text('Cancel', style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.white, fontWeight: FontWeight.bold),),
+            child: Text('Cancel', style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.red, fontWeight: FontWeight.bold),),
           ),
         ),
         const SizedBox(width: 12),

@@ -11,6 +11,7 @@ import 'package:vivapro/features/activity/data/repositories/activity_repository_
 import 'package:vivapro/features/activity/presentation/bloc/activity_bloc.dart';
 import 'package:vivapro/features/contacts/data/add_favorites_provider.dart';
 import 'package:vivapro/pages/navigation/navigation_page.dart';
+import 'package:vivapro/pages/splash_screen.dart';
 import 'package:vivapro/features/contacts/repositories/contact_repository.dart';
 import 'package:vivapro/features/messaging/presentation/bloc/chat/chat_bloc.dart';
 import 'package:vivapro/features/messaging/presentation/bloc/message_bloc.dart';
@@ -88,17 +89,7 @@ class _LoopState extends ConsumerState<Loop> {
                   debugShowCheckedModeBanner: false,
                   theme: AppTheme.lightTheme,
                   darkTheme: AppTheme.darkTheme,
-                  // home: const StartPage(),
-                  home: hasCompletedOnboarding == null
-                    ? Scaffold(
-                        body: Center(
-                          child: LoadingAnimationWidget.staggeredDotsWave(
-                            color: Theme.of(context).colorScheme.primary,
-                            size: 50,
-                          ),
-                        ),
-                      )
-                    : (hasCompletedOnboarding ? const NavigationPage() : const StartPage()),
+                  home: SplashScreen(hasCompletedOnboarding: hasCompletedOnboarding),
                 ),
               );
             },

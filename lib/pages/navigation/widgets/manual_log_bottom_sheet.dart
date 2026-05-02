@@ -134,15 +134,16 @@ class _ManualLogBottomSheetState extends State<ManualLogBottomSheet> {
 
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
+        color: Colors.transparent,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
       ),
       padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       child: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Column(
-            spacing: 24,
+            spacing: 20,
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -156,8 +157,6 @@ class _ManualLogBottomSheetState extends State<ManualLogBottomSheet> {
                 responses: _quickResponses,
                 onResponseTap: _logQuickResponse,
               ),
-
-              Divider(color: isDark ? Colors.grey[800] : Colors.grey[200]),
 
               ManualLogForm(
                 formKey: _formKey,

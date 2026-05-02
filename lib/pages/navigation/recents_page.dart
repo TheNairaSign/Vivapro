@@ -100,7 +100,7 @@ void showManualLogDialog(BuildContext context, {Contact? contact}) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
-    backgroundColor: Theme.of(context).colorScheme.surface,
+    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
     showDragHandle: true,
     builder: (context) => ManualLogBottomSheet(contact: contact),
   );

@@ -50,7 +50,7 @@ class _NavigationPageState extends ConsumerState<NavigationPage> {
     });
 
 
-    List<Widget> pages = [
+    List<Widget> pages = const [
       HomePage(),
       RecentsPage(),
       RelationshipStatsPage(),

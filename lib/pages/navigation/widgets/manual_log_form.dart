@@ -42,7 +42,7 @@ class ManualLogForm extends StatelessWidget {
                   enabled: true,
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: Colors.grey, width: .5)
+                    borderSide: BorderSide(color: Colors.grey.withValues(alpha: .6), width: .2)
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -71,9 +71,9 @@ class ManualLogForm extends StatelessWidget {
                     value: type,
                     child: Row(
                       children: [
-                        Icon(icon, size: 18),
+                        Icon(icon, size: 18, color: Theme.of(context).colorScheme.primary,),
                         const SizedBox(width: 8),
-                        Text(type.name.capitalize()),
+                        Text(type.name.capitalize(), style: Theme.of(context).textTheme.bodyMedium,),
                       ],
                     ),
                   );
@@ -89,7 +89,7 @@ class ManualLogForm extends StatelessWidget {
                   enabled: true,
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: Colors.grey, width: .5),
+                    borderSide: BorderSide(color: Colors.grey.withValues(alpha: .6), width: .5),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),

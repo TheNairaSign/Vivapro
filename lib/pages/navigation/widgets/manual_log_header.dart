@@ -13,16 +13,17 @@ class ManualLogHeader extends StatelessWidget {
         Text(
           'Log Interaction',
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: isDark ? Colors.white : const Color(0xFF1A1D1E),
-              ),
+            fontWeight: FontWeight.bold,
+            fontSize: 21,
+            color: isDark ? Colors.white : const Color(0xFF1A1D1E),
+          ),
         ),
         const SizedBox(height: 8),
         Text(
           'Track interactions that happened outside the app',
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: isDark ? Colors.grey[400] : Colors.grey[600],
-              ),
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: isDark ? Colors.grey[400] : Colors.grey[600],
+          ),
         ),
       ],
     );

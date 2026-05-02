@@ -16,6 +16,7 @@ import 'package:vivapro/pages/home/widgets/people_to_call_section.dart';
 import 'package:vivapro/pages/home/widgets/upcoming_reminders_section.dart';
 import 'package:vivapro/features/call_reminder/presentation/widgets/call_reminder_banner.dart';
 import 'package:vivapro/features/schedule_call/presentation/pages/scheduled_calendar_page.dart';
+import 'package:vivapro/pages/home/widgets/home_help_modal.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -140,6 +141,26 @@ class _HomePageState extends ConsumerState<HomePage> {
               }
               return const SizedBox.shrink();
             },
+          ),
+          IconButton(
+            onPressed: () {
+              showDialog(
+                context: context,
+                barrierColor: Colors.black.withValues(alpha: 0.2),
+                builder: (context) => Align(
+                  alignment: Alignment.topCenter,
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      top: MediaQuery.of(context).padding.top + kToolbarHeight + 10,
+                      left: 16,
+                      right: 16,
+                    ),
+                    child: const HomeHelpModal(),
+                  ),
+                ),
+              );
+            },
+            icon: const Icon(EvaIcons.infoOutline, size: 20),
           ),
           IconButton(
             onPressed: () {

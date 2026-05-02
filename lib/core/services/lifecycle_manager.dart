@@ -70,7 +70,7 @@ class _LifecycleManagerState extends State<LifecycleManager> with WidgetsBinding
                     showModalBottomSheet(
                       context: navContext,
                       isScrollControlled: true,
-                      backgroundColor: Colors.transparent,
+                      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                       builder: (context) => ManualLogBottomSheet(
                         contact: contact,
                         existingActivityId: pendingCall['activityId'],
@@ -81,7 +81,7 @@ class _LifecycleManagerState extends State<LifecycleManager> with WidgetsBinding
                 ),
                 TextButton(
                   onPressed: () => navigatorState.pop(),
-                  child: const Text('No'),
+                  child: Text('No', style: TextStyle(color: Theme.of(navContext).colorScheme.onSurfaceVariant)),
                 ),
               ],
             ),
