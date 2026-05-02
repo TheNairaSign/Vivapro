@@ -55,10 +55,7 @@ class ScheduleDetailsPage extends ConsumerWidget {
                           (scheduleCall.contact.displayName ?? 'John Doe').isNotEmpty
                               ? (scheduleCall.contact.displayName ?? 'John Doe')[0]
                               : '?',
-                          style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
+                          style: Theme.of(context).textTheme.headlineLarge?.copyWith(fontWeight: FontWeight.bold),
                         )
                       : null,
                 ),
@@ -104,16 +101,12 @@ class ScheduleDetailsPage extends ConsumerWidget {
                       children: [
                         Text(
                           "Date",
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Colors.grey,
-                          ),
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           _formatDate(scheduleCall.date),
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
@@ -131,16 +124,12 @@ class ScheduleDetailsPage extends ConsumerWidget {
                       children: [
                         Text(
                           "Time",
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Colors.grey,
-                          ),
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           _formatTime(scheduleCall.time),
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
@@ -169,8 +158,7 @@ class ScheduleDetailsPage extends ConsumerWidget {
                         const SizedBox(width: 8),
                         Text(
                           "Note",
-                          style: TextStyle(
-                            color: Colors.grey[600],
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
                           ),
@@ -202,6 +190,7 @@ class ScheduleDetailsPage extends ConsumerWidget {
                     MaterialPageRoute(
                       builder: (context) => ScheduleCallPage(
                         contact: scheduleCall.contact,
+                        scheduleCall: scheduleCall,
                       ),
                     ),
                   );
@@ -243,20 +232,17 @@ class ScheduleDetailsPage extends ConsumerWidget {
                   }
                 },
                  style: TextButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: Colors.green,
+                  backgroundColor: Theme.of(context).colorScheme.surface,
+                  foregroundColor: Theme.of(context).colorScheme.onSurface,
                   elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
                 ),
-                icon: const Icon(EvaIcons.phoneCallOutline),
+                icon: Icon(EvaIcons.phoneCallOutline),
                 label: Text(
                   "Call Now",
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
                 ),
               ),
             ),

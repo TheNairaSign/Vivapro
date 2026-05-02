@@ -262,7 +262,7 @@ class _ScheduledCalendarPageState extends State<ScheduledCalendarPage> {
                                 itemBuilder: (context, index) {
                                   final item = selectedEvents[index];
                                   if (item is ScheduleCall) {
-                                    return UpcomingReminderCard(call: item, callDateTime: item.date);
+                                    return UpcomingReminderCard(call: item);
                                   } else {
                                     return EventCard(event: item as CalendarEvent);
                                   }

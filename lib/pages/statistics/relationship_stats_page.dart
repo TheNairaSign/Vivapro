@@ -97,11 +97,10 @@ class _RelationshipStatsPageState extends ConsumerState<RelationshipStatsPage> w
                   ],
                 ),
               ),
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               body: SafeArea(
                 child: SingleChildScrollView(
                   physics: const BouncingScrollPhysics(),
-                  padding: AppConstants.padding,
+                  padding: AppConstants.padding.copyWith(top: 16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

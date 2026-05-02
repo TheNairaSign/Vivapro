@@ -30,6 +30,15 @@ class ScheduleCall {
   @ignore
   TimeOfDay get time => TimeOfDay(hour: timeHour, minute: timeMinute);
 
+  @ignore
+  DateTime get fullDateTime => DateTime(
+        date.year,
+        date.month,
+        date.day,
+        timeHour,
+        timeMinute,
+      );
+
   final DateTime updatedAt;
 
   ScheduleCall({

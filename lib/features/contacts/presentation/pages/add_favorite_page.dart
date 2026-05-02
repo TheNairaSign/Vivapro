@@ -20,6 +20,7 @@ class AddFavoritePage extends ConsumerStatefulWidget {
 
 class _AddFavoritePageState extends ConsumerState<AddFavoritePage> {
   bool isLoading = false;
+  bool isAlreadyFavorite = false;
 
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
@@ -27,9 +28,18 @@ class _AddFavoritePageState extends ConsumerState<AddFavoritePage> {
   @override
   void initState() {
     super.initState();
+    _checkIfAlreadyFavorite();
     _nameController.text = widget.contact.displayName ?? '';
     if (widget.contact.phones.isNotEmpty) {
       _phoneController.text = widget.contact.phones.first.number;
+    }
+  }
+
+  Future<void> _checkIfAlreadyFavorite() async {
+    if (widget.contact.id == null) return;
+    final isFavorite = await ref.read(favoriteCacheServiceProvider).isFavorite(widget.contact.id!);
+    if (mounted) {
+      setState(() => isAlreadyFavorite = isFavorite);
     }
   }
 
@@ -112,33 +122,62 @@ class _AddFavoritePageState extends ConsumerState<AddFavoritePage> {
         ),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(20, 20, 20, 40),
-        child: Column(
-          children: [
-            ProfileUploaderSection(),
-            const SizedBox(height: 35),
-            ProfileDetailsSection(nameController: _nameController, phoneController: _phoneController),
-            const SizedBox(height: 25),
-            FrequencyContainer(),
-            const SizedBox(height: 30),
-            _buildSaveButton(primaryColor),
-          ],
-        ),
+      body: Column(
+        children: [
+          if (isAlreadyFavorite)
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              color: Colors.orange.withValues(alpha: 0.1),
+              child: Row(
+                children: [
+                  const Icon(Icons.info_outline_rounded, color: Colors.orange, size: 20),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      'This contact is already in your favorites.',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Colors.orange[800],
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 40),
+              child: Column(
+                children: [
+                  ProfileUploaderSection(),
+                  const SizedBox(height: 35),
+                  ProfileDetailsSection(nameController: _nameController, phoneController: _phoneController),
+                  const SizedBox(height: 25),
+                  FrequencyContainer(),
+                  const SizedBox(height: 30),
+                  _buildSaveButton(primaryColor),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildSaveButton(Color primaryColor) {
+    final bool canSave = !isLoading && !isAlreadyFavorite;
+    
     return Container(
       width: double.infinity,
       height: 64,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(22),
-        color: primaryColor,
+        color: canSave ? primaryColor : Colors.grey[300],
       ),
       child: ElevatedButton(
-        onPressed: isLoading ? null : submitContact,
+        onPressed: canSave ? submitContact : null,
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.transparent,
           foregroundColor: Colors.white,

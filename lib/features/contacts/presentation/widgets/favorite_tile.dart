@@ -49,7 +49,7 @@ class FavoriteTile extends ConsumerWidget {
       ),
       child: Row(
         children: [
-          FavoriteAvatar(favorite: favoriteContact),
+          FavoriteAvatar(favorite: favoriteContact, radius: 25,),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
@@ -57,7 +57,7 @@ class FavoriteTile extends ConsumerWidget {
               children: [
                 Text(
                   contact.displayName ?? 'John Doe',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w800,
                     letterSpacing: -0.2,
                   ),
@@ -86,10 +86,11 @@ class FavoriteTile extends ConsumerWidget {
                       const SizedBox(width: 4),
                       Text(
                         frequency.name.capitalize(),
-                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: freqencyColor,
                           fontWeight: FontWeight.w900,
                           letterSpacing: 0.5,
+                          fontSize: 10
                         ),
                       ),
                     ],

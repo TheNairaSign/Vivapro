@@ -16,7 +16,7 @@ class InsightsCard extends ConsumerWidget {
 
     return Container(
       width: double.infinity,
-      height: 180,
+      height: 160,
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
@@ -37,6 +37,7 @@ class InsightsCard extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: .min,
                 children: [
                   Row(
                     children: [
@@ -55,7 +56,7 @@ class InsightsCard extends ConsumerWidget {
                   const SizedBox(height: 12),
                   Text(
                     insight.message,
-                    style: theme.textTheme.bodyLarge?.copyWith(
+                    style: theme.textTheme.bodyMedium?.copyWith(
                       fontWeight: FontWeight.w700,
                       height: 1.3,
                     ),

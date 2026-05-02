@@ -58,10 +58,9 @@ class _FrequencySelectionChipState extends State<FrequencySelectionChip> {
         ),
         child: Text(
           widget.frequency.name.capitalize(),
-          style: TextStyle(
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
             color: isSelected ? Colors.white : const Color(0xFF98A2B3),
             fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
-            fontSize: 14,
           ),
         ),
       ),

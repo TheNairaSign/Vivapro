@@ -106,7 +106,7 @@ class PeopleToCallCard extends ConsumerWidget {
                 children: [
                   Text(
                     contact.contactDetails.displayName ?? "John Doe",
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
                   ),

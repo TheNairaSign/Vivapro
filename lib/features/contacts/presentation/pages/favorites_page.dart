@@ -35,7 +35,7 @@ class _FavoritesPageState extends ConsumerState<FavoritesPage> {
         title: Text(
           'Keep in Touch',
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.w900,
+            fontWeight: FontWeight.bold,
             letterSpacing: -0.5,
           ),
         ),

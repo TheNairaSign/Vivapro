@@ -20,6 +20,23 @@ subprojects {
 }
 
 subprojects {
+    afterEvaluate {
+        if (extensions.findByName("android") != null) {
+            val androidExt = extensions.getByName("android")
+            try {
+                val setCompileSdk = androidExt.javaClass.getMethod("compileSdk", Int::class.java)
+                setCompileSdk.invoke(androidExt, 36)
+            } catch (_: Exception) {
+                try {
+                    val setCompileSdkVersion = androidExt.javaClass.getMethod("compileSdkVersion", Int::class.java)
+                    setCompileSdkVersion.invoke(androidExt, 36)
+                } catch (_: Exception) { /* ignore */ }
+            }
+        }
+    }
+}
+
+subprojects {
     val project = this
     fun configureNamespace() {
         if (project.hasProperty("android")) {

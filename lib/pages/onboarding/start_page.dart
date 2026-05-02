@@ -49,10 +49,12 @@ class _StartPageState extends State<StartPage> with SingleTickerProviderStateMix
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    final deviceWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       body: Stack(
         children: [
-          const AnimatedBackground(),
+          // const AnimatedBackground(),
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 40),
@@ -66,38 +68,42 @@ class _StartPageState extends State<StartPage> with SingleTickerProviderStateMix
                     child: FadeTransition(
                       opacity: _fadeAnimation,
                       child: Column(
+                        crossAxisAlignment: .center,
                         children: [
-                          Container(
-                            width: 150,
-                            height: 150,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(30),
-                              child: Image.asset(
-                                'assets/loop.png',
-                                fit: BoxFit.cover,
-                              ),
-                            ),
+                          Image.asset(
+                            'assets/images/communicate.png',
+                            width: deviceWidth,
+                            height: deviceWidth,
+                            fit: BoxFit.cover,
                           ),
                           const SizedBox(height: 30),
                           Text(
                             'Loop',
-                            style: theme.textTheme.displayMedium?.copyWith(
+                            textAlign: TextAlign.center,
+                            style: theme.textTheme.headlineLarge?.copyWith(
                               fontWeight: FontWeight.bold,
                               color: theme.colorScheme.onSurface,
                               letterSpacing: -1,
                             ),
                           ),
+                         
                           const SizedBox(height: 10),
+                          // Text(
+                          //   // 'Meaningful connections, effortlessly maintained.',
+                          //   'Stay connected, intentionally',
+                          //   textAlign: TextAlign.center,
+                          //   style: theme.textTheme.bodyLarge?.copyWith(
+                          //     color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                          //     height: 1.5,
+                          //   ),
+                          // ),
                           Text(
-                            // 'Meaningful connections, effortlessly maintained.',
-                            'Stay connected, intentionally',
-                            textAlign: TextAlign.center,
-                            style: theme.textTheme.bodyLarge?.copyWith(
-                              color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                            'Stay connected with the people that matter most, without the overwhelm.',
+                            textAlign: TextAlign.left,
+                            style: theme.textTheme.headlineSmall?.copyWith(
+                              color: Colors.grey,
                               height: 1.5,
+                              fontSize: 22
                             ),
                           ),
                         ],
@@ -113,7 +119,7 @@ class _StartPageState extends State<StartPage> with SingleTickerProviderStateMix
                         ElevatedButton(
                           onPressed: () {
                             Navigator.of(context).push(
-                              MaterialPageRoute( builder: (context) => const OnboardingPage()),
+                              MaterialPageRoute(builder: (context) => const OnboardingPage()),
                             );
                           },
                           style: ElevatedButton.styleFrom(
@@ -121,8 +127,8 @@ class _StartPageState extends State<StartPage> with SingleTickerProviderStateMix
                             foregroundColor: Colors.white,
                             minimumSize: const Size(double.infinity, 60),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                            elevation: 8,
-                            shadowColor: theme.colorScheme.primary.withValues(alpha: 0.5),
+                            // elevation: 8,
+                            // shadowColor: theme.colorScheme.primary.withValues(alpha: 0.5),
                           ),
                           child: Text(
                             'Get Started',

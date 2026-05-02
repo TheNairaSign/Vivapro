@@ -107,7 +107,7 @@ class _UpcomingRemindersSectionState extends ConsumerState<UpcomingRemindersSect
                 if (displayedSchedules.isNotEmpty) ...[
                   ...displayedSchedules.take(1).map((item) => Padding(
                     padding: const EdgeInsets.only(bottom: 12),
-                    child: UpcomingReminderCard(call: item.call, callDateTime: item.dateTime),
+                    child: UpcomingReminderCard(call: item.call),
                   )),
                 ],
 

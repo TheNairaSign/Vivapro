@@ -50,7 +50,7 @@ class _NavigationPageState extends ConsumerState<NavigationPage> {
     });
 
 
-    List<Widget> pages = const [
+    List<Widget> pages = [
       HomePage(),
       RecentsPage(),
       RelationshipStatsPage(),
@@ -86,7 +86,7 @@ class _NavigationPageState extends ConsumerState<NavigationPage> {
             if (context.mounted) { 
               showFlushbarCustom(
                 context, 
-                'Permission Required', 
+                'Permission Required',
                 'You have permanently denied contact access. Please enable it in Settings.',
                 color: Colors.orange,
                 mainButton: TextButton(  

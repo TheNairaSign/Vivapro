@@ -26,6 +26,23 @@ class _FavoritesSectionState extends ConsumerState<FavoritesSection> {
     _favoritesStream = ref.read(favoriteCacheServiceProvider).watchFavorites();
   }
 
+  void addFavorite() async {
+    final permission = await FlutterContacts.permissions.request(.readWrite);
+    if (permission != PermissionStatus.granted) {
+      return;
+    }
+    if (mounted) {
+      final contact = await Navigator.of(context).push<Contact?>(
+        MaterialPageRoute(builder: (_) => const ContactPickerPage()),
+      );
+      if (contact != null && mounted) {
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => AddFavoritePage(contact: contact)),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -57,48 +74,7 @@ class _FavoritesSectionState extends ConsumerState<FavoritesSection> {
         
             if (favorites.isEmpty) {
               return Center(
-                child: InkWell(
-                  onTap: () async {
-                    final permission = await FlutterContacts.permissions.request(.readWrite);
-                    if (permission != PermissionStatus.granted) {
-                      return;
-                    }
-                    if (context.mounted) {
-                      final contact = await Navigator.of(context).push<Contact?>(
-                        MaterialPageRoute(builder: (_) => const ContactPickerPage()),
-                      );
-                      if (contact != null && context.mounted) {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(builder: (_) => AddFavoritePage(contact: contact)),
-                        );
-                      }
-                    }
-                  },
-                  child: Container(
-                    height: 160,
-                    padding: const EdgeInsets.all(20),
-                    width: 160,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surface,
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          EvaIcons.plusCircleOutline,
-                          color: Colors.grey,
-                          size: 30,
-                        ),
-                        SizedBox(height: 10),
-                        Text(
-                          "Add Favorites",
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                child: AddFavoriteButton(onTap: addFavorite),
               );
             }
         
@@ -106,9 +82,12 @@ class _FavoritesSectionState extends ConsumerState<FavoritesSection> {
               height: 180,
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
-                itemCount: favorites.length,
+                itemCount: favorites.length + 1,
                 separatorBuilder: (_, _) => const SizedBox(width: 15),
                 itemBuilder: (context, index) {
+                  if (index == favorites.length) {
+                    return _SubtleAddButton(onTap: addFavorite);
+                  }
                   return FavoritesCard(contact: favorites[index]);
                 },
               ),
@@ -116,6 +95,90 @@ class _FavoritesSectionState extends ConsumerState<FavoritesSection> {
           },
         ),
       ],
+    );
+  }
+}
+
+class _SubtleAddButton extends StatelessWidget {
+  const _SubtleAddButton({required this.onTap});
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          width: 80,
+          height: 160,
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  EvaIcons.plus,
+                  color: Theme.of(context).colorScheme.primary,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Add',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.primary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+class AddFavoriteButton extends StatelessWidget {
+  const AddFavoriteButton({super.key, required this.onTap});
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        height: 160,
+      padding: const EdgeInsets.all(20),
+      width: 160,
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            EvaIcons.plusCircleOutline,
+            color: Colors.grey,
+            size: 30,
+          ),
+          SizedBox(height: 10),
+          Text(
+            "Add Favorites",
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey),
+          ),
+        ],
+      ),
+      ),
     );
   }
 }

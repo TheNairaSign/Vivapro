@@ -86,16 +86,17 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage>
     return Scaffold(
       body: Stack(
         children: [
-          const AnimatedBackground(),
+          // const AnimatedBackground(),
           PageView.builder(
             controller: _pageController,
             onPageChanged: _onPageChanged,
             itemCount: _onboardingData.length,
             itemBuilder: (context, index) {
+              final item = _onboardingData[index];
               return OnboardingItem(
-                title: _onboardingData[index]['title']!,
-                description: _onboardingData[index]['description']!,
-                imagePath: _onboardingData[index]['image']!,
+                title: item['title']!,
+                description: item['description']!,
+                imagePath: item['image']!,
                 fadeAnimation: _fadeAnimation,
                 slideAnimation: _slideAnimation,
               );

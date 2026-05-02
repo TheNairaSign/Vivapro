@@ -88,6 +88,7 @@ class _LoopState extends ConsumerState<Loop> {
                   debugShowCheckedModeBanner: false,
                   theme: AppTheme.lightTheme,
                   darkTheme: AppTheme.darkTheme,
+                  // home: const StartPage(),
                   home: hasCompletedOnboarding == null
                     ? Scaffold(
                         body: Center(

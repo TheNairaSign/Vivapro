@@ -87,7 +87,7 @@ class _ScheduledCallsPageState extends State<ScheduledCallsPage> {
               padding: const EdgeInsets.all(16),
               itemCount: calls.length,
               separatorBuilder: (context, index) => const SizedBox(height: 10),
-              itemBuilder: (context, index) => UpcomingReminderCard(call: calls[index], callDateTime: calls[index].date),
+              itemBuilder: (context, index) => UpcomingReminderCard(call: calls[index]),
             );
           }
           // Default or Initial state

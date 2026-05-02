@@ -49,8 +49,8 @@ class CallNoteCard extends StatelessWidget {
               fillColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.03),
               hintText: "What's this call about?",
               hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
-                  ),
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
+              ),
               contentPadding: const EdgeInsets.all(16),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(16),

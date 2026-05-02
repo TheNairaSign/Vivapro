@@ -12,46 +12,47 @@ import 'package:vivapro/features/schedule_call/presentation/pages/schedule_detai
 
 class UpcomingReminderCard extends ConsumerWidget {
   final ScheduleCall call;
-  final DateTime callDateTime;
 
   const UpcomingReminderCard({
     super.key, 
     required this.call,
-    required this.callDateTime,
   });
 
   @override 
   Widget build(BuildContext context, WidgetRef ref) {
-     final callDateTime = DateTime(
-      call.date.year,
-      call.date.month,
-      call.date.day,
-      call.time.hour,
-      call.time.minute,
-    );
+    final callDateTime = call.fullDateTime;
     final now = DateTime.now();
-    final isMissed = callDateTime.isBefore(now);
-    final isNearby = !isMissed && callDateTime.difference(now).inMinutes <= 5;
+    final isNow = callDateTime.difference(now).inMinutes == 0;
+    final isMissed = callDateTime.isBefore(now) && !isNow;
+    final isNearby = !isMissed && !isNow && callDateTime.difference(now).inMinutes <= 5;
+
+    final textColor = isNow 
+        ? Colors.green 
+        : isMissed 
+            ? Colors.red 
+            : isNearby 
+                ? Colors.orange 
+                : Theme.of(context).colorScheme.primary;
 
     return Dismissible(
       key: Key('home_reminder_${call.id}'),
-      direction: (isNearby || isMissed) ? DismissDirection.horizontal : DismissDirection.endToStart,
-      background: (isNearby || isMissed)
+      direction: (isNearby || isNow || isMissed) ? DismissDirection.horizontal : DismissDirection.endToStart,
+      background: (isNearby || isNow || isMissed)
         ? Container(
             alignment: Alignment.centerLeft,
             margin: const EdgeInsets.only(bottom: 12),
             padding: const EdgeInsets.only(left: 20),
             decoration: BoxDecoration(
-              color: isNearby ? Colors.green.shade400 : Colors.blue.shade400,
+              color: (isNearby || isNow) ? Colors.green.shade400 : Colors.blue.shade400,
               borderRadius: BorderRadius.circular(20),
             ),
             child: Row(
               children: [
-                Icon(isNearby ? EvaIcons.phoneOutline : EvaIcons.calendarOutline, color: Colors.white),
+                Icon((isNearby || isNow) ? EvaIcons.phoneOutline : EvaIcons.calendarOutline, color: Colors.white),
                 const SizedBox(width: 8),
                 Text(
-                  isNearby ? "Call Now" : "Reschedule",
-                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                  (isNearby || isNow) ? "Call Now" : "Reschedule",
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
@@ -69,7 +70,7 @@ class UpcomingReminderCard extends ConsumerWidget {
       ),
       confirmDismiss: (direction) async {
         if (direction == DismissDirection.startToEnd) {
-          if (isNearby) {
+          if (isNearby || isNow) {
             final phoneNumber = call.contact.phones.isNotEmpty
                 ? call.contact.phones.first.number
                 : null;
@@ -146,20 +147,12 @@ class UpcomingReminderCard extends ConsumerWidget {
                 width: 50,
                 height: 50,
                 decoration: BoxDecoration(
-                  color: isMissed 
-                    ? Colors.red.withValues(alpha: 0.1)
-                    : isNearby 
-                      ? Colors.orange.withValues(alpha: 0.1)
-                      : Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                  color: textColor.withValues(alpha: .1),
                   borderRadius: BorderRadius.circular(15),
                 ),
                 child: Icon(
                   isMissed ? EvaIcons.alertCircleOutline : EvaIcons.calendarOutline,
-                  color: isMissed 
-                    ? Colors.red 
-                    : isNearby 
-                      ? Colors.orange 
-                      : Theme.of(context).colorScheme.primary,
+                  color: textColor
                 ),
               ),
               const SizedBox(width: 16),
@@ -172,9 +165,8 @@ class UpcomingReminderCard extends ConsumerWidget {
                         Expanded(
                           child: Text(
                             call.contact.displayName ?? "John Doe",
-                            style: TextStyle(
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                               fontWeight: FontWeight.bold,
-                              fontSize: 16,
                               color: isMissed ? Colors.grey[600] : null,
                               decoration: isMissed ? TextDecoration.lineThrough : null,
                             ),
@@ -182,8 +174,14 @@ class UpcomingReminderCard extends ConsumerWidget {
                         ),
                         if (isMissed)
                           StatusLabel(text: 'MISSED', color: Colors.red)
+                        else if (isNow) 
+                          StatusLabel(
+                            text: 'NOW',
+                            color: Colors.green,
+                          )
                         else if (isNearby)
-                          StatusLabel(text: 'IN < 5 MINS', color: Colors.orange),
+                          StatusLabel(text: 'IN < 5 MINS', color: Colors.orange)
+
                       ],
                     ),
                     const SizedBox(height: 4),
@@ -197,9 +195,8 @@ class UpcomingReminderCard extends ConsumerWidget {
                         const SizedBox(width: 4),
                         Text(
                           formatReminderTime(call),
-                          style: TextStyle(
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: isMissed ? Colors.red[300] : Colors.grey[500],
-                            fontSize: 13,
                             fontWeight: isMissed ? FontWeight.bold : null,
                           ),
                         ),
@@ -254,7 +251,7 @@ class StatusLabel extends StatelessWidget {
       ),
       child: Text(
         text,
-        style: TextStyle(
+        style: Theme.of(context).textTheme.bodySmall?.copyWith(
           color: color,
           fontSize: 10,
           fontWeight: FontWeight.bold,

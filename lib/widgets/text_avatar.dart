@@ -13,14 +13,14 @@ class TextAvatar extends StatelessWidget {
       radius: radius,
       backgroundColor: isDark
           ? const Color(0xFF3E3E4A)
-          : const Color(0xFFE0E0E0),
+          : Colors.grey[200],
       backgroundImage: null,
       child: Text(
         name.isNotEmpty ? name[0].toUpperCase() : '?',
         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
           fontSize: textSize,
           fontWeight: FontWeight.bold,
-          color: isDark ? Colors.grey[300] : Colors.grey[700],
+          color: isDark ? Colors.grey[300] : Colors.grey[600],
         ),
       ),
     );

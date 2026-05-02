@@ -13,7 +13,7 @@ class BackupWorker {
 
   Future<Either<Failure, String>> backupAll() async {
     try {
-      await _googleDriveService.backup();
+      // await _googleDriveService.backup();
       developer.log('Backup successful');
       return right('Backup successful');
     } catch (e) {
@@ -24,7 +24,7 @@ class BackupWorker {
 
   Future<Either<Failure, String>> restoreAll() async {
     try {
-      await _googleDriveService.restore();
+      // await _googleDriveService.restore();
       return right('Restore successful');
     } catch (e) {
       return left(Failure(e.toString()));

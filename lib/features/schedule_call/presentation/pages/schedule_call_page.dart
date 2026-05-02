@@ -50,6 +50,9 @@ class _ScheduleCallPageState extends ConsumerState<ScheduleCallPage> {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint("Schedule call: ${widget.scheduleCall}");
+    final isUpdate = widget.scheduleCall != null;
+
     return BlocProvider(
       create: (context) => ScheduleCallBloc(
         manager: ref.read(scheduleCallManagerProvider),
@@ -71,7 +74,7 @@ class _ScheduleCallPageState extends ConsumerState<ScheduleCallPage> {
               onPressed: () => Navigator.pop(context),
             ),
             title: Text(
-              (widget.scheduleCall == null || widget.scheduleCall!.id.isEmpty) ? "Schedule a Call" : "Update Call",
+              isUpdate ? "Update Call" : "Schedule a Call",
               style: Theme.of(context)
                   .textTheme
                   .headlineSmall
@@ -119,10 +122,10 @@ class _ScheduleCallPageState extends ConsumerState<ScheduleCallPage> {
                             note: _noteController.text,
                           );
                           
-                          if (widget.scheduleCall == null || widget.scheduleCall!.id.isEmpty) {
-                            context.read<ScheduleCallBloc>().add(ScheduleCallAdd(scheduleCall: scheduleCall));
-                          } else {
+                          if (isUpdate) {
                             context.read<ScheduleCallBloc>().add(ScheduleCallReschedule(scheduleCall: scheduleCall));
+                          } else {
+                            context.read<ScheduleCallBloc>().add(ScheduleCallAdd(scheduleCall: scheduleCall));
                           }
                           
                           final navigator = Navigator.of(context);
@@ -130,29 +133,29 @@ class _ScheduleCallPageState extends ConsumerState<ScheduleCallPage> {
                           showFlushbarCustom(
                             context,
                             'Schedule',
-                            (widget.scheduleCall == null || widget.scheduleCall!.id.isEmpty) ? "Call Scheduled" : "Call Updated",
+                            isUpdate ? "Call Updated" : "Call Scheduled",
                             mainButton: TextButton(
                               onPressed: () => navigator.push(MaterialPageRoute(builder: (ctx) => ScheduleDetailsPage(scheduleCall: scheduleCall))),
-                              child: Text('View', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.amber)),
+                              child: Text('View', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white)),
                             ),
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Theme.of(context).colorScheme.primary,
+                          backgroundColor: !isUpdate ? Theme.of(context).colorScheme.primary : Colors.green,
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                           elevation: 4,
-                          shadowColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.4),
+                          shadowColor: (!isUpdate ? Theme.of(context).colorScheme.primary : Colors.green).withValues(alpha: 0.4) ,
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(
-                              EvaIcons.calendar,
+                            Icon(
+                              isUpdate ? EvaIcons.edit2 : EvaIcons.calendar,
                               color: Colors.white,
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              (widget.scheduleCall == null || widget.scheduleCall!.id.isEmpty) ? "Schedule Call" : "Update Call",
+                              isUpdate ? "Update Call" : "Schedule Call",
                               style: Theme.of(context)
                                 .textTheme
                                 .headlineSmall

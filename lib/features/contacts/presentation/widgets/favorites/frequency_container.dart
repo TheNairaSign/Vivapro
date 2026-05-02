@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:vivapro/features/contacts/data/add_favorites_provider.dart';
 import 'package:vivapro/features/contacts/presentation/widgets/favorites/frequency_selection_chip.dart';
 import 'package:vivapro/features/contacts/presentation/widgets/favorites/priority_section_container.dart';
+import 'package:vivapro/features/contacts/presentation/widgets/favorites/priority_info_container.dart';
 import 'package:vivapro/core/enums/call_frequency.dart';
 import 'package:vivapro/core/enums/priority.dart';
 
@@ -67,13 +68,13 @@ class _FrequencyContainerState extends State<FrequencyContainer> {
               ),
             ),
           ),
-          const SizedBox(height: 32),
+          const SizedBox(height: 24),
           Divider(
             height: 1,
             thickness: 1,
             color: isDark ? Colors.white.withValues(alpha: 0.05) : const Color(0xFFF2F4F7),
           ),
-          const SizedBox(height: 32),
+          const SizedBox(height: 24),
           Row(
             children: [
               Container(
@@ -121,6 +122,8 @@ class _FrequencyContainerState extends State<FrequencyContainer> {
                 )
                 .toList(),
           ),
+          const SizedBox(height: 32),
+          PriorityInfoContainer(selectedPriority: favoritesProvider.callPriority),
         ],
       ),
     );
