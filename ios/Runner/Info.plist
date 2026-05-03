@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Vivapro</string>
+	<string>Loop</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -15,7 +15,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>vivapro</string>
+	<string>Loop</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -60,18 +60,23 @@
 	</dict>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>facetime</string>
+		<string>facetime-audio</string>
+	</array>
 	<key>NSCalendarsUsageDescription</key>
-	<string>Vivapro needs access to your calendar to schedule and manage your calls.</string>
+	<string>Loop needs access to your calendar to schedule and manage your calls.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Vivapro needs access to your camera to let you take profile pictures.</string>
+	<string>Loop needs access to your camera to let you take profile pictures.</string>
 	<key>NSContactsUsageDescription</key>
-	<string>Vivapro needs access to your contacts to help you schedule calls and stay in touch.</string>
+	<string>Loop needs access to your contacts to help you schedule calls and stay in touch.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Vivapro needs access to your microphone if you record videos for notes.</string>
+	<string>Loop needs access to your microphone if you record videos for notes.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Vivapro needs access to your photo library to let you choose profile pictures.</string>
+	<string>Loop needs access to your photo library to let you choose profile pictures.</string>
 	<key>NSRemindersUsageDescription</key>
-	<string>Vivapro needs access to your reminders to alert you about scheduled calls.</string>
+	<string>Loop needs access to your reminders to alert you about scheduled calls.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

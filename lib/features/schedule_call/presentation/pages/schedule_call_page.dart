@@ -76,9 +76,9 @@ class _ScheduleCallPageState extends ConsumerState<ScheduleCallPage> {
             title: Text(
               isUpdate ? "Update Call" : "Schedule a Call",
               style: Theme.of(context)
-                  .textTheme
-                  .headlineSmall
-                  ?.copyWith(fontWeight: FontWeight.bold),
+                .textTheme
+                .headlineSmall
+                ?.copyWith(fontWeight: FontWeight.bold),
             ),
           ),
           body: Builder(

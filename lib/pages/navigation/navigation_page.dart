@@ -107,7 +107,7 @@ class _NavigationPageState extends ConsumerState<NavigationPage> {
               showFlushbarCustom(
                 context, 
                 'Permission Denied', 
-                'Vivapro needs contact access to schedule calls correctly.',
+                'Loop needs contact access to schedule calls correctly.',
                 color: Colors.orange,
               );
             }

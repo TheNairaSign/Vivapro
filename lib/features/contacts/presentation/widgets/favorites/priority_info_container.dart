@@ -52,10 +52,10 @@ class PriorityInfoContainer extends StatelessWidget {
                 Text(
                   '${priorityData.label} Role',
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w800,
-                        color: isDark ? Colors.white : const Color(0xFF1D2939),
-                        letterSpacing: -0.2,
-                      ),
+                    fontWeight: FontWeight.w800,
+                    color: isDark ? Colors.white : const Color(0xFF1D2939),
+                    letterSpacing: -0.2,
+                  ),
                 ),
               ],
             ),
@@ -134,7 +134,7 @@ class PriorityInfoContainer extends StatelessWidget {
           label: 'High Priority',
           impact: 'This contact is part of your inner circle. They will stay pinned at the top of your favorites and receive the most consistent engagement prompts.',
           affects: 'Ranking & Persistence',
-          color: Colors.red,
+          color: Colors.green,
           icon: EvaIcons.star,
         );
       case CallPriority.medium:
@@ -150,7 +150,7 @@ class PriorityInfoContainer extends StatelessWidget {
           label: 'Low Priority',
           impact: 'For casual or distant connections. Keeps them in your circle with minimal disruption and lower visibility in your primary dashboard.',
           affects: 'Minimal Prompts',
-          color: Colors.green,
+          color: Colors.red,
           icon: EvaIcons.arrowDown,
         );
     }

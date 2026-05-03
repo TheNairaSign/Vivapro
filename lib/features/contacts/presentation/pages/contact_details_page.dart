@@ -7,8 +7,12 @@ import 'package:vivapro/features/contacts/presentation/widgets/contact_details/c
 import 'package:vivapro/features/contacts/presentation/widgets/contact_details/contact_history_section.dart';
 import 'package:vivapro/features/contacts/presentation/widgets/contact_details/contact_profile_header.dart';
 import 'package:vivapro/features/contacts/presentation/widgets/contact_details/contact_relationship_health.dart';
+import 'package:vivapro/features/contacts/presentation/pages/add_favorite_page.dart';
 import 'package:vivapro/features/contacts/presentation/widgets/contact_details/contact_settings_list.dart';
+import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_bloc.dart';
+import 'package:vivapro/features/schedule_call/presentation/bloc/schedule_call_event.dart';
 import 'package:vivapro/widgets/custom_back_button.dart';
+import 'package:vivapro/core/services/insight_generator.dart';
 
 class ContactDetailsPage extends ConsumerStatefulWidget {
   final Contact contact;
@@ -24,6 +28,7 @@ class _ContactDetailsPageState extends ConsumerState<ContactDetailsPage> {
   Widget build(BuildContext context) {
     // Watch if this contact is a favorite
     final favoritesAsync = ref.watch(favoritesStreamProvider);
+    final schedulesAsync = ref.watch(scheduledCallsStreamProvider);
     
     FavoriteContact? currentFavorite = widget.favoriteContact;
     
@@ -48,36 +53,45 @@ class _ContactDetailsPageState extends ConsumerState<ContactDetailsPage> {
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
         ),
         centerTitle: true,
-        /*
         actions: [
           TextButton(
             onPressed: () {
-              // Edit functionality
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => AddFavoritePage(
+                    contact: widget.contact,
+                    favoriteContact: currentFavorite,
+                  ),
+                ),
+              );
             },
             child: Text(
               'Edit',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: Theme.of(context).colorScheme.primary,
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ),
         ],
-        */
       ),
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         children: [
-          const SizedBox(height: 20),
+          const SizedBox(height: 15),
           ContactProfileHeader(contact: widget.contact),
-          const SizedBox(height: 20),
+          const SizedBox(height: 15),
           ContactActionButtons(contact: widget.contact),
-          const SizedBox(height: 20),
+          const SizedBox(height: 15),
           if (currentFavorite != null) ...[
             ContactRelationshipHealth(favorite: currentFavorite!),
-            const SizedBox(height: 20),
+            const SizedBox(height: 15),
           ],
-          ContactSettingsList(),
+          ContactSettingsList(
+            contact: widget.contact, 
+            favorite: currentFavorite,
+            scheduledCalls: schedulesAsync.asData?.value ?? [],
+          ),
           const SizedBox(height: 15),
           ContactHistorySection(contact: widget.contact, favorite: currentFavorite),
           const SizedBox(height: 100),

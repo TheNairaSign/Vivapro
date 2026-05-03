@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:vivapro/core/services/pending_call_service.dart';
 import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
@@ -41,7 +42,7 @@ void showCallOptionsModal({
                 Navigator.pop(context);
                 final activityId = await interactionTracker.recordInteraction(contactId);
                 await PendingCallService().setPendingCall(contactId, activityId: activityId);
-                await callWithPhone(phoneNumber);
+                await CallOptions.callWithPhone(phoneNumber);
               },
             ),
 
@@ -50,7 +51,7 @@ void showCallOptionsModal({
               title: const Text('WhatsApp'),
               onTap: () async {
                 Navigator.pop(context);
-                final exists = await isWhatsAppInstalled(phoneNumber);
+                final exists = await CallOptions.isWhatsAppInstalled(phoneNumber);
                 if (exists) {
                   final whatsapp = await WhatsAppLauncher.launch(phoneNumber: phoneNumber, action: WhatsAppAction.voiceCall);
                   if (whatsapp) {
@@ -60,6 +61,20 @@ void showCallOptionsModal({
                 }
               },
             ),
+
+            if (Platform.isIOS)
+              ListTile(
+                leading: const Icon(Icons.video_camera_front, color: Colors.indigo),
+                title: const Text('FaceTime'),
+                onTap: () async {
+                  Navigator.pop(context);
+                  final success = await CallOptions.launchFaceTime(phoneNumber: phoneNumber);
+                  if (success) {
+                    final activityId = await interactionTracker.recordInteraction(contactId);
+                    await PendingCallService().setPendingCall(contactId, activityId: activityId);
+                  }
+                },
+              ),
 
             const SizedBox(height: 12),
           ],

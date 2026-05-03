@@ -161,4 +161,13 @@ class RelationshipStateEngine {
         return 3; // Lowest priority
     }
   }
+
+  /// Get the next recommended call date based on frequency and last interaction
+  static DateTime getNextCallDate(FavoriteContact contact) {
+    // If never contacted, it's due since creation or now
+    final lastInteraction = contact.lastInteractionAt ?? contact.createdAt ?? DateTime.now();
+    final targetDays = _getTargetDaysForFrequency(contact.callFrequency);
+    
+    return lastInteraction.add(Duration(days: targetDays));
+  }
 }

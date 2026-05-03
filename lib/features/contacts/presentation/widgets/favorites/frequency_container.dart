@@ -9,7 +9,14 @@ import 'package:vivapro/core/enums/call_frequency.dart';
 import 'package:vivapro/core/enums/priority.dart';
 
 class FrequencyContainer extends StatefulWidget {
-  const FrequencyContainer({super.key});
+  final GlobalKey? frequencyKey;
+  final GlobalKey? priorityKey;
+
+  const FrequencyContainer({
+    super.key,
+    this.frequencyKey,
+    this.priorityKey,
+  });
 
   @override
   State<FrequencyContainer> createState() => _FrequencyContainerState();
@@ -33,6 +40,7 @@ class _FrequencyContainerState extends State<FrequencyContainer> {
       child: Column(
         children: [
           Row(
+            key: widget.frequencyKey,
             children: [
               Container(
                 padding: const EdgeInsets.all(10),
@@ -45,7 +53,7 @@ class _FrequencyContainerState extends State<FrequencyContainer> {
               const SizedBox(width: 16),
               Text(
                 'Call Frequency',
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w800,
                   letterSpacing: -0.5,
                 ),
@@ -76,13 +84,14 @@ class _FrequencyContainerState extends State<FrequencyContainer> {
           ),
           const SizedBox(height: 24),
           Row(
+            key: widget.priorityKey,
             children: [
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   color: const Color(0xFFFFF4E0),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: const Color(0xFFFFE0A0).withValues(alpha: 0.3), width: 1),
+                  // border: Border.all(color: const Color(0xFFFFE0A0).withValues(alpha: 0.3), width: 1),
                 ),
                 child: const Icon(
                   Icons.notifications_active_rounded,
@@ -93,10 +102,8 @@ class _FrequencyContainerState extends State<FrequencyContainer> {
               const SizedBox(width: 16),
               Text(
                 'Priority Level',
-                style: TextStyle(
-                  fontSize: 18, 
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w800,
-                  color: isDark ? Colors.white : const Color(0xFF101828),
                   letterSpacing: -0.5,
                 ),
               ),

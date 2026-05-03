@@ -22,6 +22,17 @@ class AddFavoritesProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void initialize({
+    CallFrequency? frequency,
+    CallPriority? priority,
+    String? photoUrl,
+  }) {
+    _callFrequency = frequency ?? CallFrequency.daily;
+    _callPriority = priority ?? CallPriority.medium;
+    _profilePhotoUrl = photoUrl;
+    notifyListeners();
+  }
+
   void updateProfilePhoto(String? url) {
     _profilePhotoUrl = url;
     notifyListeners();

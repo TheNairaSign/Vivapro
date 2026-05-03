@@ -2,9 +2,9 @@ import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/models/contact/contact.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:vivapro/core/services/interaction_tracker.dart';
-import 'package:vivapro/core/services/pending_call_service.dart';
+import 'package:vivapro/core/utils/call_modal.dart';
+import 'package:vivapro/core/utils/message_modal.dart';
+import 'package:vivapro/core/utils/video_modal.dart';
 
 class ContactActionButtons extends ConsumerWidget {
   final Contact contact;
@@ -20,19 +20,18 @@ class ContactActionButtons extends ConsumerWidget {
           height: 45,
           child: ElevatedButton(
             onPressed: () async {
-              final interactionTracker = ref.read(interactionTrackerProvider);
               final phoneNumber = contact.phones.isNotEmpty ? contact.phones.first.number : null;
-              
               if (phoneNumber != null && contact.id != null) {
-                // Record the interaction if it's a favorite
-                final activityId = await interactionTracker.recordInteraction(contact.id!);
-                await PendingCallService().setPendingCall(contact.id!, activityId: activityId);
-                
-                // Open phone dialer
-                final uri = Uri(scheme: 'tel', path: phoneNumber);
-                if (await canLaunchUrl(uri)) {
-                  await launchUrl(uri);
-                }
+                showCallOptionsModal(
+                  context: context,
+                  ref: ref,
+                  phoneNumber: phoneNumber,
+                  contactId: contact.id!,
+                );
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('No phone number available for this contact')),
+                );
               }
             },
             style: ElevatedButton.styleFrom(
@@ -52,6 +51,7 @@ class ContactActionButtons extends ConsumerWidget {
                   'Call ${contact.displayName?.split(' ').first}',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w600,
+                    color: Colors.white
                   ),
                 ),
               ],
@@ -66,7 +66,21 @@ class ContactActionButtons extends ConsumerWidget {
                 context,
                 icon: EvaIcons.messageSquareOutline,
                 label: 'Message',
-                onTap: () {},
+                onTap: () {
+                  final phoneNumber = contact.phones.isNotEmpty ? contact.phones.first.number : null;
+                  if (phoneNumber != null && contact.id != null) {
+                    showMessageOptionsModal(
+                      context: context,
+                      ref: ref,
+                      phoneNumber: phoneNumber,
+                      contactId: contact.id!,
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('No phone number available')),
+                    );
+                  }
+                },
               ),
             ),
             const SizedBox(width: 12),
@@ -75,7 +89,21 @@ class ContactActionButtons extends ConsumerWidget {
                 context,
                 icon: EvaIcons.videoOutline,
                 label: 'Video',
-                onTap: () {},
+                onTap: () {
+                  final phoneNumber = contact.phones.isNotEmpty ? contact.phones.first.number : null;
+                  if (phoneNumber != null && contact.id != null) {
+                    showVideoOptionsModal(
+                      context: context,
+                      ref: ref,
+                      phoneNumber: phoneNumber,
+                      contactId: contact.id!,
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('No phone number available')),
+                    );
+                  }
+                },
               ),
             ),
           ],

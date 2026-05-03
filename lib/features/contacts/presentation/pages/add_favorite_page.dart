@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' hide Provider;
+import 'package:isar/isar.dart';
 import 'package:provider/provider.dart';
 import 'package:vivapro/features/contacts/data/add_favorites_provider.dart';
 import 'package:vivapro/features/contacts/data/favorite_cache_service.dart';
@@ -10,9 +11,18 @@ import 'package:vivapro/features/contacts/presentation/widgets/favorites/profile
 import 'package:vivapro/features/contacts/presentation/widgets/favorites/profile_uploader_section.dart';
 import 'package:vivapro/components/show_flushbar_custom.dart';
 
+enum FavoriteScrollSection { frequency, priority }
+
 class AddFavoritePage extends ConsumerStatefulWidget {
-  const AddFavoritePage({super.key, required this.contact});
+  const AddFavoritePage({
+    super.key, 
+    required this.contact, 
+    this.favoriteContact,
+    this.initialScrollSection,
+  });
   final Contact contact;
+  final FavoriteContact? favoriteContact;
+  final FavoriteScrollSection? initialScrollSection;
 
   @override
   ConsumerState<AddFavoritePage> createState() => _AddFavoritePageState();
@@ -24,6 +34,9 @@ class _AddFavoritePageState extends ConsumerState<AddFavoritePage> {
 
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
+  final _scrollController = ScrollController();
+  final _frequencyKey = GlobalKey();
+  final _priorityKey = GlobalKey();
 
   @override
   void initState() {
@@ -32,6 +45,39 @@ class _AddFavoritePageState extends ConsumerState<AddFavoritePage> {
     _nameController.text = widget.contact.displayName ?? '';
     if (widget.contact.phones.isNotEmpty) {
       _phoneController.text = widget.contact.phones.first.number;
+    }
+
+    // Initialize provider with existing values if updating
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        final favoritesProvider = context.read<AddFavoritesProvider>();
+        if (widget.favoriteContact != null) {
+          favoritesProvider.initialize(
+            frequency: widget.favoriteContact!.callFrequency,
+            priority: widget.favoriteContact!.priority,
+            photoUrl: widget.favoriteContact!.profilePhotoUrl,
+          );
+        } else {
+          favoritesProvider.initialize(); // Reset to defaults for new favorites
+        }
+
+        // Handle initial scroll
+        if (widget.initialScrollSection != null) {
+          _scrollToSection(widget.initialScrollSection!);
+        }
+      }
+    });
+  }
+
+  void _scrollToSection(FavoriteScrollSection section) {
+    final key = section == FavoriteScrollSection.frequency ? _frequencyKey : _priorityKey;
+    final context = key.currentContext;
+    if (context != null) {
+      Scrollable.ensureVisible(
+        context,
+        duration: const Duration(milliseconds: 1200),
+        curve: Curves.easeInOut,
+      );
     }
   }
 
@@ -62,6 +108,7 @@ class _AddFavoritePageState extends ConsumerState<AddFavoritePage> {
       } 
       await ref.read(favoriteCacheServiceProvider).addFavorite(
         FavoriteContact.create(
+          isarId: widget.favoriteContact?.isarId ?? Isar.autoIncrement,
           id: widget.contact.id!,
           callFrequency: favoritesProvider.callFrequency,
           contactDetails: widget.contact,
@@ -73,7 +120,7 @@ class _AddFavoritePageState extends ConsumerState<AddFavoritePage> {
 
       if (mounted) {
         Navigator.pop(context);
-        showFlushbarCustom(context, 'Success', 'Contact saved successfully');
+        showFlushbarCustom(context, 'Success', widget.favoriteContact != null ? 'Contact updated successfully' : 'Contact saved successfully');
       }
     } catch (e) {
       if (mounted) {
@@ -90,6 +137,7 @@ class _AddFavoritePageState extends ConsumerState<AddFavoritePage> {
   void dispose() {
     _nameController.dispose();
     _phoneController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -113,7 +161,7 @@ class _AddFavoritePageState extends ConsumerState<AddFavoritePage> {
           ),
         ),
         title: Text(
-          'Add Favorite',
+          widget.favoriteContact != null ? 'Update Favorite' : 'Add Favorite',
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
             color: isDark ? Colors.white : const Color(0xFF101828),
             fontWeight: FontWeight.bold,
@@ -147,6 +195,7 @@ class _AddFavoritePageState extends ConsumerState<AddFavoritePage> {
             ),
           Expanded(
             child: SingleChildScrollView(
+              controller: _scrollController,
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 40),
               child: Column(
                 children: [
@@ -154,7 +203,10 @@ class _AddFavoritePageState extends ConsumerState<AddFavoritePage> {
                   const SizedBox(height: 35),
                   ProfileDetailsSection(nameController: _nameController, phoneController: _phoneController),
                   const SizedBox(height: 25),
-                  FrequencyContainer(),
+                  FrequencyContainer(
+                    frequencyKey: _frequencyKey,
+                    priorityKey: _priorityKey,
+                  ),
                   const SizedBox(height: 30),
                   _buildSaveButton(primaryColor),
                 ],
@@ -167,7 +219,7 @@ class _AddFavoritePageState extends ConsumerState<AddFavoritePage> {
   }
 
   Widget _buildSaveButton(Color primaryColor) {
-    final bool canSave = !isLoading && !isAlreadyFavorite;
+    final bool canSave = !isLoading; // Allow saving if updating or new
     
     return Container(
       width: double.infinity,
@@ -199,7 +251,7 @@ class _AddFavoritePageState extends ConsumerState<AddFavoritePage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Save to Favorites',
+                    widget.favoriteContact != null ? 'Update Favorite' : 'Save to Favorites',
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       fontSize: 18,
                       fontWeight: FontWeight.w800,

@@ -11,7 +11,7 @@ class NoEventsCard extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(30),

@@ -27,7 +27,7 @@ class ScheduleCalendar extends StatelessWidget {
       eventLoader: (day) => calendarState.eventsForDay(day),
       onDaySelected: (selectedDay, focusedDay) => calendarState.onDaySelected(selectedDay, focusedDay),
       onFormatChanged: (format) => onFormatChanged(format),
-      onPageChanged: (focusedDay) => calendarState.focusedDay = focusedDay,
+      onPageChanged: onPageChanged,
       calendarStyle: CalendarStyle(
         markerDecoration: BoxDecoration(
           color: Theme.of(context).colorScheme.primary,

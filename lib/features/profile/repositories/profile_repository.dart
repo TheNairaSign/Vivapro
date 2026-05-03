@@ -11,7 +11,7 @@ class ProfileRepository {
   Stream<UserProfile?> watchProfile() {
     return isar.userProfiles.where().watch(fireImmediately: true).map((events) {
       if (events.isEmpty) {
-        return UserProfile(name: "Guest User", email: "guest@vivapro.app");
+        return UserProfile(name: "Guest User", email: "guest@loop.app");
       }
       return events.first;
     });

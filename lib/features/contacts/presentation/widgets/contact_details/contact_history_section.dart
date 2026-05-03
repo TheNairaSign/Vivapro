@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_contacts/models/contact/contact.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:vivapro/core/extensions/capitalization.dart';
-import 'package:vivapro/features/activity/data/models/activity_log.dart';
 import 'package:vivapro/features/activity/presentation/bloc/activity_bloc.dart';
-import 'package:vivapro/core/utils/get_time_ago.dart';
-
+import 'package:vivapro/features/activity/presentation/widgets/activity_log_item.dart';
+import 'package:vivapro/features/contacts/presentation/pages/contact_history_page.dart';
 import 'package:vivapro/features/contacts/data/favorite_contact.dart';
 
 class ContactHistorySection extends StatelessWidget {
@@ -30,12 +28,18 @@ class ContactHistorySection extends StatelessWidget {
               style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
             ),
             TextButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => ContactHistoryPage(contact: contact),
+                  ),
+                );
+              },
               child: Text(
                 'View All',
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: Theme.of(context).colorScheme.primary,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),
@@ -68,12 +72,12 @@ class ContactHistorySection extends StatelessWidget {
                     final log = entry.value;
                     return Column(
                       children: [
-                        _buildHistoryItem(log),
+                        ActivityLogItem(log: log),
                         if (index < contactActivities.length - 1)
                           Divider(
                             height: 1,
-                            indent: 60,
-                            color: isDark ? Colors.grey[800] : Colors.grey[200],
+                            indent: 74,
+                            color: isDark ? Colors.grey[800] : Colors.grey[100],
                           ),
                       ],
                     );
@@ -110,86 +114,6 @@ class ContactHistorySection extends StatelessWidget {
     );
   }
 
-  Widget _buildHistoryItem(ActivityLog log) {
-    final isCall = log.type == ActivityType.call;
-    final isMissedCall = isCall && log.durationSeconds == 0;
-    final isOutgoingCall = isCall && log.durationSeconds != null && log.durationSeconds! > 0;
-    final date = log.timestamp;
-    final timeAgo = formatTimeAgo(date);
-    final duration = log.durationSeconds != null && log.durationSeconds! > 0
-        ? _formatDuration(log.durationSeconds!)
-        : '';
 
-    String activityText;
-    IconData activityIcon;
-    Color activityColor;
-
-    if (isCall) {
-      if (isMissedCall) {
-        activityText = 'Missed Call';
-        activityIcon = Icons.call_missed;
-        activityColor = Colors.red;
-      } else if (isOutgoingCall) {
-        activityText = 'Outgoing Call';
-        activityIcon = Ionicons.arrow_up;
-        activityColor = Colors.green;
-      } else {
-        activityText = 'Incoming Call';
-        activityIcon = Ionicons.arrow_down;
-        activityColor = Colors.green;
-      }
-    } else {
-      activityText = log.type.name.capitalizeFirstofEach;
-      activityIcon = Ionicons.information_circle_outline;
-      activityColor = Colors.grey;
-    }
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      child: Row(
-        children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: activityColor.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Icon(
-              activityIcon,
-              color: activityColor,
-              size: 20,
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  activityText,
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  '$timeAgo${duration.isNotEmpty ? ' • $duration' : ''}',
-                  style: TextStyle(fontSize: 13, color: Colors.grey[500]),
-                ),
-              ],
-            ),
-          ),
-          Icon(Icons.chevron_right, color: Colors.grey[400]),
-        ],
-      ),
-    );
   }
 
-  String _formatDuration(int seconds) {
-    if (seconds < 60) {
-      return '${seconds}s';
-    }
-    final minutes = seconds ~/ 60;
-    final remainingSeconds = seconds % 60;
-    return '${minutes}m ${remainingSeconds}s';
-  }
-}

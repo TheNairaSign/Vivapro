@@ -14,7 +14,7 @@
 
 
     <application
-        android:label="vivapro"
+        android:label="Loop"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <activity

@@ -25,7 +25,7 @@ class PrioritySectionContainer extends StatelessWidget {
   Color get _iconColor {
     return switch (priority) {
       CallPriority.high => Colors.green,
-      CallPriority.medium => Colors.yellow,
+      CallPriority.medium => Colors.orange,
       CallPriority.low => Colors.red,
     };
   }
