@@ -32,6 +32,14 @@ class FavoriteContact {
   final String contactDetailsJson;
   final String? profilePhotoUrl;
 
+  /// ISO weekday(s) (1=Mon..7=Sun) this contact should be checked up on.
+  /// Used by [CallFrequency.weekly] and, optionally, [CallFrequency.custom].
+  final List<int>? checkupWeekdays;
+
+  /// Day(s) of month (1-31) this contact should be checked up on.
+  /// Used by [CallFrequency.monthly] and, optionally, [CallFrequency.custom].
+  final List<int>? checkupMonthDays;
+
   @ignore
   late final Contact contactDetails;
 
@@ -46,6 +54,8 @@ class FavoriteContact {
     this.updatedAt,
     required this.contactDetailsJson,
     this.profilePhotoUrl,
+    this.checkupWeekdays,
+    this.checkupMonthDays,
   }) : contactDetails = Contact.fromJson(jsonDecode(contactDetailsJson));
 
   /// Factory constructor to create a FavoriteContact from a Contact object
@@ -60,6 +70,8 @@ class FavoriteContact {
     DateTime? createdAt,
     DateTime? updatedAt,
     String? profilePhotoUrl,
+    List<int>? checkupWeekdays,
+    List<int>? checkupMonthDays,
   }) {
     return FavoriteContact(
       isarId: isarId,
@@ -72,6 +84,8 @@ class FavoriteContact {
       createdAt: createdAt,
       updatedAt: updatedAt ?? DateTime.now(),
       profilePhotoUrl: profilePhotoUrl,
+      checkupWeekdays: checkupWeekdays,
+      checkupMonthDays: checkupMonthDays,
     );
   }
 
@@ -86,6 +100,8 @@ class FavoriteContact {
       'createdAt': createdAt?.toIso8601String(),
       'updatedAt': (updatedAt ?? DateTime.now()).toIso8601String(),
       'profilePhotoUrl': profilePhotoUrl,
+      'checkupWeekdays': checkupWeekdays,
+      'checkupMonthDays': checkupMonthDays,
     };
   }
 
@@ -114,6 +130,8 @@ class FavoriteContact {
           ? DateTime.parse(map['updatedAt'] as String)
           : null,
       profilePhotoUrl: map['profilePhotoUrl'],
+      checkupWeekdays: (map['checkupWeekdays'] as List?)?.cast<int>(),
+      checkupMonthDays: (map['checkupMonthDays'] as List?)?.cast<int>(),
     );
   }
 
@@ -128,6 +146,8 @@ class FavoriteContact {
     DateTime? updatedAt,
     String? contactDetailsJson,
     String? profilePhotoUrl,
+    List<int>? checkupWeekdays,
+    List<int>? checkupMonthDays,
   }) {
     return FavoriteContact(
       isarId: isarId ?? this.isarId,
@@ -140,6 +160,8 @@ class FavoriteContact {
       updatedAt: updatedAt ?? this.updatedAt,
       contactDetailsJson: contactDetailsJson ?? this.contactDetailsJson,
       profilePhotoUrl: profilePhotoUrl ?? this.profilePhotoUrl,
+      checkupWeekdays: checkupWeekdays ?? this.checkupWeekdays,
+      checkupMonthDays: checkupMonthDays ?? this.checkupMonthDays,
     );
   }
 
@@ -154,6 +176,8 @@ class FavoriteContact {
       'createdAt': createdAt?.toIso8601String(),
       'updatedAt': updatedAt?.toIso8601String(),
       'profilePhotoUrl': profilePhotoUrl,
+      'checkupWeekdays': checkupWeekdays,
+      'checkupMonthDays': checkupMonthDays,
     };
   }
 
@@ -174,6 +198,8 @@ class FavoriteContact {
       createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt']) : null,
       updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : null,
       profilePhotoUrl: json['profilePhotoUrl'],
+      checkupWeekdays: (json['checkupWeekdays'] as List?)?.cast<int>(),
+      checkupMonthDays: (json['checkupMonthDays'] as List?)?.cast<int>(),
     );
   }
 }

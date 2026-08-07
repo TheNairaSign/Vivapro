@@ -2,6 +2,7 @@ import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vivapro/features/contacts/data/add_favorites_provider.dart';
+import 'package:vivapro/features/contacts/presentation/widgets/favorites/checkup_days_picker.dart';
 import 'package:vivapro/features/contacts/presentation/widgets/favorites/frequency_selection_chip.dart';
 import 'package:vivapro/features/contacts/presentation/widgets/favorites/priority_section_container.dart';
 import 'package:vivapro/features/contacts/presentation/widgets/favorites/priority_info_container.dart';
@@ -76,6 +77,7 @@ class _FrequencyContainerState extends State<FrequencyContainer> {
               ),
             ),
           ),
+          CheckupDaysPicker(frequency: favoritesProvider.callFrequency),
           const SizedBox(height: 24),
           Divider(
             height: 1,

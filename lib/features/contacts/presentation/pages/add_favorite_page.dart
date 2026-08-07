@@ -3,6 +3,7 @@ import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' hide Provider;
 import 'package:isar/isar.dart';
 import 'package:provider/provider.dart';
+import 'package:vivapro/core/enums/call_frequency.dart';
 import 'package:vivapro/features/contacts/data/add_favorites_provider.dart';
 import 'package:vivapro/features/contacts/data/favorite_cache_service.dart';
 import 'package:vivapro/features/contacts/data/favorite_contact.dart';
@@ -56,6 +57,9 @@ class _AddFavoritePageState extends ConsumerState<AddFavoritePage> {
             frequency: widget.favoriteContact!.callFrequency,
             priority: widget.favoriteContact!.priority,
             photoUrl: widget.favoriteContact!.profilePhotoUrl,
+            checkupWeekdays: widget.favoriteContact!.checkupWeekdays,
+            checkupMonthDays: widget.favoriteContact!.checkupMonthDays,
+            createdAt: widget.favoriteContact!.createdAt,
           );
         } else {
           favoritesProvider.initialize(); // Reset to defaults for new favorites
@@ -97,15 +101,22 @@ class _AddFavoritePageState extends ConsumerState<AddFavoritePage> {
       return;
     }
 
-    setState(() => isLoading = true);
-
     final favoritesProvider = context.read<AddFavoritesProvider>();
+
+    if (favoritesProvider.callFrequency == CallFrequency.custom &&
+        favoritesProvider.checkupWeekdays.isEmpty &&
+        favoritesProvider.checkupMonthDays.isEmpty) {
+      showFlushbarCustom(context, 'Missing Info', 'Select at least one day or date for custom checkups');
+      return;
+    }
+
+    setState(() => isLoading = true);
 
     try {
       if (widget.contact.id == null) {
         showFlushbarCustom(context, 'Error', 'Failed to save contact: Contact ID is null');
         return;
-      } 
+      }
       await ref.read(favoriteCacheServiceProvider).addFavorite(
         FavoriteContact.create(
           isarId: widget.favoriteContact?.isarId ?? Isar.autoIncrement,
@@ -113,8 +124,11 @@ class _AddFavoritePageState extends ConsumerState<AddFavoritePage> {
           callFrequency: favoritesProvider.callFrequency,
           contactDetails: widget.contact,
           priority: favoritesProvider.callPriority,
+          createdAt: widget.favoriteContact?.createdAt ?? DateTime.now(),
           updatedAt: DateTime.now(),
           profilePhotoUrl: favoritesProvider.profilePhotoUrl,
+          checkupWeekdays: favoritesProvider.checkupWeekdays,
+          checkupMonthDays: favoritesProvider.checkupMonthDays,
         ),
       );
 

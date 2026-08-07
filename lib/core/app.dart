@@ -89,7 +89,17 @@ class _LoopState extends ConsumerState<Loop> {
                   debugShowCheckedModeBanner: false,
                   theme: AppTheme.lightTheme,
                   darkTheme: AppTheme.darkTheme,
-                  home: SplashScreen(hasCompletedOnboarding: hasCompletedOnboarding),
+                  // home: SplashScreen(hasCompletedOnboarding: hasCompletedOnboarding),
+                  home: hasCompletedOnboarding == null
+                    ? Scaffold(
+                        body: Center(
+                          child: LoadingAnimationWidget.staggeredDotsWave(
+                            color: Theme.of(context).colorScheme.primary,
+                            size: 50,
+                          ),
+                        ),
+                      )
+                    : (hasCompletedOnboarding ? const NavigationPage() : const StartPage()),
                 ),
               );
             },

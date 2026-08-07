@@ -23,44 +23,54 @@ const FavoriteContactSchema = CollectionSchema(
       type: IsarType.string,
       enumMap: _FavoriteContactcallFrequencyEnumValueMap,
     ),
-    r'contactDetailsJson': PropertySchema(
+    r'checkupMonthDays': PropertySchema(
       id: 1,
+      name: r'checkupMonthDays',
+      type: IsarType.longList,
+    ),
+    r'checkupWeekdays': PropertySchema(
+      id: 2,
+      name: r'checkupWeekdays',
+      type: IsarType.longList,
+    ),
+    r'contactDetailsJson': PropertySchema(
+      id: 3,
       name: r'contactDetailsJson',
       type: IsarType.string,
     ),
     r'createdAt': PropertySchema(
-      id: 2,
+      id: 4,
       name: r'createdAt',
       type: IsarType.dateTime,
     ),
     r'id': PropertySchema(
-      id: 3,
+      id: 5,
       name: r'id',
       type: IsarType.string,
     ),
     r'inAppUserId': PropertySchema(
-      id: 4,
+      id: 6,
       name: r'inAppUserId',
       type: IsarType.string,
     ),
     r'lastInteractionAt': PropertySchema(
-      id: 5,
+      id: 7,
       name: r'lastInteractionAt',
       type: IsarType.dateTime,
     ),
     r'priority': PropertySchema(
-      id: 6,
+      id: 8,
       name: r'priority',
       type: IsarType.string,
       enumMap: _FavoriteContactpriorityEnumValueMap,
     ),
     r'profilePhotoUrl': PropertySchema(
-      id: 7,
+      id: 9,
       name: r'profilePhotoUrl',
       type: IsarType.string,
     ),
     r'updatedAt': PropertySchema(
-      id: 8,
+      id: 10,
       name: r'updatedAt',
       type: IsarType.dateTime,
     )
@@ -100,6 +110,18 @@ int _favoriteContactEstimateSize(
 ) {
   var bytesCount = offsets.last;
   bytesCount += 3 + object.callFrequency.name.length * 3;
+  {
+    final value = object.checkupMonthDays;
+    if (value != null) {
+      bytesCount += 3 + value.length * 8;
+    }
+  }
+  {
+    final value = object.checkupWeekdays;
+    if (value != null) {
+      bytesCount += 3 + value.length * 8;
+    }
+  }
   bytesCount += 3 + object.contactDetailsJson.length * 3;
   bytesCount += 3 + object.id.length * 3;
   {
@@ -125,14 +147,16 @@ void _favoriteContactSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeString(offsets[0], object.callFrequency.name);
-  writer.writeString(offsets[1], object.contactDetailsJson);
-  writer.writeDateTime(offsets[2], object.createdAt);
-  writer.writeString(offsets[3], object.id);
-  writer.writeString(offsets[4], object.inAppUserId);
-  writer.writeDateTime(offsets[5], object.lastInteractionAt);
-  writer.writeString(offsets[6], object.priority.name);
-  writer.writeString(offsets[7], object.profilePhotoUrl);
-  writer.writeDateTime(offsets[8], object.updatedAt);
+  writer.writeLongList(offsets[1], object.checkupMonthDays);
+  writer.writeLongList(offsets[2], object.checkupWeekdays);
+  writer.writeString(offsets[3], object.contactDetailsJson);
+  writer.writeDateTime(offsets[4], object.createdAt);
+  writer.writeString(offsets[5], object.id);
+  writer.writeString(offsets[6], object.inAppUserId);
+  writer.writeDateTime(offsets[7], object.lastInteractionAt);
+  writer.writeString(offsets[8], object.priority.name);
+  writer.writeString(offsets[9], object.profilePhotoUrl);
+  writer.writeDateTime(offsets[10], object.updatedAt);
 }
 
 FavoriteContact _favoriteContactDeserialize(
@@ -145,17 +169,19 @@ FavoriteContact _favoriteContactDeserialize(
     callFrequency: _FavoriteContactcallFrequencyValueEnumMap[
             reader.readStringOrNull(offsets[0])] ??
         CallFrequency.daily,
-    contactDetailsJson: reader.readString(offsets[1]),
-    createdAt: reader.readDateTimeOrNull(offsets[2]),
-    id: reader.readString(offsets[3]),
-    inAppUserId: reader.readStringOrNull(offsets[4]),
+    checkupMonthDays: reader.readLongList(offsets[1]),
+    checkupWeekdays: reader.readLongList(offsets[2]),
+    contactDetailsJson: reader.readString(offsets[3]),
+    createdAt: reader.readDateTimeOrNull(offsets[4]),
+    id: reader.readString(offsets[5]),
+    inAppUserId: reader.readStringOrNull(offsets[6]),
     isarId: id,
-    lastInteractionAt: reader.readDateTimeOrNull(offsets[5]),
+    lastInteractionAt: reader.readDateTimeOrNull(offsets[7]),
     priority: _FavoriteContactpriorityValueEnumMap[
-            reader.readStringOrNull(offsets[6])] ??
+            reader.readStringOrNull(offsets[8])] ??
         CallPriority.high,
-    profilePhotoUrl: reader.readStringOrNull(offsets[7]),
-    updatedAt: reader.readDateTimeOrNull(offsets[8]),
+    profilePhotoUrl: reader.readStringOrNull(offsets[9]),
+    updatedAt: reader.readDateTimeOrNull(offsets[10]),
   );
   return object;
 }
@@ -172,22 +198,26 @@ P _favoriteContactDeserializeProp<P>(
               reader.readStringOrNull(offset)] ??
           CallFrequency.daily) as P;
     case 1:
-      return (reader.readString(offset)) as P;
+      return (reader.readLongList(offset)) as P;
     case 2:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readLongList(offset)) as P;
     case 3:
       return (reader.readString(offset)) as P;
     case 4:
-      return (reader.readStringOrNull(offset)) as P;
-    case 5:
       return (reader.readDateTimeOrNull(offset)) as P;
+    case 5:
+      return (reader.readString(offset)) as P;
     case 6:
+      return (reader.readStringOrNull(offset)) as P;
+    case 7:
+      return (reader.readDateTimeOrNull(offset)) as P;
+    case 8:
       return (_FavoriteContactpriorityValueEnumMap[
               reader.readStringOrNull(offset)] ??
           CallPriority.high) as P;
-    case 7:
+    case 9:
       return (reader.readStringOrNull(offset)) as P;
-    case 8:
+    case 10:
       return (reader.readDateTimeOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -547,6 +577,332 @@ extension FavoriteContactQueryFilter
         property: r'callFrequency',
         value: '',
       ));
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterFilterCondition>
+      checkupMonthDaysIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'checkupMonthDays',
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterFilterCondition>
+      checkupMonthDaysIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'checkupMonthDays',
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterFilterCondition>
+      checkupMonthDaysElementEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'checkupMonthDays',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterFilterCondition>
+      checkupMonthDaysElementGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'checkupMonthDays',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterFilterCondition>
+      checkupMonthDaysElementLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'checkupMonthDays',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterFilterCondition>
+      checkupMonthDaysElementBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'checkupMonthDays',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterFilterCondition>
+      checkupMonthDaysLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'checkupMonthDays',
+        length,
+        true,
+        length,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterFilterCondition>
+      checkupMonthDaysIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'checkupMonthDays',
+        0,
+        true,
+        0,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterFilterCondition>
+      checkupMonthDaysIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'checkupMonthDays',
+        0,
+        false,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterFilterCondition>
+      checkupMonthDaysLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'checkupMonthDays',
+        0,
+        true,
+        length,
+        include,
+      );
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterFilterCondition>
+      checkupMonthDaysLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'checkupMonthDays',
+        length,
+        include,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterFilterCondition>
+      checkupMonthDaysLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'checkupMonthDays',
+        lower,
+        includeLower,
+        upper,
+        includeUpper,
+      );
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterFilterCondition>
+      checkupWeekdaysIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'checkupWeekdays',
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterFilterCondition>
+      checkupWeekdaysIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'checkupWeekdays',
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterFilterCondition>
+      checkupWeekdaysElementEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'checkupWeekdays',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterFilterCondition>
+      checkupWeekdaysElementGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'checkupWeekdays',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterFilterCondition>
+      checkupWeekdaysElementLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'checkupWeekdays',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterFilterCondition>
+      checkupWeekdaysElementBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'checkupWeekdays',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterFilterCondition>
+      checkupWeekdaysLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'checkupWeekdays',
+        length,
+        true,
+        length,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterFilterCondition>
+      checkupWeekdaysIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'checkupWeekdays',
+        0,
+        true,
+        0,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterFilterCondition>
+      checkupWeekdaysIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'checkupWeekdays',
+        0,
+        false,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterFilterCondition>
+      checkupWeekdaysLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'checkupWeekdays',
+        0,
+        true,
+        length,
+        include,
+      );
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterFilterCondition>
+      checkupWeekdaysLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'checkupWeekdays',
+        length,
+        include,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QAfterFilterCondition>
+      checkupWeekdaysLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'checkupWeekdays',
+        lower,
+        includeLower,
+        upper,
+        includeUpper,
+      );
     });
   }
 
@@ -1829,6 +2185,20 @@ extension FavoriteContactQueryWhereDistinct
   }
 
   QueryBuilder<FavoriteContact, FavoriteContact, QDistinct>
+      distinctByCheckupMonthDays() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'checkupMonthDays');
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QDistinct>
+      distinctByCheckupWeekdays() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'checkupWeekdays');
+    });
+  }
+
+  QueryBuilder<FavoriteContact, FavoriteContact, QDistinct>
       distinctByContactDetailsJson({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'contactDetailsJson',
@@ -1899,6 +2269,20 @@ extension FavoriteContactQueryProperty
       callFrequencyProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'callFrequency');
+    });
+  }
+
+  QueryBuilder<FavoriteContact, List<int>?, QQueryOperations>
+      checkupMonthDaysProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'checkupMonthDays');
+    });
+  }
+
+  QueryBuilder<FavoriteContact, List<int>?, QQueryOperations>
+      checkupWeekdaysProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'checkupWeekdays');
     });
   }
 
